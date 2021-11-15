@@ -1,0 +1,197 @@
+Connectome Meeting 15.11.21:
+
+
+
+
+
+Funktionelle MRT Bildgebung 
+
+Vor 1995 angefangen Ruhemessungen im MRT zu mahen - funktionelle Strukuren im Gehirn üeer Blutfluss abbilden 
+
+- IDdee daher: Gehrin in Ruhezustand verbaucht genau so viel Energie wie unter Aktivität 
+Woher kommt das?
+Prozess muss aktiv sein, wenn man keine Afugabe erledig 
+
+Pat Bildgebung; Messugn Glukose Metabolismus darstellen -> bestimmte eBereiche im Gehirn hochakiv 
+
+Wechselspiel aktivierte und Deaktivierte Zusatnd / Regionen 
+
+Messung ür Blutmetabolismus kann auch über Blutfluss gemessen werden 
+
+Hochaufgelöste Wiechgewebskontraste darstellbar 
+
+Blutfluss in allen Hirnregionen darstellbar 
+
+Motorische Bereiche bei Fingerbewegung mehr aktiviert 
+
+Pixel in 3d = Voxel 
+
+Korrelation der Voxel untereinander -> Ableitung 
+
+
+
+
+
+
+
+
+FMRT - Funktionelle MRT Bildgebung = Vermehrte Sauerstoffzufuhr in versch Hirnregionen gemissen -> FÜhrt dazu, dass Magnetfeld sich änder - detektierung, wo BLutfluss aktiv
+Man findet organisation des Gehirns / Korrelationen zeigen sich in Akti und Ruhezustand 
+
+BOLD Signal 
+- Signal hat Latenz -> nicht direkt zu detektieren, da Blutfluss langsamer; viele Transmitterstoffe spieln Rolle 
+- Messung im MRT, Keine Afugabe; 10 min Messung; 180 - 400 Aufnahmen -> Messung (BOld)SIgnalverlauf in jedem Voxel
+- Bewegung großes Problem -> oft bei Alzheimer Problem 
+- Herzschlag und Blutdruck spielt auch eine Rolle 
+
+
+
+
+
+Wenn nun Voxel Korreliertt über Zeitverlauf -> Aktivierungskarten im Ruhezustand (Bereiche die Synchron aktiviert sind)
+- Korrelationsmaps für Node basierte Auswertung machen 
+
+- Bestimmte Hirnregionen als Altas definieren -> schauen, wie korrelieren bestimmte Regionen 
+- Regionen aus zytopatologischen Analysen 
+- Korrelationsmatrix / Konektivittsmatrix -> Zeigt VErbindung im RUhezustand pro Patient
+
+
+- Clusteringkoeffizient etc. andere graphische Maße messen 
+- man weiß: bei einigen Krankheiten ändern sich Maße anders: z.B. bei Alzheimer (Integrationsmaße), Depressionsn
+- Verschiedene Untertypen / 4 Clustertypen von Depressiven Patienten basierend auf Konnektivität 
+- Wie ändert sich Netzwerk (bestmmtes Netzwerk; PCC Bereich) bei Alzheimer Krankheit - bei Alzheimer hypokonnektivität - Korrelation nimmt ab
+- Pathologie; bestimmte Tauproteine lagern sich ab, welche ...
+
+
+
+
+
+
+
+
+
+
+DELCODE Studie
+- Messungen in deutschland
+- kleiner Datensatz 
+- Später dann evtl größere Datensätze 
+- MS1 schon gemacht für Datensatz 1 
+- 200 Gesunde 
+- Rest im Alheimer Spektrum (z.B. Verwandte ersten Grades haben Alzheimer)
+- klinische Diagnosen / keine biologischen Diagnosen
+
+Preprocessing:
+- Motioncoreection 
+- ÜBerlagerung auf anatomisches Modell
+- Artefakte die durch schnele Squenzschaltung korriegieren 
+
+
+- Alternative Prozessierung aufgrund von Biomarkern, evtl. Sinvoll auf biologische Diagnose runterzuführen 
+für Klassifizierung 
+
+
+
+
+
+
+
+
+
+## Nächste Steps ###
+- Schritt 2: Explorativ - Unterschiede betrachten
+- Schritt 3: Erste Klassifizierung (binäre Klassifizierung) zu versuchen 
+- SChritt 4: Behavioural Interessanter - Assoziation zwischen Konnektivitätsmatrizen und kognitiver Performance der Probanden (andere Zielvariable) (mehr Regression Task)
+
+
+Atlas basiert auf brainnetome Atlas - interessant u sehen / anzuschauen 
+- gibt verschiedene atlanten dafür (z.B. auch Schäfer (400x400))
+
+
+
+
+
+
+
+
+
+Typische Kontrollvariablen: 
+
+Alter 
+Geschlecht 
+Bildungsjahre 
+APOE bestimmte Genotypen, welche höheres Risiko haben für Alzhiemer (Er korrigiert nicht standardmäßig für)
+
+
+
+
+
+
+
+
+Atlas basiert darauf: 
+
+- Analyse wie sind Hirnregonne strukturell & funktionell verbunden & wie hngen diese zusammen
+- bezieht sich auf das ganze Gehirn (auch subkortikale Regionen, welche wahrsceinlich nicht so große Rolle für kognitive Perofrmance)
+
+
+
+
+
+
+
+
+
+
+Generelle Sachen / Orga / Rückfragen: 
+- Präferenz Treffen: Regelmäßige Treffen (alle zwei Wochen)
+- Zielbild / Erwartung: Am Ende: dieser Algorithmus klassifiziert am besten & korreliert am besten mit kognitiver Performance 
+ später dann eventuell auf prädizierendes / prädiktives Verfahren um zu prognostizieren 
+- an sich wären Features die wichtig sind auch eventuell interessant 
+
+
+Im anderen Datensatz 
+- Wiederhoungsmessungen 
+- Eventuell auch Wiederholungsmessungen einbinden 
+
+Auch noch: 
+- Messungen zur Kogntion an drei Zeitpunkten nach der MRT Messung 
+
+
+
+Protokoll / Unterscheidung zwischen Studien:
+- zu unterschiedlichen / zu welchen Zeitpunkten gemessen 
+- Voxelgröße / Auflösung 
+
+
+
+
+
+
+
+
+Dataset:
+
+Gesunde eine Gruppe
+SCD subjective cognitive complaints (subjektive beschwerden) erhöhtes risiko zu bekommen, aber noch keine kognitiven Auffäligkeiten 
+MCI mild cognitive impairment - Auffäligkeiten in Testung (Gedächtnisdefizit) - noch keine großen Einschränkungen in Altag
+AD - schwre Probleme / Defizite im Alltag
+Familiär - Erhöhtes Risiko 
+
+
+Er codiert das noch um; sodass es zu Dictionary passt 
+0 = gesund; 1 = ; 4 = angehörige 
+
+SCD = total frühe Form - erhöhtes Risiko 
+MCI und AD in eine Gruppe ; Vergleich gegen Gesunde --> Wird man wahrscheinlich am meisten finden
+
+Für erste Einschötzung SCD rausnehmen 
+
+ 
+
+
+
+MEM Score 
+- Kombination verschiedener kognitiver Tests
+- Sprachverstöndnis & fähigkeit; lang und Kurzzeitgedächtnis; Orientierungsfähigkeit 
+- Kombinierter Score zuverlässiger / robuster  
+
