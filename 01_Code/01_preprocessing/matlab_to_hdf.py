@@ -181,9 +181,9 @@ def write_to_dir(data: pd.DataFrame, t_direct: str, file_format: str = "csv") ->
 
 
 def main():
-    matlab_dir = r"C:/Users/leosc/OneDrive/Desktop/WiSe 21-22/Innolab/Test/SBC_01"
-    excel_path = r"C:\Users\leosc\OneDrive\Desktop\WiSe 21-22\Innolab\Test\DELCODE_dataset.xlsx"
-    write_dir = r"C:\Users\leosc\OneDrive\Desktop\WiSe 21-22\Innolab\Test"
+    matlab_dir = r"..." #enter directories here
+    excel_path = r"..." #enter directories here
+    write_dir = r"..." #enter directories here
 	
 
     transform_mat_write_to_hdf(matlab_dir = matlab_dir, excel_path = excel_path, 
