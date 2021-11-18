@@ -30,7 +30,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
         stacked_matrices = stacked, data_from_excel = delcode_excel)
 
 
-    write_hdf_to_dir(data = final_df, t_direct = write_dir)
+    write_to_dir(data = final_df, t_direct = write_dir)
 
 
 
@@ -64,7 +64,11 @@ def load_matlab_files(directory: str) -> list:
 
 
 def stack_matrices(matrices: list) -> np.ndarray:
-    
+    """
+    this function stacks the connectivity matrices
+    for the subjects upon each other 
+    so they can be used in a dataframe 
+    """
     flattened = []
     for i in matrices:
         #error handling in case one matrix should not work?
@@ -147,7 +151,7 @@ def get_subject_ids(file_names: list) -> np.ndarray:
 
 
 
-def write_hdf_to_dir(data: pd.DataFrame, t_direct: str) -> None:
+def write_to_dir(data: pd.DataFrame, t_direct: str, file_format: str = "csv") -> None:
     """
     writes the final dataframe to a hdf file 
     in the specified directory
@@ -159,7 +163,13 @@ def write_hdf_to_dir(data: pd.DataFrame, t_direct: str) -> None:
         print("invalid path")
         return None
     
-    data.to_hdf('merged_matrices.h5', key='df', mode='w')
+    if file_format == "hdf":
+        data.to_hdf('merged_matrices.h5', key='df', mode='w')
+    elif file_format == "csv":
+        data.to_csv('merged_matrices.csv')
+    else:
+        print("invalid file format selected")    
+    
     
 
 
