@@ -1,18 +1,12 @@
-# This is a sample Python script.
-import matplotlib.pyplot as plt
-
-datapath = "C:/Users/katha/OneDrive/Desktop/Statistik WiSe 2021/04) Innovationslabor Big Data Science/SBC_01/"
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-
 import mat73
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
+data_path = "C:/Users/katha/Downloads/SBC_01/"
+
 global_connectivity = []
-for i in range(1,813):
+for i in range(1, 813):
 
     if i < 10:
         filenumber = f"00{i}"
@@ -22,13 +16,11 @@ for i in range(1,813):
     else:
         filenumber = i
 
-    datafile_path = datapath + f"resultsROI_Subject{filenumber}_Condition001.mat"
+    datafile_path = data_path + f"resultsROI_Subject{filenumber}_Condition001.mat"
 
     data_dict = mat73.loadmat(datafile_path)
 
-
-
-    data_dict.keys()
+    # data_dict.keys()
 
     connectivity_matrix = data_dict["Z"]
     # .append zum erstellen von listen
@@ -36,7 +28,7 @@ for i in range(1,813):
 
 
 
-    fig1 = plt.figure(figsize = (6.5,4.5))
+    fig1 = plt.figure(figsize = (6.5, 4.5))  #TODO: figuresize
     sns.heatmap(connectivity_matrix)
 
     # plt.show()
