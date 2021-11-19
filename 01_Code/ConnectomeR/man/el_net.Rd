@@ -4,27 +4,40 @@
 \alias{el_net}
 \title{elastic net model}
 \usage{
-el_net(data, vars = NULL, test_IDs, alpha, y_0, y_1, metric = "accuracy", ...)
+el_net(
+  data,
+  vars = NULL,
+  train_IDs,
+  test_IDs = NULL,
+  alpha = seq(0, 1, by = 0.1),
+  y_0,
+  y_1,
+  data_source = "DELCODE",
+  metric = "accuracy",
+  ...
+)
 }
 \arguments{
 \item{data}{dataset}
 
 \item{vars}{which variables should be used? If null, columns containing connectivity data are automatically extracted}
 
-\item{test_IDs}{IDs for test data}
+\item{train_IDs}{IDs for training data}
 
-\item{alpha}{alpha value for glmnet. 0 = Lasso, 1 = Ridge}
+\item{test_IDs}{IDs for test data. If null, use all data that is not in training data}
+
+\item{alpha}{alpha values for glmnet. 0 = Lasso, 1 = Ridge}
 
 \item{y_0}{which levels of data$prmdiag use as 0}
 
 \item{y_1}{which levels of data$prmdiag use as 1}
 
+\item{data_source}{which dataset is it? (in case there have to be made adjustments)}
+
 \item{metric}{which metric is used to find the best lambda? !!! ToDo: add more metrics, think about advantages/disadvantages}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
-
-\item{data_source}{which dataset is it? (in case there have to be made adjustments)}
 }
 \description{
-elastic net model
+calculates elastic net model for several alpha values and chooses best model according to some metric
 }
