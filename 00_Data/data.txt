@@ -1,1 +1,1 @@
-you can save the data (prepared and raw) here
+you can save the data (prepared and raw) here. Changes (except for this file) will not be commited to the github repository.
