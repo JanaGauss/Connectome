@@ -7,12 +7,21 @@ import h5py
 
 
 
-
 def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, 
-    write_dir: str, flatten: bool = True) -> None:
+    write_dir: str, flatten: bool = True, split_size: float = .8, seed: int = 42, file_format: str = "csv") -> None:
     """
     final function which combines all the other functions to read in 
-    and transform the data
+    and transform the data.
+    Returns a train/test split of datasets for further use in modelling.
+    
+    Keyword arguments:
+    matlab_dir -- path to matlab files
+    excel_path -- path to excel list
+    write_dir -- path where to write the dataset to
+    flatten -- Boolean wheter connectivity matrix should be flattend or not <- unused at the Moment!!!
+    split_size -- the size of the train dataset (default .8)
+    seed -- pass an int for reproducibility purposes (default 42)
+    file_format -- str. Pass "hdf" for further modelling in python or "csv" for R (default "csv")
     """
 
     #load matlab files and excel
@@ -29,8 +38,10 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     final_df = create_final_df(file_names = res[1], final_columns = colnames,
         stacked_matrices = stacked, data_from_excel = delcode_excel)
 
+    #create train test splits
+    X_train, X_test, y_train, y_test = create_train_test_split(data = final_df, split_size = split_size, seed = seed)
 
-    write_to_dir(data = final_df, t_direct = write_dir)
+    write_to_dir(datasets = [X_train, X_test, y_train, y_test], t_direct = write_dir, file_format = file_format)
 
 
 
@@ -128,12 +139,20 @@ def create_final_df(file_names: list, final_columns: list,
     ids_added = np.c_[ids, stacked_matrices]
 
     
-
-    
     #final_columns = col_names_final_df(data_from_excel = data_from_excel)
     final_df = np.c_[np.array(data_from_excel), ids_added]
     final_df = pd.DataFrame(final_df, columns = final_columns)
     
+#     "1: SCD (Subjective congnitive decline)
+#     2: MCI (Mild cognitive impairment)
+#     3: AD (Alzheimers disease dementia)
+#     4: Angehörige von AD-Probanden
+#     0: Gesunde Kontrollprobanden"
+    #create target variable
+    final_df = final_df[final_df['prmdiag'] != 4]
+    final_df['target'] = np.where(final_df['prmdiag']==0, 0, 1)
+    final_df.drop('prmdiag', axis = 1, inplace = True)
+
     return final_df
 
 
@@ -150,10 +169,30 @@ def get_subject_ids(file_names: list) -> np.ndarray:
 
 
 
-
-def write_to_dir(data: pd.DataFrame, t_direct: str, file_format: str = "csv") -> None:
+def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: int = 42) -> list:
     """
-    writes the final dataframe to a hdf file 
+    takes the final data set and splits it into random train and test subsets. 
+    Returns a list containing train-test split of inputs
+    
+    Keyword arguments:
+    data -- dataset to be split into train/test
+    split_size -- the size of the train dataset (default .8)
+    seed -- pass an int for reproducibility purposes
+    """
+    #assert split size between 0 and 1
+    assert 0 <= split_size <= 1, "split_size out of bounds"
+    
+    #split into features and target
+    features = data.drop('target', axis=1)
+    target = data['target']
+    
+    #stratify by the target to ensure equal distribution
+    return train_test_split(features, target, train_size = split_size, random_state = seed,
+                           stratify = target)
+
+def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> None:
+    """
+    writes the list of train/test splits to hdf files for future use in python or csv for future use in R 
     in the specified directory
     """
 
@@ -163,20 +202,18 @@ def write_to_dir(data: pd.DataFrame, t_direct: str, file_format: str = "csv") ->
         print("invalid path")
         return None
     
+    #Gibts ne elegantere Lösung?
+    names = ["X_train", "X_test", "y_train","y_test"]
     if file_format == "hdf":
-        data.to_hdf('merged_matrices.h5', key='df', mode='w')
+        for i in range(len(datasets)):
+            datasets[i].to_hdf(names[i] + '.h5', key='df', mode='w')
     elif file_format == "csv":
-        data.to_csv('merged_matrices.csv')
+        for i in range(len(datasets)):
+            datasets[i].to_csv(names[i] + '.csv', index = False)
     else:
-        print("invalid file format selected")    
+        print("invalid file format selected")  
+     
     
-    
-
-
-
-
-
-
 
 
 
