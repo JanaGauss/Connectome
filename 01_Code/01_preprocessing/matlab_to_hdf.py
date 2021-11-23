@@ -39,9 +39,9 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
         stacked_matrices = stacked, data_from_excel = delcode_excel)
 
     #create train test splits
-    X_train, X_test, y_train, y_test = create_train_test_split(data = final_df, split_size = split_size, seed = seed)
+    train, test = create_train_test_split(data = final_df, split_size = split_size, seed = seed)
 
-    write_to_dir(datasets = [X_train, X_test, y_train, y_test], t_direct = write_dir, file_format = file_format)
+    write_to_dir(datasets = [train,test], t_direct = write_dir, file_format = file_format)
 
 
 
@@ -143,16 +143,6 @@ def create_final_df(file_names: list, final_columns: list,
     final_df = np.c_[np.array(data_from_excel), ids_added]
     final_df = pd.DataFrame(final_df, columns = final_columns)
     
-#     "1: SCD (Subjective congnitive decline)
-#     2: MCI (Mild cognitive impairment)
-#     3: AD (Alzheimers disease dementia)
-#     4: Angehörige von AD-Probanden
-#     0: Gesunde Kontrollprobanden"
-    #create target variable
-    final_df = final_df[final_df['prmdiag'] != 4]
-    final_df['target'] = np.where(final_df['prmdiag']==0, 0, 1)
-    final_df.drop('prmdiag', axis = 1, inplace = True)
-
     return final_df
 
 
@@ -183,12 +173,11 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     assert 0 <= split_size <= 1, "split_size out of bounds"
     
     #split into features and target
-    features = data.drop('target', axis=1)
-    target = data['target']
+#     features = data.drop('target', axis=1)
+#     target = data['target']
     
     #stratify by the target to ensure equal distribution
-    return train_test_split(features, target, train_size = split_size, random_state = seed,
-                           stratify = target)
+    return train_test_split(data, train_size = split_size, random_state = seed, shuffle = True)
 
 def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> None:
     """
@@ -203,7 +192,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> Non
         return None
     
     #Gibts ne elegantere Lösung?
-    names = ["X_train", "X_test", "y_train","y_test"]
+    names = ["train", "test"]
     if file_format == "hdf":
         for i in range(len(datasets)):
             datasets[i].to_hdf(names[i] + '.h5', key='df', mode='w')
@@ -212,7 +201,8 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> Non
             datasets[i].to_csv(names[i] + '.csv', index = False)
     else:
         print("invalid file format selected")  
-     
+    
+    
     
 
 
