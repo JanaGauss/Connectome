@@ -23,6 +23,12 @@ class TestMatlabToHdf(unittest.TestCase):
 
     target_colnames = ['col1', 'col2', 'col3', 'IDs', '1_2', '1_3', '2_3']
 
+    conn_matr_colnames = ['1_2', '1_3', '2_3']
+
+    conn_matrix = np.array([[1, 2, 3],
+                            [4, 5, 6],
+                            [7, 8, 9]])
+
     def test_write_to_dir(self):
 
         with self.assertRaises(FileNotFoundError):
@@ -54,13 +60,28 @@ class TestMatlabToHdf(unittest.TestCase):
         self.assertEqual(df_eq, True)
 
     def test_col_names_conn_matrix(self):
-        pass
+        target_colnames = np.array(self.__class__.conn_matr_colnames)
+        test_colnames = np.array(mth.col_names_conn_matrix(3))
 
-#    def test_flatten_conn_matrix(self):
-#        pass
+        conn_coln_eq = all(target_colnames == test_colnames)
 
-#    def test_col_names_final_df(self):
-#        pass
+        self.assertEqual(conn_coln_eq, True)
+        # todo: test that bad input is handled correctly
+
+    def test_flatten_conn_matrix(self):
+        target_arr = np.array([2, 3, 6])
+        result_arr = mth.flatten_conn_matrix(self.__class__.conn_matrix)
+
+        arr_eq = all(target_arr == result_arr)
+
+        self.assertEqual(arr_eq, True)
+
+    def test_col_names_final_df(self):
+        test_colnames = np.array(mth.col_names_final_df(self.__class__.excel_data, 3))
+        target_cn = np.array(self.__class__.target_colnames)
+        coln_eq = all(test_colnames == target_cn)
+
+        self.assertEqual(coln_eq, True)
 
 #    def test_stack_matrices(self):
 #        pass
