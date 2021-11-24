@@ -1,13 +1,11 @@
 import os
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import h5py
+import sklearn
 
 
-
-def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, 
+def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     write_dir: str, flatten: bool = True, split_size: float = .8, seed: int = 42, file_format: str = "csv") -> None:
     """
     final function which combines all the other functions to read in 
@@ -18,7 +16,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     matlab_dir -- path to matlab files
     excel_path -- path to excel list
     write_dir -- path where to write the dataset to
-    flatten -- Boolean wheter connectivity matrix should be flattend or not <- unused at the Moment!!!
+    flatten -- Boolean whether connectivity matrix should be flattened or not <- unused at the Moment!!!
     split_size -- the size of the train dataset (default .8)
     seed -- pass an int for reproducibility purposes (default 42)
     file_format -- str. Pass "hdf" for further modelling in python or "csv" for R (default "csv")
@@ -27,7 +25,6 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     #load matlab files and excel
     res = load_matlab_files(matlab_dir)
     delcode_excel = pd.read_excel(excel_path)
-
 
     #stack matrices
     stacked = stack_matrices(res[0])
@@ -41,7 +38,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     #create train test splits
     train, test = create_train_test_split(data = final_df, split_size = split_size, seed = seed)
 
-    write_to_dir(datasets = [train,test], t_direct = write_dir, file_format = file_format)
+    write_to_dir(datasets = [train, test], t_direct = write_dir, file_format = file_format)
 
 
 
@@ -55,7 +52,7 @@ def load_matlab_files(directory: str) -> list:
         os.chdir(directory)
     except FileNotFoundError:
         print("invalid path")
-        return None
+        return []
     
     mat_files_names = os.listdir()
     conn_matrices = []
@@ -120,7 +117,7 @@ def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
 
 def col_names_conn_matrix(n: int):
     """
-    creates the column names for the flattened connecitvity matrix
+    creates the column names for the flattened connectivity matrix
     """
     return [str(i) + "_" + str(j)  for i in range(1, n+1) for j in range(i+1, n+1)]
 
@@ -177,7 +174,7 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
 #     target = data['target']
     
     #stratify by the target to ensure equal distribution
-    return train_test_split(data, train_size = split_size, random_state = seed, shuffle = True)
+    return sklearn.model_selection.train_test_split(data, train_size = split_size, random_state = seed, shuffle = True)
 
 def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> None:
     """
