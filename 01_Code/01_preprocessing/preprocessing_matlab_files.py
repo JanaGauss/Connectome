@@ -181,9 +181,9 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
 
 
 def main():
-    matlab_dir = r"..."  # enter directories here
-    excel_path = r"..."  # enter directories here
-    write_dir = r"..."  # enter directories here
+    matlab_dir = input(r'Input your path where the matlab files are stored:')
+    excel_path = input(r'Input your path where the excel file is stored:')
+    write_dir = input(r'Input your path where to write the final file:')
 
     transform_mat_write_to_hdf(matlab_dir=matlab_dir, excel_path=excel_path,
                                write_dir=write_dir)
