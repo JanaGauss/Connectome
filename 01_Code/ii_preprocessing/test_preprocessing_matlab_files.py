@@ -29,6 +29,12 @@ class TestMatlabToHdf(unittest.TestCase):
                             [4, 5, 6],
                             [7, 8, 9]])
 
+    stack_matrix = np.array([[10, 11, 12],
+                            [13, 14, 15],
+                            [16, 17, 18]])
+
+    stack_res = np.arange(1, 19)
+
     def test_write_to_dir(self):
 
         with self.assertRaises(FileNotFoundError):
@@ -47,9 +53,6 @@ class TestMatlabToHdf(unittest.TestCase):
         with self.assertRaises(IndexError):
             test = ["abc", "123", "avt"]
             mth.get_subject_ids(test)
-
-#    def test_create_train_test_split(self):
-#        pass
 
     def test_create_final_df(self):
         result_df = mth.create_final_df(self.__class__.file_list,
@@ -83,12 +86,20 @@ class TestMatlabToHdf(unittest.TestCase):
 
         self.assertEqual(coln_eq, True)
 
-#    def test_stack_matrices(self):
-#        pass
+    def test_stack_matrices(self):
+        test_list = [self.__class__.conn_matrix, self.__class__.stack_matrix]
+        res_test = mth.stack_matrices(test_list)
+        stack_eq = all(res_test == self.__class__.stack_res)
+        self.assertEqual(stack_eq, True)
 
 #    def test_load_matlab_files(self):
 #        pass
 
+#    def test_create_train_test_split(self):
+#        pass
+
+#    def test_transform_mat_write_to_hdf(self):
+#        pass
 
 if __name__ == '__main__':
     unittest.main()
