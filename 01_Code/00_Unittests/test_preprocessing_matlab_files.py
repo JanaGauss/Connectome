@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import matlab_to_hdf as mth
+import 00_Unittests/preprocessing_matlab_files as mth
 import os
 import pandas as pd
 

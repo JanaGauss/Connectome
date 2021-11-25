@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import h5py
-import sklearn
+from sklearn.model_selection import train_test_split
 
 
 def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
@@ -153,7 +153,7 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     #     target = data['target']
 
     # stratify by the target to ensure equal distribution
-    return sklearn.model_selection.train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
+    return train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
 
 
 def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str:
@@ -182,7 +182,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
 
 def main():
     matlab_dir = input(r'Input your path where the matlab files are stored:')
-    excel_path = input(r'Input your path where the excel file is stored:')
+    excel_path = input(r'Input your path where the excel file is stored (with name + ".xlsx"):')
     write_dir = input(r'Input your path where to write the final file:')
 
     transform_mat_write_to_hdf(matlab_dir=matlab_dir, excel_path=excel_path,
