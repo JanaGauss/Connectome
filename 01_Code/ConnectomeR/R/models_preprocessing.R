@@ -41,7 +41,7 @@ prep_y <- function(data, y_0, y_1){
 }
 
 
-#' prepare test and training data
+#' prepare test and training data - Not necessary anymore
 #'
 #' returns list with train and test data
 #' @param data dataset

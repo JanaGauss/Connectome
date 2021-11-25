@@ -4,15 +4,29 @@
 # https://glmnet.stanford.edu/articles/glmnet.html
 
 library(dplyr)
-
-devtools::install("01_Code/ConnectomeR") # only necessary if there are changes
+library(glmnet)
+library(caret)
+# devtools::install("01_Code/ConnectomeR") # only necessary if there are changes
 library(ConnectomeR)
 
+
+test <- readRDS("00_Data/Delcode_prepared_2021-11-25test.rds")
+train <- readRDS("00_Data/Delcode_prepared_2021-11-25train.rds")
+
+
+elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2")) # for alpha = seq(0, 1, by = 0.1)
+elastic_net_2$metric_values
+elastic_net_2$model_best$alpha
+
+confMat <- get_confMatrix_elnet(elastic_net_2)
+confMat
+confMat$table
+
+
+
+# old stuff
 data <- readRDS("00_Data/Delcode_prepared_2021-11-19.rds")
 table(data$prmdiag)
-
-
-
 
 # try preprocessing functions
 vars <- names_conn(colnames(data))
@@ -37,13 +51,14 @@ test_2 <- calc_el_net(train, test, vars, alpha = 1, metric = "accuracy", nlambda
 test_1$metric_value
 test_2$metric_value
 
+
+
+
 # function doing all that stuff at once:
-elastic_net <- el_net(data, train_IDs = ids, alpha = c(0, 1), y_0 = c("0"), y_1 = c("2", "3"))
-elastic_net$metric_values
-
-elastic_net_2 <- el_net(data, train_IDs = ids, y_0 = c("0"), y_1 = c("2", "3")) # for alpha = seq(0, 1, by = 0.1)
+elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # for alpha = seq(0, 1, by = 0.1)
 elastic_net_2$metric_values
-# -> Lasso (alpha = 0) works best
-elnet_best <- elastic_net_2$results_models[[1]]
+elastic_net_2$model_best$alpha
 
-
+confMat <- get_confMatrix_elnet(elastic_net_2)
+confMat
+confMat$table

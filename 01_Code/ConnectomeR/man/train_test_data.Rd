@@ -2,7 +2,7 @@
 % Please edit documentation in R/models_preprocessing.R
 \name{train_test_data}
 \alias{train_test_data}
-\title{prepare test and training data}
+\title{prepare test and training data - Not necessary anymore}
 \usage{
 train_test_data(data, train_IDs, test_IDs = NULL)
 }

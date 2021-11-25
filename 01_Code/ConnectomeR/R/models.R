@@ -3,10 +3,9 @@
 #' elastic net model 
 #'
 #' calculates elastic net model for several alpha values and chooses best model according to some metric
-#' @param data dataset
+#' @param test test data
+#' @param train training data
 #' @param vars which variables should be used? If null, columns containing connectivity data are automatically extracted
-#' @param train_IDs IDs for training data
-#' @param test_IDs IDs for test data. If null, use all data that is not in training data
 #' @param alpha alpha values for glmnet. 0 = Lasso, 1 = Ridge
 #' @param y_0 which levels of data$prmdiag use as 0
 #' @param y_1 which levels of data$prmdiag use as 1
@@ -15,32 +14,32 @@
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-el_net <- function(data, vars = NULL, train_IDs, test_IDs = NULL, alpha = seq(0, 1, by = 0.1), y_0, y_1, 
+el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y_1, 
                    data_source = "DELCODE", metric = "accuracy", ...){
 
 
-  checkmate::assert_data_frame(data)
+  checkmate::assert_data_frame(test)
+  checkmate::assert_data_frame(train)
   checkmate::assert_character(vars, null.ok = TRUE)
-  checkmate::check_integer(test_IDs)
   checkmate::assert_numeric(alpha, lower = 0, upper = 1)
-  checkmate::assert_true(all(y_0 %in% levels(data$prmdiag)))
-  checkmate::assert_true(all(y_1 %in% levels(data$prmdiag)))
+  checkmate::assert_true(all(y_0 %in% levels(train$prmdiag)))
+  checkmate::assert_true(all(y_1 %in% levels(train$prmdiag)))
   checkmate::assert_choice(metric, choices = c("accuracy")) # ToDo: add more metrics
   checkmate::assert_choice(data_source, choices = c("DELCODE"))
   
   if(!is.null(vars)){
-    checkmate::assert_true(vars %in% colnames(data))
+    checkmate::assert_true(vars %in% colnames(train))
   } else{
     # extract all columns with connectivity data automatically
-    vars <- names_conn(colnames(data))
+    vars <- names_conn(colnames(train))
   }
 
   # prepare data
-  data <- prep_y(data, y_0, y_1)
+  test <- prep_y(test, y_0, y_1)
+  train <- prep_y(train, y_0, y_1)
   
-  data_list <- train_test_data(data, train_IDs, test_IDs)
-  train <- data_list[["train"]]
-  test <- data_list[["test"]]
+  data_list <- list(test, train)
+  names(data_list) <- c("test", "train")
 
   # calculate elastic net for all alpha values
   results <- list()
@@ -50,8 +49,10 @@ el_net <- function(data, vars = NULL, train_IDs, test_IDs = NULL, alpha = seq(0,
     metric_values[a] <- results[[a]][["metric_value"]]
   }
   
-  res <- list(results, metric_values)
-  names(res) <- c("results_models", "metric_values")
+  model_best <- results[[which(metric_values == max(metric_values))[1]]]
+  
+  res <- list(results, metric_values, data_list, model_best)
+  names(res) <- c("results_models", "metric_values", "data_list", "model_best")
   return(res)
   
   
@@ -131,3 +132,21 @@ calc_acc_elnet <- function(pred, y){
   return(acc)
 }
 
+
+#' get confusion matrix for best elastic net model
+#'
+#' @param elnet_result result of el_net function
+#' @import dplyr caret checkmate
+#' @export
+get_confMatrix_elnet <- function(elnet_result){
+  
+  pred <- predict(elnet_result$model_best$model,
+                  newx = as.matrix(elnet_result$data_list$test[, names(elnet_result$model_best$beta)]), 
+                  type = "response", s = elnet_result$model_best$lambda)
+  
+  x <- confusionMatrix(data = factor(elnet_result$data_list$test$y), 
+                       reference = factor(as.integer(pred>0.5), levels = c("0", "1")),
+                       positive = "1")
+  
+  return(x)
+}

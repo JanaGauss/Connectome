@@ -4,14 +4,19 @@
 \alias{read_data}
 \title{Read and prepare datasets. Returns data (and the data can be stored additionally)}
 \usage{
-read_data(file, store_rds = FALSE, store_file = NULL, data_source = "DELCODE")
+read_data(
+  path = "00_Data",
+  store_rds = FALSE,
+  store_file = NULL,
+  data_source = "DELCODE"
+)
 }
 \arguments{
-\item{file}{name of csv file of the dataset}
+\item{path}{path to test and train csv files}
 
 \item{store_rds}{should the prepared data be stored as .rds file?}
 
-\item{store_file}{name of the stored data file if store_rds is true}
+\item{store_file}{name of the stored data file if store_rds is true (without .rds)}
 
 \item{data_source}{which dataset is it? (in case there have to be made adjustments)}
 }

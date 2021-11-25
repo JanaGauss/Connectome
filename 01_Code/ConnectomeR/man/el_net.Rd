@@ -5,10 +5,9 @@
 \title{elastic net model}
 \usage{
 el_net(
-  data,
+  test,
+  train,
   vars = NULL,
-  train_IDs,
-  test_IDs = NULL,
   alpha = seq(0, 1, by = 0.1),
   y_0,
   y_1,
@@ -18,13 +17,11 @@ el_net(
 )
 }
 \arguments{
-\item{data}{dataset}
+\item{test}{test data}
+
+\item{train}{training data}
 
 \item{vars}{which variables should be used? If null, columns containing connectivity data are automatically extracted}
-
-\item{train_IDs}{IDs for training data}
-
-\item{test_IDs}{IDs for test data. If null, use all data that is not in training data}
 
 \item{alpha}{alpha values for glmnet. 0 = Lasso, 1 = Ridge}
 

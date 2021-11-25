@@ -3,6 +3,7 @@
 export(calc_acc_elnet)
 export(calc_el_net)
 export(el_net)
+export(get_confMatrix_elnet)
 export(names_conn)
 export(prep_y)
 export(read_data)
