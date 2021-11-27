@@ -33,7 +33,8 @@ class TestMatlabToHdf(unittest.TestCase):
                             [13, 14, 15],
                             [16, 17, 18]])
 
-    stack_res = np.arange(1, 19)
+    stack_res = np.array([[2, 3, 6],
+                          [11, 12, 15]])
 
     def test_write_to_dir(self):
 
@@ -46,7 +47,7 @@ class TestMatlabToHdf(unittest.TestCase):
 
         target_result = np.array([12, 29, 90])
         result = mth.get_subject_ids(self.__class__.file_list)
-        array_eq = (target_result == result).all()
+        array_eq = np.all(target_result == result)
 
         self.assertEqual(array_eq, True)
 
@@ -59,14 +60,14 @@ class TestMatlabToHdf(unittest.TestCase):
                                         self.__class__.target_colnames,
                                         self.__class__.stacked_matrices,
                                         self.__class__.excel_data)
-        df_eq = all(result_df == self.__class__.target_df)
+        df_eq = np.all(result_df == self.__class__.target_df)
         self.assertEqual(df_eq, True)
 
     def test_col_names_conn_matrix(self):
         target_colnames = np.array(self.__class__.conn_matr_colnames)
         test_colnames = np.array(mth.col_names_conn_matrix(3))
 
-        conn_coln_eq = all(target_colnames == test_colnames)
+        conn_coln_eq = np.all(target_colnames == test_colnames)
 
         self.assertEqual(conn_coln_eq, True)
         # todo: test that bad input is handled correctly
@@ -75,21 +76,21 @@ class TestMatlabToHdf(unittest.TestCase):
         target_arr = np.array([2, 3, 6])
         result_arr = mth.flatten_conn_matrix(self.__class__.conn_matrix)
 
-        arr_eq = all(target_arr == result_arr)
+        arr_eq = np.all(target_arr == result_arr)
 
         self.assertEqual(arr_eq, True)
 
     def test_col_names_final_df(self):
         test_colnames = np.array(mth.col_names_final_df(self.__class__.excel_data, 3))
         target_cn = np.array(self.__class__.target_colnames)
-        coln_eq = all(test_colnames == target_cn)
+        coln_eq = np.all(test_colnames == target_cn)
 
         self.assertEqual(coln_eq, True)
 
     def test_stack_matrices(self):
         test_list = [self.__class__.conn_matrix, self.__class__.stack_matrix]
         res_test = mth.stack_matrices(test_list)
-        stack_eq = all(res_test == self.__class__.stack_res)
+        stack_eq = np.all(res_test == self.__class__.stack_res)
         self.assertEqual(stack_eq, True)
 
 #    def test_load_matlab_files(self):
