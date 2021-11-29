@@ -62,8 +62,8 @@ def drop_cases(dataset: pd.DataFrame) -> None:
     dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index, inplace=True)
 
 
-def drop_cols(dataset: pd.DataFrame, cols: list = ['ConnID', 'Repseudonym',
-                                                   'siteid', 'visdat', 'IDs', "prmdiag"]):
+def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
+                                                  'siteid', 'visdat', 'IDs', "prmdiag")):
     """
     Drops the columns which are not needed for further modelling
 
@@ -77,7 +77,7 @@ def drop_cols(dataset: pd.DataFrame, cols: list = ['ConnID', 'Repseudonym',
     Raises:
         KeyError: ...
     """
-    dataset.drop(columns=cols, inplace=True)
+    dataset.drop(columns=list(cols), inplace=True)
 
 
 def split_target_data(dataset: pd.DataFrame) -> tuple:
