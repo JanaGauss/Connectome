@@ -30,6 +30,13 @@ def load_data(train: bool = True) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def preprocess_data(dataset: pd.DataFrame) -> tuple:
+    create_target(dataset)
+    df = drop_cases(dataset)
+    df = drop_cols(df)
+    return split_target_data(df)
+
+
 def create_target(dataset: pd.DataFrame) -> None:
     """
     This function creates the target variable based on the prmdiag column
@@ -46,7 +53,7 @@ def create_target(dataset: pd.DataFrame) -> None:
     dataset["target"] = np.where((dataset['prmdiag'] == 2) | (dataset['prmdiag'] == 3), 1, 0)
 
 
-def drop_cases(dataset: pd.DataFrame) -> None:
+def drop_cases(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Drops the observations of variable prmdiag with value 1 or 4
 
@@ -59,11 +66,11 @@ def drop_cases(dataset: pd.DataFrame) -> None:
     Raises:
         KeyError: ...
     """
-    dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index, inplace=True)
+    return dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index)
 
 
 def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
-                                                  'siteid', 'visdat', 'IDs', "prmdiag")):
+                                                  'siteid', 'visdat', 'IDs', "prmdiag")) -> pd.DataFrame:
     """
     Drops the columns which are not needed for further modelling
 
@@ -77,7 +84,7 @@ def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
     Raises:
         KeyError: ...
     """
-    dataset.drop(columns=list(cols), inplace=True)
+    return dataset.drop(columns=list(cols))
 
 
 def split_target_data(dataset: pd.DataFrame) -> tuple:
