@@ -12,7 +12,6 @@ el_net(
   y_0,
   y_1,
   data_source = "DELCODE",
-  metric = "accuracy",
   ...
 )
 }
@@ -31,10 +30,8 @@ el_net(
 
 \item{data_source}{which dataset is it? (in case there have to be made adjustments)}
 
-\item{metric}{which metric is used to find the best lambda? !!! ToDo: add more metrics, think about advantages/disadvantages}
-
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
 \description{
-calculates elastic net model for several alpha values and chooses best model according to some metric
+calculates elastic net model for several alpha values
 }
