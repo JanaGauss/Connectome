@@ -20,6 +20,8 @@ table(test$prmdiag)
 
 # elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # only with connectivity variables
 # result_table_elnet(elastic_net)
+# accurcay ~ 70%
+# performs much worse than elastic_net_2 with all variables 
 
 
 
@@ -69,6 +71,14 @@ predictions <- predict(model, newx = new_x, type = "response")[, 7] # 7. lambda 
 
 confusionMatrix(data = factor(as.integer(predictions>0.5), levels = c("0", "1")),
                 reference = factor(test_2$y), positive = "1")
+##
+
+# without connectivity data
+vars_model3 <- vars_model[1:5]
+elastic_net_3 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"),
+                        vars = vars_model3)
+result_table_elnet(elastic_net_3)
+get_confMatrix_elnet(elastic_net_3, ind_alpha = 11, ind_lambda = 4) # same matrix as above
 
 
 #### old stuff, may not work #####
