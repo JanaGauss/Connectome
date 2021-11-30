@@ -4,7 +4,7 @@
 \alias{calc_el_net}
 \title{elastic net model for one alpha}
 \usage{
-calc_el_net(data_train, data_test, vars, alpha = 0, metric = "accuracy", ...)
+calc_el_net(data_train, data_test, vars, alpha = 0, ...)
 }
 \arguments{
 \item{data_train}{training data}
@@ -15,10 +15,8 @@ calc_el_net(data_train, data_test, vars, alpha = 0, metric = "accuracy", ...)
 
 \item{alpha}{alpha value for glmnet. 0 = Lasso, 1 = Ridge}
 
-\item{metric}{which metric is used to find the best lambda? !!! ToDo: add more metrics, think about advantages/disadvantages}
-
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
 \description{
-calculates elastic net model for one alpha value and chooses best model according to some metric (returns list with information)
+calculates elastic net model for one alpha value (returns list with information and evaluation)
 }

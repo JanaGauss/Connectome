@@ -2,13 +2,17 @@
 % Please edit documentation in R/models.R
 \name{get_confMatrix_elnet}
 \alias{get_confMatrix_elnet}
-\title{get confusion matrix for best elastic net model}
+\title{get confusion matrix for elastic net model}
 \usage{
-get_confMatrix_elnet(elnet_result)
+get_confMatrix_elnet(elnet_result, ind_alpha, ind_lambda)
 }
 \arguments{
 \item{elnet_result}{result of el_net function}
+
+\item{ind_alpha}{index of alpha that should be used}
+
+\item{ind}{index of lambda value that should be used}
 }
 \description{
-get confusion matrix for best elastic net model
+get confusion matrix for elastic net model
 }
