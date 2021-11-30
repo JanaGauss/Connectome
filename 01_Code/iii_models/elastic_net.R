@@ -6,6 +6,7 @@
 library(dplyr)
 library(glmnet)
 library(caret)
+library(dplyr)
 # devtools::install("01_Code/ConnectomeR") # only necessary if there are changes
 library(ConnectomeR)
 
@@ -13,16 +14,21 @@ library(ConnectomeR)
 test <- readRDS("00_Data/Delcode_prepared_2021-11-30test.rds") %>% filter(!is.na(Apoe))
 train <- readRDS("00_Data/Delcode_prepared_2021-11-30train.rds") %>% filter(!is.na(Apoe))
 table(train$prmdiag)
+table(test$prmdiag)
 
 
-elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # only with connectivity variables
-result_table_elnet(elastic_net)
+
+# elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # only with connectivity variables
+# result_table_elnet(elastic_net)
 
 
 
 
 vars_remove <- c("ConnID", "Repseudonym", "siteid", "visdat", "prmdiag", "IDs")
 vars_model <- colnames(train)[!colnames(train) %in% vars_remove]
+
+
+
 
 elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"),
                         vars = vars_model) # for alpha = seq(0, 1, by = 0.1)
@@ -34,10 +40,35 @@ results_eval$accuracy[which(results_eval$accuracy$value == max(results_eval$accu
 
 get_confMatrix_elnet(elastic_net_2, ind_alpha = 11, ind_lambda = 7)
 
-new_x <- as.matrix(elastic_net_2$data_list$test[, dimnames(elastic_net_2$results_models[[11]]$model$beta)[[1]]])
-class(new_x) <- "numeric"
-pred <- predict(elastic_net_2$results_models[[11]]$model, newx = new_x, type = "response")[, 7] 
 
+
+# "recreate" best model
+test_2 <- test %>%
+  mutate(y = case_when(
+    test$prmdiag %in% c("0") ~ 0,
+    test$prmdiag %in% c("2", "3") ~ 1,
+    TRUE ~ NA_real_
+  )) %>%
+  filter(!is.na(y))
+
+train_2 <- train %>%
+  mutate(y = case_when(
+    train$prmdiag %in% c("0") ~ 0,
+    train$prmdiag %in% c("2", "3") ~ 1,
+    TRUE ~ NA_real_
+  )) %>%
+  filter(!is.na(y))
+
+model <- glmnet(train_2[, vars_model], train_2$y, family = "binomial", alpha = 1)
+
+
+new_x <- as.matrix(test_2[, vars_model])
+class(new_x) <- "numeric"
+predictions <- predict(model, newx = new_x, type = "response")[, 7] # 7. lambda Wert (siehe oben, evaluation elastic_net_2)
+
+
+confusionMatrix(data = factor(as.integer(predictions>0.5), levels = c("0", "1")),
+                reference = factor(test_2$y), positive = "1")
 
 
 #### old stuff, may not work #####
