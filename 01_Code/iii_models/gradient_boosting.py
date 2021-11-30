@@ -97,7 +97,7 @@ if __name__ == "__main__":
     save_model(xg_class, "xgb_untuned")
 
     y_pred = xg_class.predict(X_test)
-    pd.DataFrame(y_pred).to_csv("predictins_test.csv", encoding='utf-8', index=False)
+    pd.DataFrame(y_pred).to_csv("predictions_test.csv", encoding='utf-8', index=False)
 
     test_eval = pred_evaluation(y_test, y_pred, "XGBoost")
     test_eval.to_csv("test_eval_xgb_untuned_result.csv", encoding='utf-8', index=False)
