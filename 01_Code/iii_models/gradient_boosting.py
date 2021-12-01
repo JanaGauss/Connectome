@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import h5py
 import xgboost as xgb
 import seaborn as sns
 import matplotlib.pyplot as plt
