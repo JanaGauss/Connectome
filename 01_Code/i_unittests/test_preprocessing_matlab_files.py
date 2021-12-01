@@ -1,4 +1,4 @@
-#use python -m i_unittests.test_preprocessing_matlab_files to run this test file
+# use python -m i_unittests.test_preprocessing_matlab_files to run this test file
 import unittest
 import numpy as np
 import logging
