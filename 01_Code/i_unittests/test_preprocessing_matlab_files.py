@@ -1,11 +1,17 @@
+#use python -m i_unittests.test_preprocessing_matlab_files to run this test file
 import unittest
 import numpy as np
-import preprocessing_matlab_files as mth
+import logging
+import ii_preprocessing.preprocessing_matlab_files as mth
 import os
 import pandas as pd
 
 
 class TestMatlabToHdf(unittest.TestCase):
+    """
+    tests for different functionalities of the preprocessing_matlab_files.py file
+    """
+
     d = {'col1': [1, 2, 3], 'col2': [4, 5, 6], 'col3': [7, 8, 9]}
     excel_data = pd.DataFrame(data=d)
 
@@ -35,6 +41,10 @@ class TestMatlabToHdf(unittest.TestCase):
 
     stack_res = np.array([[2, 3, 6],
                           [11, 12, 15]])
+
+    def setUp(self):
+        # This Method is executed once before each test
+        logging.basicConfig(level=logging.DEBUG)
 
     def test_write_to_dir(self):
 
