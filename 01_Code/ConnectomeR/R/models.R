@@ -182,3 +182,25 @@ get_confMatrix_elnet <- function(elnet_result, ind_alpha, ind_lambda){
   
   return(x)
 }
+
+
+
+#' accuracy intercept model
+#'
+#' calculates the accuracy of an intercept model
+#' @param elnet_result result of el_net function
+#' @import dplyr 
+#' @export
+acc_intercept <- function(elnet_result){
+  
+  test <- elnet_result$data_list$test
+  train <- elnet_result$data_list$train
+  
+  perc_1_train <- sum(train$y == 1)/nrow(train) # percentage of 1 in training data
+  pred <- as.integer(perc_1_train>0.5) # prediction of intercept model on training data
+  
+  acc <- sum(test$y == pred)/nrow(test)
+  
+  return(acc)
+  
+}
