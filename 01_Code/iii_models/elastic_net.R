@@ -11,8 +11,8 @@ library(dplyr)
 library(ConnectomeR)
 
 
-test <- readRDS("00_Data/Delcode_prepared_2021-11-30test.rds") %>% filter(!is.na(Apoe))
-train <- readRDS("00_Data/Delcode_prepared_2021-11-30train.rds") %>% filter(!is.na(Apoe))
+test <- readRDS("00_Data/Delcode_prepared_2021-11-30test.rds")
+train <- readRDS("00_Data/Delcode_prepared_2021-11-30train.rds")
 table(train$prmdiag)
 table(test$prmdiag)
 
@@ -20,8 +20,7 @@ table(test$prmdiag)
 
 elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # only with connectivity variables
 result_table_elnet(elastic_net)
-# accurcay ~ 70%
-# performs much worse than elastic_net_2 with all variables
+# accurcay ~ 77%
 
 
 
@@ -41,6 +40,7 @@ max(results_eval$accuracy$value)
 results_eval$accuracy[which(results_eval$accuracy$value == max(results_eval$accuracy$value)), ]
 
 get_confMatrix_elnet(elastic_net_2, ind_alpha = 2, ind_lambda = 25)
+# 78,5%
 
 beta_best <- elastic_net_2$results_models[[2]]$model$beta[, 25]
 

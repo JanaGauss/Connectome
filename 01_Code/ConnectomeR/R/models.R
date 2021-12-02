@@ -36,6 +36,14 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y
   test <- prep_y(test, y_0, y_1)
   train <- prep_y(train, y_0, y_1)
   
+  
+  test <- test %>% select(y, vars_model)
+  train <- train %>% select(y, vars_model)
+  
+  test <- test[complete.cases(test), ]
+  train <- train[complete.cases(train), ]
+  
+  
   data_list <- list(test, train)
   names(data_list) <- c("test", "train")
 
