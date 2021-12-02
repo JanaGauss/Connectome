@@ -10,5 +10,5 @@ result_table_elnet(elnet_result)
 \item{elnet_result}{result of el_net function}
 }
 \description{
-get result table based on metric for el_net result
+returns best values (mretric, lambda) for each alpha
 }

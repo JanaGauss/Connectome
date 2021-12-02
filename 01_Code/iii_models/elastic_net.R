@@ -53,7 +53,7 @@ sort(beta_best)[1:20]
 
 # LM for MEM-Score
 elnet_LM <- el_net(test = test, train = train,  vars = vars_model, target_diag = FALSE)
-result_table_elnet(elnet_LM)
+result_table_elnet(elnet_LM) # best value: 0.61
 
 beta_LM_best <- elnet_LM$results_models[[2]]$model$beta[, 60]
 table(beta_LM_best == 0)
