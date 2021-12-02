@@ -12,5 +12,5 @@ evaluation_elnet(pred, y)
 \item{y}{real y of predicitons}
 }
 \description{
-calculates accuracy, auc for one elastic net model for several lambda values
+calculates accuracy, auc etc (logistic regression) or MSE (LM) for one elastic net model for several lambda values
 }

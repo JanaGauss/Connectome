@@ -10,20 +10,27 @@
 #' @param y_0 which levels of data$prmdiag use as 0
 #' @param y_1 which levels of data$prmdiag use as 1
 #' @param data_source which dataset is it? (in case there have to be made adjustments)
+#' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y_1, 
-                   data_source = "DELCODE", ...){
+el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = NULL, y_1 = NULL, 
+                   data_source = "DELCODE", target_diag = TRUE, ...){
 
 
   checkmate::assert_data_frame(test)
   checkmate::assert_data_frame(train)
   checkmate::assert_character(vars, null.ok = TRUE)
   checkmate::assert_numeric(alpha, lower = 0, upper = 1)
-  checkmate::assert_true(all(y_0 %in% levels(train$prmdiag)))
-  checkmate::assert_true(all(y_1 %in% levels(train$prmdiag)))
   checkmate::assert_choice(data_source, choices = c("DELCODE"))
+  
+  if(target_diag == TRUE){
+    checkmate::assert_true(!is.null(y_0))
+    checkmate::assert_true(!is.null(y_1))
+    checkmate::assert_true(all(y_0 %in% levels(train$prmdiag)))
+    checkmate::assert_true(all(y_1 %in% levels(train$prmdiag)))
+  }
+  
   
   if(!is.null(vars)){
     checkmate::assert_true(all(vars %in% colnames(train)))
@@ -33,8 +40,14 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y
   }
 
   # prepare data
-  test <- prep_y(test, y_0, y_1)
-  train <- prep_y(train, y_0, y_1)
+  if(target_diag == TRUE){
+    test <- prep_y(test, y_0, y_1)
+    train <- prep_y(train, y_0, y_1)
+  } else{
+    test$y <- test$MEM_score
+    train$y <- train$MEM_score
+  }
+  
   
   
   test <- test %>% select(y, vars_model)
@@ -50,7 +63,8 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y
   # calculate elastic net for all alpha values
   results <- list()
   for(a in 1:length(alpha)){
-    results[[a]] <- calc_el_net(train, test, vars, alpha = alpha[a], ...)
+    print(paste0("Calculation for alpha = ", alpha[a]))
+    results[[a]] <- calc_el_net(train, test, vars, alpha = alpha[a], target_diag, ...)
   }
   
   
@@ -69,17 +83,22 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0, y
 #' @param data_test test data
 #' @param vars which variables should be used? If null, columns containing connectivity data are automatically extracted
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
+#' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-calc_el_net <- function(data_train, data_test, vars, alpha = 0, ...){
+calc_el_net <- function(data_train, data_test, vars, alpha = 0, target_diag, ...){
   
   checkmate::assert_data_frame(data_train)
   checkmate::assert_data_frame(data_test)
   checkmate::assert_character(vars)
   checkmate::assert_number(alpha, lower = 0, upper = 1)
   
-  model <- glmnet(x = data_train[, vars], y = data_train$y, family = "binomial", alpha = alpha, ...)
+  if(target_diag == TRUE){
+    model <- glmnet(x = data_train[, vars], y = data_train$y, family = "binomial", alpha = alpha, ...)
+    } else{
+    model <- glmnet(x = data_train[, vars], y = data_train$y, family = "gaussian", alpha = alpha, ...)
+  }
   
   new_x <- as.matrix(data_test[, vars])
   class(new_x) <- "numeric"
@@ -87,7 +106,6 @@ calc_el_net <- function(data_train, data_test, vars, alpha = 0, ...){
   
   eval <- evaluation_elnet(pred, data_test$y)
   
-  # return information of best model
   result <- list()
   result[["model"]] <- model
   result[["alpha"]] <- alpha
@@ -101,7 +119,7 @@ calc_el_net <- function(data_train, data_test, vars, alpha = 0, ...){
 
 #' evaluation for one elastic net model
 #'
-#' calculates accuracy, auc for one elastic net model for several lambda values
+#' calculates accuracy, auc etc (logistic regression) or MSE (LM) for one elastic net model for several lambda values
 #' @param pred matrix with predictions
 #' @param y real y of predicitons
 #' @import dplyr caret checkmate pROC
@@ -112,51 +130,76 @@ evaluation_elnet <- function(pred, y){
   checkmate::assert_numeric(y)
   checkmate::assert_true(nrow(pred) == length(y))
   
-  pred_01 <- matrix(as.integer(pred >= 0.5), byrow = FALSE, nrow = nrow(pred))
-  y <- factor(y)
+  if(sum(y == 0 | y == 1) == length(y)){ # logistic regression 
+    pred_01 <- matrix(as.integer(pred >= 0.5), byrow = FALSE, nrow = nrow(pred))
+    y <- factor(y)
   
-  acc <- auc <- precision <- recall <- F1 <- rep(0, ncol(pred))
+    acc <- auc <- precision <- recall <- F1 <- rep(0, ncol(pred))
   
-  for(i in 1:ncol(pred)){ # calculate metrics for each lambda value (=each column of prediction matrix)
-    acc[i] <- confusionMatrix(data = factor(pred_01[, i], levels = c("0", "1")), reference = y)$overall["Accuracy"]
-    auc[i] <- roc(response = y, predictor = pred[, i], quiet = TRUE)$auc
-    precision[i] <- precision(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
-    recall[i] <- recall(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
-    F1[i] <- F_meas(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
+    for(i in 1:ncol(pred)){ # calculate metrics for each lambda value (=each column of prediction matrix)
+      acc[i] <- confusionMatrix(data = factor(pred_01[, i], levels = c("0", "1")), reference = y)$overall["Accuracy"]
+      auc[i] <- roc(response = y, predictor = pred[, i], quiet = TRUE)$auc
+      precision[i] <- precision(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
+      recall[i] <- recall(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
+      F1[i] <- F_meas(factor(pred_01[, i], levels = c("0", "1")), y, relevant = c("1"))
+    }
+  
+    metrics <- list(acc, auc, precision, recall, F1)
+    names(metrics) <- c("accuracy", "auc", "precision", "recall", "F1")
+  
+    return(metrics)
+  } else{ # LM -> MSE on test data
+    MSE <- rep(0, ncol(pred))
+    for(i in 1:ncol(pred)){ # for all lambda values
+      MSE[i] <- mean((pred[, i] - y)^2)
+      }
+    return(MSE)
   }
   
-  metrics <- list(acc, auc, precision, recall, F1)
-  names(metrics) <- c("accuracy", "auc", "precision", "recall", "F1")
-  
-  return(metrics)
 }
 
 
 #' get result table based on metric for el_net result
 #'
+#' returns best values (mretric, lambda) for each alpha
 #' @param elnet_result result of el_net function
 #' @import dplyr 
 #' @export
 result_table_elnet <- function(elnet_result){
   
-  result <- list()
+  if(sum(elnet_result$data_list$test$y %in% c(0, 1)) == nrow(elnet_result$data_list$test)){ # logistic regression
+    result <- list()
   
-  for(i in c("accuracy", "auc", "precision", "recall", "F1")){
-    dat_best <- data.frame(value = NA, ind_lambda = NA, alpha = NA)
+    for(i in c("accuracy", "auc", "precision", "recall", "F1")){
+      dat_best <- data.frame(value = NA, ind_lambda = NA, alpha = NA)
+      for(j in 1:length(elnet_result$results_models)){
+        max_metric_j <- max(elnet_result$results_models[[j]]$evaluation[[i]])
+        ind_best_j <- which(elnet_result$results_models[[j]]$evaluation[[i]] == max_metric_j)[1] # [1] -> take only one lambda if there several best ones
+        alpha_j <- elnet_result$results_models[[j]]$alpha
+      
+        dat_best <- rbind(dat_best, c(max_metric_j, ind_best_j, alpha_j))
+        }
+      
+      result[[length(result) + 1]] <- dat_best[-1, ]
+      }
+    
+    names(result) <- c("accuracy", "auc", "precision", "recall", "F1")
+    return(result)
+  } else{ # LM
+    
+    dat_best <- data.frame(MSE_test = NA, ind_lambda = NA, alpha = NA)
     for(j in 1:length(elnet_result$results_models)){
-      max_metric_j <- max(elnet_result$results_models[[j]]$evaluation[[i]])
-      ind_best_j <- which(elnet_result$results_models[[j]]$evaluation[[i]] == max_metric_j)[1] # [1] -> take only one lambda if there several best ones
+      min_mse_j <- min(elnet_result$results_models[[j]]$evaluation)
+      ind_best_j <- which(elnet_result$results_models[[j]]$evaluation == min_mse_j)[1] # [1] -> take only one lambda if there several best ones
       alpha_j <- elnet_result$results_models[[j]]$alpha
       
-      dat_best <- rbind(dat_best, c(max_metric_j, ind_best_j, alpha_j))
+      dat_best <- rbind(dat_best, c(min_mse_j, ind_best_j, alpha_j))
     }
     
-    result[[length(result) + 1]] <- dat_best[-1, ]
-  }
+    return(dat_best[-1,])
+      
+    }
   
-  
-  names(result) <- c("accuracy", "auc", "precision", "recall", "F1")
-  return(result)
 }
 
 
