@@ -31,7 +31,7 @@ vars_model <- colnames(train)[!colnames(train) %in% vars_remove]
 
 
 
-elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"),
+elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
                         vars = vars_model) # for alpha = seq(0, 1, by = 0.1)
 
 results_eval <- result_table_elnet(elastic_net_2)
@@ -48,7 +48,19 @@ table(beta_best == 0)
 plot(density(beta_best))
 boxplot(beta_best)
 table(beta_best > 0.01)
+sort(beta_best)[1:20]
 
+
+# LM for MEM-Score
+elnet_LM <- el_net(test = test, train = train,  vars = vars_model, target_diag = FALSE)
+result_table_elnet(elnet_LM)
+
+beta_LM_best <- elnet_LM$results_models[[2]]$model$beta[, 60]
+table(beta_LM_best == 0)
+plot(density(beta_LM_best))
+boxplot(beta_LM_best)
+table(beta_LM_best > 0.01)
+sort(beta_LM_best)[1:20]
 
 # # "recreate" best model
 # test_2 <- test %>%
