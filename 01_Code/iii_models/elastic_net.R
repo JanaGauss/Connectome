@@ -50,6 +50,8 @@ boxplot(beta_best)
 table(beta_best > 0.01)
 sort(beta_best)[1:20]
 
+acc_intercept(elastic_net_2)
+
 
 # LM for MEM-Score
 elnet_LM <- el_net(test = test, train = train,  vars = vars_model, target_diag = FALSE)
