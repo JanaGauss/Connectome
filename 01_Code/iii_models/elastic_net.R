@@ -17,10 +17,10 @@ table(train$prmdiag)
 table(test$prmdiag)
 
 
-
-elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3")) # only with connectivity variables
-result_table_elnet(elastic_net)
-# accurcay ~ 77%
+# # model only with connectivity variables
+# elastic_net <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"))  
+# result_table_elnet(elastic_net)
+# # accurcay ~ 77%
 
 
 
@@ -33,6 +33,7 @@ vars_model <- colnames(train)[!colnames(train) %in% vars_remove]
 
 elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
                         vars = vars_model) # for alpha = seq(0, 1, by = 0.1)
+# saveRDS(elastic_net_2, file = "00_Data/elastic_net_2.rds")
 
 results_eval <- result_table_elnet(elastic_net_2)
 results_eval
@@ -40,7 +41,7 @@ max(results_eval$accuracy$value)
 results_eval$accuracy[which(results_eval$accuracy$value == max(results_eval$accuracy$value)), ]
 
 get_confMatrix_elnet(elastic_net_2, ind_alpha = 2, ind_lambda = 25)
-# 78,5%
+
 
 beta_best <- elastic_net_2$results_models[[2]]$model$beta[, 25]
 
@@ -50,12 +51,19 @@ boxplot(beta_best)
 table(beta_best > 0.01)
 sort(beta_best)[1:20]
 
+plot_matrix_coeffs(beta_best)
+plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7]) # best ridge model -> all coeffs != 0
+
+
+# accuracy intercept model
 acc_intercept(elastic_net_2)
 
 
 # LM for MEM-Score
 elnet_LM <- el_net(test = test, train = train,  vars = vars_model, target_diag = FALSE)
-result_table_elnet(elnet_LM) # best value: 0.61
+saveRDS(elnet_LM, file = "00_Data/elnet_LM.rds")
+
+result_table_elnet(elnet_LM) # best MSE_test value: 0.61
 
 beta_LM_best <- elnet_LM$results_models[[2]]$model$beta[, 60]
 table(beta_LM_best == 0)
@@ -63,6 +71,8 @@ plot(density(beta_LM_best))
 boxplot(beta_LM_best)
 table(beta_LM_best > 0.01)
 sort(beta_LM_best)[1:20]
+
+plot_matrix_coeffs(beta_LM_best)
 
 # # "recreate" best model
 # test_2 <- test %>%
