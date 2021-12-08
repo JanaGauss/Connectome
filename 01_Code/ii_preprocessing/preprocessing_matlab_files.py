@@ -119,7 +119,6 @@ def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True) -> np.ndarray:
     assert isinstance(matrix, np.ndarray), "provided matrix is not an ndarray"
     assert isinstance(upper, bool), "invalid option selected - privided input to upper is no bool"
 
-
     if upper:
         if not isinstance(matrix, (np.ndarray, np.generic)):
             raise ValueError("not an ndarray")
@@ -257,7 +256,8 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     """
     assert isinstance(t_direct, str), "invalid path (write_dir) provided"
     assert isinstance(datasets, list), "no list of datasets provided"
-    assert isinstance(file_format) & (file_format == "csv" or file_format == "h5"), "invalid file format selected"
+    assert isinstance(file_format, str) & ((file_format == "csv") | (file_format == "h5")), \
+        "invalid file format selected"
 
     try:
         os.chdir(t_direct)
