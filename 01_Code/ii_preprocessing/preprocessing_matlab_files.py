@@ -232,7 +232,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
 
     try:
         os.chdir(t_direct)
-    except FileNotFoundError("invalid path"):
+    except FileNotFoundError:
         raise
 
     # Gibts ne elegantere Lösung?
