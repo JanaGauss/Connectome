@@ -2,6 +2,6 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-00_Data/*
+data/*
 **/.idea/
 .Rproj.user
