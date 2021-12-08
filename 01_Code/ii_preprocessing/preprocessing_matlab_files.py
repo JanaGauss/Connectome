@@ -247,7 +247,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     Args:
         datasets: a list of datasets
         t_direct: path where to save the dataframes to
-        file_format: The fileformat the data should be saved as (csv of hdf)
+        file_format: The fileformat the data should be saved as (csv of hdf) -> input must be csv or h5
 
     Returns:
         A train and test dataset as csv or hdf file
@@ -257,7 +257,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     """
     assert isinstance(t_direct, str), "invalid path (write_dir) provided"
     assert isinstance(datasets, list), "no list of datasets provided"
-    assert isinstance(file_format) & (file_format == "csv" or file_format == "hdf"), "invalid file format selected"
+    assert isinstance(file_format) & (file_format == "csv" or file_format == "h5"), "invalid file format selected"
 
     try:
         os.chdir(t_direct)
@@ -267,14 +267,13 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
 
     # Gibts ne elegantere Lösung?
     names = ["train", "test"]
-    if file_format == "hdf":
-        for i in range(len(datasets)):
-            datasets[i].to_hdf(names[i] + '.h5', key='df', mode='w')
+    names = list(map(lambda k: k + "." + file_format, names))
+    if file_format == "h5":
+        for i, dataset in enumerate(datasets):
+            dataset.to_hdf(names[i], key='df', mode='w')
     elif file_format == "csv":
-        for i in range(len(datasets)):
-            datasets[i].to_csv(names[i] + '.csv', index=False)
-    else:
-        return "invalid file format selected"
+        for i, dataset in enumerate(datasets):
+            dataset.to_csv(names[i], index=False)
 
 
 def main():
