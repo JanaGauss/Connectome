@@ -3,6 +3,17 @@ import pandas as pd
 
 
 def load_data(train: bool = True) -> pd.DataFrame:
+    """
+    loads the datasets (csv-files) from specified path
+
+    Args:
+        train:
+
+    Returns:
+
+    """
+    assert isinstance(train, bool), "invalid input [train]"
+
     if train:
         ds = "train"
     else:
@@ -14,6 +25,18 @@ def load_data(train: bool = True) -> pd.DataFrame:
 
 
 def preprocess_data(dataset: pd.DataFrame) -> tuple:
+    """
+    Combines several preprocessing steps which are to be performed on the given dataset.
+    Results are then returned as target and features (splitted)
+
+    Args:
+        dataset: The dataset on which the preprocessing should be performed
+
+    Returns:
+        tuple, of (target, features)
+    """
+    assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
+
     create_target(dataset)
     df = drop_cases(dataset)
     df = drop_cols(df)
@@ -33,6 +56,8 @@ def create_target(dataset: pd.DataFrame) -> None:
     Raises:
         KeyError: ...
     """
+    assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
+
     dataset["target"] = np.where((dataset['prmdiag'] == 2) | (dataset['prmdiag'] == 3), 1, 0)
 
 
@@ -49,6 +74,8 @@ def drop_cases(dataset: pd.DataFrame) -> pd.DataFrame:
     Raises:
         KeyError: ...
     """
+    assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
+
     return dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index)
 
 
@@ -67,6 +94,9 @@ def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
     Raises:
         KeyError: ...
     """
+    assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
+    assert (isinstance(cols, set) & (len(cols) != 0)), "invalid input [cols]"
+
     return dataset.drop(columns=list(cols))
 
 
@@ -80,6 +110,7 @@ def split_target_data(dataset: pd.DataFrame) -> tuple:
     Returns:
         None
     """
+    assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
 
     y, x = dataset["target"], dataset.drop(columns="target")
     return y, x
