@@ -1,5 +1,5 @@
-# use python -m preprocessing.test_preprocessing_matlab_files to run this test file
-# note: you have to run this command in your terminal from the 01_Code folder
+# use python -m tests.test_preprocessing_matlab_files to run this test file
+# note: you have to run this command in your terminal from the Connectome folder
 import unittest
 import numpy as np
 import logging
