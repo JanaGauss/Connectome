@@ -14,16 +14,16 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
 
     
     Args:
-    matlab_dir -- path to matlab files
-    excel_path -- path to excel list
-    write_dir -- path where to write the dataset to
-    flatten -- Boolean whether connectivity matrix should be flattened or not <- unused at the Moment!!!
-    split_size -- the size of the train dataset (default .8)
-    seed -- pass an int for reproducibility purposes (default 42)
-    file_format -- str. Pass "hdf" for further modelling in python or "csv" for R (default "csv")
+        matlab_dir: path to matlab files
+        excel_path: path to excel list
+        write_dir: path where to write the dataset to
+        flatten: Boolean whether connectivity matrix should be flattened or not <- unused at the Moment!!!
+        split_size: the size of the train dataset (default .8)
+        seed: pass an int for reproducibility purposes (default 42)
+        file_format: str. Pass "hdf" for further modelling in python or "csv" for R (default "csv")
 
     Returns:
-    Two files (a train/test split of datasets) for further use in modelling.
+        Two files (a train/test split of datasets) for further use in modelling.
     """
 
     # load matlab files and excel
@@ -49,14 +49,14 @@ def load_matlab_files(directory: str) -> list:
     imports all matlab files from specified directory
 
     Args:
-    directory -- Path to Matlab Files
+        directory: Path to Matlab Files
 
     Returns:
-    A list where the first argument is the collection of connectivity matrix
-    and the 2nd argument is the names of the connectivity matrix
+        A list where the first argument is the collection of connectivity matrix
+        and the 2nd argument is the names of the connectivity matrix
 
     Raises:
-    KeyError: FileNotFoundError
+        KeyError: FileNotFoundError
     """
 
     try:
@@ -84,10 +84,10 @@ def stack_matrices(matrices: list) -> np.ndarray:
     so they can be used in a dataframe
 
     Args:
-    matrices -- List of connectivity matrix
+        matrices: List of connectivity matrix
 
     Returns:
-    A flattenened np.ndarray of connectivtity matrices
+        A flattenened np.ndarray of connectivtity matrices
     """
     flattened = []
     for i in matrices:
@@ -103,10 +103,10 @@ def flatten_conn_matrix(matrix: np.ndarray) -> np.ndarray:
     turns the connectivity matrix into a 1d array
 
     Args:
-    matrix  -- A connectivity matrix
+        matrix: A connectivity matrix
 
     Returns:
-    A flattenened connectivtity matrices as a 1d array
+        A flattenened connectivtity matrices as a 1d array
     """
 
     if not isinstance(matrix, (np.ndarray, np.generic)):
@@ -122,11 +122,11 @@ def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
     based on shape / number of columns of the used connectivity matrix
 
     Args:
-    data_from_excel -- A pd.Dataframe
-    shape -- number of columns in connectivity matrix
+        data_from_excel: A pd.Dataframe
+        shape: number of columns in connectivity matrix
 
     Returns:
-    A list of column names for the final dataset
+        A list of column names for the final dataset
     """
     colnames = ["IDs"]
     colnames = colnames + col_names_conn_matrix(shape)
@@ -139,10 +139,10 @@ def col_names_conn_matrix(n: int):
     creates the column names for the flattened connectivity matrix
 
     Args:
-    n -- number of columns in connectivity matrix
+        n: number of columns in connectivity matrix
 
     Returns:
-    Column names for connectivity matrix
+        Column names for connectivity matrix
     """
     return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
 
@@ -153,14 +153,14 @@ def create_final_df(file_names: list, final_columns: list,
     this function merges the connectivity matrices, the excel and the subject ids
 
     Args:
-    file_names --  list of matlab file names
-    final_columns --  list of final column names
-    stacked_matrices --  a stacked connectivity matrix
-    data_from_excel --  a pd Dataframe with extra information on patients
+        file_names:  list of matlab file names
+        final_columns:  list of final column names
+        stacked_matrices:  a stacked connectivity matrix
+        data_from_excel:  a pd Dataframe with extra information on patients
 
 
     Returns:
-    A Merged dataframe of connectivity matrix + patient information
+        A Merged dataframe of connectivity matrix + patient information
     """
 
     ids = get_subject_ids(file_names)
@@ -180,10 +180,10 @@ def get_subject_ids(file_names: list) -> np.ndarray:
     would correspond to subject ID 6
 
     Args:
-    file_names --  list of matlab file names
+        file_names:  list of matlab file names
 
     Returns:
-    A np.ndarray in a readable format
+        A np.ndarray in a readable format
     """
 
     return np.array([int(i.split("Subject", 1)[1][0:3]) for i in file_names])
@@ -195,12 +195,12 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     Returns a list containing train-test split of inputs
     
     Args:
-    data -- dataset to be split into train/test
-    split_size -- the size of the train dataset (default .8)
-    seed -- pass an int for reproducibility purposes
+        data: dataset to be split into train/test
+        split_size: the size of the train dataset (default .8)
+        seed: pass an int for reproducibility purposes
 
     Returns:
-    A list containing train-test split of inputs
+        A list containing train-test split of inputs
     """
     # assert split size between 0 and 1
     assert 0 <= split_size <= 1, "split_size out of bounds"
@@ -219,21 +219,21 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     in the specified directory
 
     Args:
-    datasets -- a list of datasets
-    t_direct -- path where to save the dataframes to
-    file_format -- The fileformat the data should be saved as (csv of hdf)
+        datasets: a list of datasets
+        t_direct: path where to save the dataframes to
+        file_format: The fileformat the data should be saved as (csv of hdf)
 
     Returns:
-    A train and test dataset as csv or hdf file
+        A train and test dataset as csv or hdf file
 
     Raises:
-    FileNotFoundError
+        FileNotFoundError
     """
 
     try:
         os.chdir(t_direct)
-    except:
-        raise FileNotFoundError("invalid path")
+    except FileNotFoundError("invalid path"):
+        raise
 
     # Gibts ne elegantere Lösung?
     names = ["train", "test"]
