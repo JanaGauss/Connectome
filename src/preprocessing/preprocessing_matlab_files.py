@@ -25,6 +25,13 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     Returns:
         Two files (a train/test split of datasets) for further use in modelling.
     """
+    assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
+    assert isinstance(excel_path, str), "invalid path (excel file) provided"
+    assert isinstance(write_dir, str),  "invalid path (write_dir) provided"
+    assert isinstance(flatten, bool),   "invalid datatype for argument flatten"
+    assert isinstance(split_size, float) & (split_size >= 0.0) & (split_size <= 1.0), "invalid path provided"
+    assert isinstance(seed, int),       "provided seed is no integer"
+    assert isinstance(file_format) & (file_format == "csv" or file_format == "hdf"), "invalid file format selected"
 
     # load matlab files and excel
     res = load_matlab_files(matlab_dir)
@@ -44,7 +51,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     write_to_dir(datasets=[train, test], t_direct=write_dir, file_format=file_format)
 
 
-def load_matlab_files(directory: str) -> list:
+def load_matlab_files(directory: str) -> tuple:
     """
     imports all matlab files from specified directory
 
@@ -62,8 +69,8 @@ def load_matlab_files(directory: str) -> list:
     try:
         os.chdir(directory)
     except FileNotFoundError:
-        print("invalid path")
-        return []
+        print("invalid directory (matlab files)")
+        raise
 
     mat_files_names = os.listdir()
     conn_matrices = []
@@ -98,22 +105,31 @@ def stack_matrices(matrices: list) -> np.ndarray:
     return np.stack(flattened, axis=0)
 
 
-def flatten_conn_matrix(matrix: np.ndarray) -> np.ndarray:
+def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True) -> np.ndarray:
     """
     turns the connectivity matrix into a 1d array
 
     Args:
         matrix: A connectivity matrix
+        upper: whether only the entries above the diagonal should be considered
 
     Returns:
         A flattenened connectivtity matrices as a 1d array
     """
+    assert isinstance(matrix, np.ndarray), "provided matrix is not an ndarray"
+    assert isinstance(upper, bool), "invalid option selected - privided input to upper is no bool"
 
-    if not isinstance(matrix, (np.ndarray, np.generic)):
-        return "not an ndarray"
+    if upper:
+        if not isinstance(matrix, (np.ndarray, np.generic)):
+            raise ValueError("not an ndarray")
+        else:
+            sh = matrix.shape[0]
+            return matrix[np.triu_indices(sh, k=1)]
     else:
-        sh = matrix.shape[0]
-        return matrix[np.triu_indices(sh, k=1)]
+        if not isinstance(matrix, (np.ndarray, np.generic)):
+            raise ValueError("not an ndarray")
+        else:
+            return matrix.flatten()
 
 
 def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
@@ -128,6 +144,8 @@ def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
     Returns:
         A list of column names for the final dataset
     """
+    assert isinstance(data_from_excel, pd.DataFrame), "provided data_from_excel is no pd.DataFrame"
+
     colnames = ["IDs"]
     colnames = colnames + col_names_conn_matrix(shape)
     final_columns = list(data_from_excel.columns) + colnames
@@ -162,6 +180,10 @@ def create_final_df(file_names: list, final_columns: list,
     Returns:
         A Merged dataframe of connectivity matrix + patient information
     """
+    assert isinstance(file_names, list), "no list of file names provided"
+    assert isinstance(final_columns, list), "no list of final column names provided"
+    assert isinstance(stacked_matrices, np.ndarray), "provided connectivity matrices are no array"
+    assert isinstance(data_from_excel, pd.DataFrame), "provided data_from_excel is no pd.DataFrame"
 
     ids = get_subject_ids(file_names)
     ids_added = np.c_[ids, stacked_matrices]
@@ -185,6 +207,7 @@ def get_subject_ids(file_names: list) -> np.ndarray:
     Returns:
         A np.ndarray in a readable format
     """
+    assert isinstance(file_names, list), "no list of file names provided"
 
     return np.array([int(i.split("Subject", 1)[1][0:3]) for i in file_names])
 
@@ -204,6 +227,8 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     """
     # assert split size between 0 and 1
     assert 0 <= split_size <= 1, "split_size out of bounds"
+    assert isinstance(data, pd.DataFrame), "no DataFrame provided"
+    assert isinstance(seed, int), "provided seed is no integer"
 
     # split into features and target
     #     features = data.drop('target', axis=1)
@@ -221,7 +246,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     Args:
         datasets: a list of datasets
         t_direct: path where to save the dataframes to
-        file_format: The fileformat the data should be saved as (csv of hdf)
+        file_format: The fileformat the data should be saved as (csv of hdf) -> input must be csv or h5
 
     Returns:
         A train and test dataset as csv or hdf file
@@ -229,22 +254,26 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
     Raises:
         FileNotFoundError
     """
+    assert isinstance(t_direct, str), "invalid path (write_dir) provided"
+    assert isinstance(datasets, list), "no list of datasets provided"
+    assert isinstance(file_format, str) & ((file_format == "csv") | (file_format == "h5")), \
+        "invalid file format selected"
 
     try:
         os.chdir(t_direct)
     except FileNotFoundError:
+        print("invalid path (write to dir)")
         raise
 
     # Gibts ne elegantere Lösung?
     names = ["train", "test"]
-    if file_format == "hdf":
-        for i in range(len(datasets)):
-            datasets[i].to_hdf(names[i] + '.h5', key='df', mode='w')
+    names = list(map(lambda k: k + "." + file_format, names))
+    if file_format == "h5":
+        for i, dataset in enumerate(datasets):
+            dataset.to_hdf(names[i], key='df', mode='w')
     elif file_format == "csv":
-        for i in range(len(datasets)):
-            datasets[i].to_csv(names[i] + '.csv', index=False)
-    else:
-        return "invalid file format selected"
+        for i, dataset in enumerate(datasets):
+            dataset.to_csv(names[i], index=False)
 
 
 def main():
