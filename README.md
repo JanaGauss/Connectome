@@ -1,6 +1,6 @@
 # Connectome
 
-Innolab project Connectome
+Created as part of an university project "Innovationlab Big Data Science" at LMU Munich.
 
 
 # Code setup
