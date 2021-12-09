@@ -1,0 +1,27 @@
+name: Continous Integration
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python all python version
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt 
+
+    - name: Run tests
+      run: python -m unittest discover tests
+
+
