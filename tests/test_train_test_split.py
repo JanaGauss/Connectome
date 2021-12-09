@@ -1,9 +1,9 @@
-#use python -m i_unittests.test_train_test_split to run this test file
+#use python -m tests.test_train_test_split to run this test file
 import unittest
 import logging
 import numpy as np
 import pandas as pd
-from ii_preprocessing.preprocessing_matlab_files import create_train_test_split
+from src.preprocessing.preprocessing_matlab_files import create_train_test_split
 
 class TestCreateTrainTestSplit(unittest.TestCase):
     """
