@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
-                               write_dir: str, flatten: bool = True, split_size: float = .8, seed: int = 42,
+                               write_dir: str, upper: bool = True, split_size: float = .8, seed: int = 42,
                                file_format: str = "csv") -> None:
     """
     Final function which combines all the other functions to read in
@@ -17,10 +17,10 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
         matlab_dir: path to matlab files
         excel_path: path to excel list
         write_dir: path where to write the dataset to
-        flatten: Boolean whether connectivity matrix should be flattened or not <- unused at the Moment!!!
+        upper: boolean whether only upper diagonal elements of connecivity matrices should be used
         split_size: the size of the train dataset (default .8)
         seed: pass an int for reproducibility purposes (default 42)
-        file_format: str. Pass "hdf" for further modelling in python or "csv" for R (default "csv")
+        file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
 
     Returns:
         Two files (a train/test split of datasets) for further use in modelling.
@@ -28,17 +28,17 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str,
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
     assert isinstance(write_dir, str),  "invalid path (write_dir) provided"
-    assert isinstance(flatten, bool),   "invalid datatype for argument flatten"
+    assert isinstance(upper, bool),   "invalid datatype for argument flatten"
     assert isinstance(split_size, float) & (split_size >= 0.0) & (split_size <= 1.0), "invalid path provided"
     assert isinstance(seed, int),       "provided seed is no integer"
-    assert isinstance(file_format) & (file_format == "csv" or file_format == "hdf"), "invalid file format selected"
+    assert isinstance(file_format) & (file_format == "csv" or file_format == "h5"), "invalid file format selected"
 
     # load matlab files and excel
     res = load_matlab_files(matlab_dir)
     delcode_excel = pd.read_excel(excel_path)
 
     # stack matrices
-    stacked = stack_matrices(res[0])
+    stacked = stack_matrices(res[0], upper)
 
     # creating colnames and merging into one df
     colnames = col_names_final_df(delcode_excel, res[0][0].shape[0])
@@ -84,7 +84,7 @@ def load_matlab_files(directory: str) -> tuple:
     return conn_matrices, worked
 
 
-def stack_matrices(matrices: list) -> np.ndarray:
+def stack_matrices(matrices: list, upper: bool = True) -> np.ndarray:
     """
     this function stacks the connectivity matrices
     for the subjects upon each other 
@@ -92,6 +92,7 @@ def stack_matrices(matrices: list) -> np.ndarray:
 
     Args:
         matrices: List of connectivity matrix
+        upper: whether only upper diagonal values should be considered
 
     Returns:
         A flattenened np.ndarray of connectivtity matrices
@@ -99,7 +100,7 @@ def stack_matrices(matrices: list) -> np.ndarray:
     flattened = []
     for i in matrices:
         # error handling in case one matrix should not work?
-        flattened.append(flatten_conn_matrix(i))
+        flattened.append(flatten_conn_matrix(i, upper))
         # error handling for stacking
 
     return np.stack(flattened, axis=0)
@@ -116,20 +117,14 @@ def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True) -> np.ndarray:
     Returns:
         A flattenened connectivtity matrices as a 1d array
     """
-    assert isinstance(matrix, np.ndarray), "provided matrix is not an ndarray"
+    assert isinstance(matrix, (np.ndarray, np.generic)), "provided matrix is not an ndarray"
     assert isinstance(upper, bool), "invalid option selected - privided input to upper is no bool"
 
     if upper:
-        if not isinstance(matrix, (np.ndarray, np.generic)):
-            raise ValueError("not an ndarray")
-        else:
-            sh = matrix.shape[0]
-            return matrix[np.triu_indices(sh, k=1)]
+        sh = matrix.shape[0]
+        return matrix[np.triu_indices(sh, k=1)]
     else:
-        if not isinstance(matrix, (np.ndarray, np.generic)):
-            raise ValueError("not an ndarray")
-        else:
-            return matrix.flatten()
+        return matrix.flatten()
 
 
 def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
