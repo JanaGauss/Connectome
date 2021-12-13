@@ -79,7 +79,7 @@ def drop_cases(dataset: pd.DataFrame) -> pd.DataFrame:
     return dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index)
 
 
-def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
+def drop_cols(dataset: pd.DataFrame, cols: tuple = ('ConnID', 'Repseudonym',
                                                   'siteid', 'visdat', 'IDs', "prmdiag")) -> pd.DataFrame:
     """
     Drops the columns which are not needed for further modelling
@@ -95,7 +95,7 @@ def drop_cols(dataset: pd.DataFrame, cols: set = ('ConnID', 'Repseudonym',
         KeyError: ...
     """
     assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
-    assert (isinstance(cols, set) & (len(cols) != 0)), "invalid input [cols]"
+    assert (isinstance(cols, tuple) & (len(cols) != 0)), "invalid input [cols]"
 
     return dataset.drop(columns=list(cols))
 
