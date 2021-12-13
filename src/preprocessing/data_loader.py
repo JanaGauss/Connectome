@@ -114,3 +114,25 @@ def split_target_data(dataset: pd.DataFrame) -> tuple:
 
     y, x = dataset["target"], dataset.drop(columns="target")
     return y, x
+
+
+def flat_to_mat(x: np.ndarray) -> np.ndarray:
+    """
+    - converts a flat np.array into a matrix by turning
+      the values of the array into a symmetric matrix
+    - excluding diagonal
+
+    Args:
+         x: 1D array which should be turned into symmetric matrix
+
+    Returns:
+         np.ndarray - matrix
+
+    """
+
+    n = len(x)
+    n_a = int((1 / 2) + np.sqrt((1 / 4) + 2 * n))
+    A = np.zeros(n_a * n_a).reshape(n_a, n_a)
+    ind = np.triu_indices(n_a, k=1)
+    A[ind] = x
+    return A.T + A
