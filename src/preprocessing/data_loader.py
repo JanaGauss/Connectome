@@ -58,7 +58,7 @@ def create_target(dataset: pd.DataFrame) -> None:
     """
     assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
 
-    dataset["target"] = np.where((dataset['prmdiag'] == 2) | (dataset['prmdiag'] == 3), 1, 0)
+    dataset["target"] = np.where((dataset['prmdiag'] == 2) | (dataset['prmdiag'] == 3), 1., 0.)
 
 
 def drop_cases(dataset: pd.DataFrame) -> pd.DataFrame:
