@@ -93,7 +93,7 @@ acc_intercept <- function(elnet_result){
 #' plot matrix of coefficients
 #'
 #' @param beta coefficients of one model
-#' @import ggplot2 stringr
+#' @import ggplot2 stringr dplyr
 #' @export
 plot_matrix_coeffs <- function(beta){
   
@@ -103,9 +103,15 @@ plot_matrix_coeffs <- function(beta){
                          var1 = as.numeric(str_extract(names(beta), "\\d+")),
                          var2 = as.numeric(str_replace(str_extract(names(beta), "_\\d+"), "_", "")))
   
+  dat_plot <- dat_plot %>% rbind(data.frame(beta = beta,
+                                            var1 = dat_plot$var2,
+                                            var2 = dat_plot$var1))
+  
   plot <- ggplot() + 
     geom_tile(data = dat_plot, aes(var1, var2, fill = beta)) +
-    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0)
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
+    labs(x = "", y = "") +
+    scale_y_reverse()
   
   return(plot)
   
