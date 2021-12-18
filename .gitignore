@@ -5,3 +5,6 @@
 data/*
 **/.idea/
 .Rproj.user
+
+ __pycache__/
+ *.pyc
