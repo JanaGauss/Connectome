@@ -4,10 +4,12 @@
 \alias{plot_matrix_coeffs}
 \title{plot matrix of coefficients}
 \usage{
-plot_matrix_coeffs(beta)
+plot_matrix_coeffs(beta, regions_dat = NULL)
 }
 \arguments{
 \item{beta}{coefficients of one model}
+
+\item{regions_dat}{data on regions of labels. First column contains labels, second column contains regions}
 }
 \description{
 plot matrix of coefficients
