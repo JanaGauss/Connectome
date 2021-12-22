@@ -13,6 +13,7 @@ el_net(
   y_1 = NULL,
   data_source = "DELCODE",
   target_diag = TRUE,
+  interactions = FALSE,
   ...
 )
 }
@@ -32,6 +33,8 @@ el_net(
 \item{data_source}{which dataset is it? (in case there have to be made adjustments)}
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
+
+\item{interactions}{include all two way interactions? default is false}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
