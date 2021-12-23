@@ -2,7 +2,7 @@
 % Please edit documentation in R/models_evaluation.R
 \name{plot_matrix_coeffs}
 \alias{plot_matrix_coeffs}
-\title{plot matrix of coefficients}
+\title{plot matrix of coefficients, probably doesn't work for when beta contains interaction terms!}
 \usage{
 plot_matrix_coeffs(beta)
 }
@@ -10,5 +10,5 @@ plot_matrix_coeffs(beta)
 \item{beta}{coefficients of one model}
 }
 \description{
-plot matrix of coefficients
+plot matrix of coefficients, probably doesn't work for when beta contains interaction terms!
 }

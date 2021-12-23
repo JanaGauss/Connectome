@@ -4,18 +4,18 @@
 \alias{calc_el_net}
 \title{elastic net model for one alpha}
 \usage{
-calc_el_net(data_train, data_test, vars, alpha = 0, target_diag, ...)
+calc_el_net(data_train, data_test, alpha = 0, target_diag, interactions, ...)
 }
 \arguments{
 \item{data_train}{training data}
 
 \item{data_test}{test data}
 
-\item{vars}{which variables should be used? If null, columns containing connectivity data are automatically extracted}
-
 \item{alpha}{alpha value for glmnet. 0 = Lasso, 1 = Ridge}
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
+
+\item{interactions}{include all two way interactions? default is false}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
