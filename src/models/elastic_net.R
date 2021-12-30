@@ -91,6 +91,11 @@ plot_matrix_coeffs(elnet_LM$results_models[[1]]$model$beta[, 60]) # best ridge m
 
 
 
+
+## interactions (for alpha = 0)
+elastic_net_int <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+                        vars = vars_model, alpha = c(0), interactions = TRUE)
+
 # # "recreate" best model
 # test_2 <- test %>%
 #   mutate(y = case_when(

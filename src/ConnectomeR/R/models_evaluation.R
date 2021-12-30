@@ -90,7 +90,7 @@ acc_intercept <- function(elnet_result){
 }
 
 
-#' plot matrix of coefficients
+#' plot matrix of coefficients, probably doesn't work for when beta contains interaction terms!
 #'
 #' @param beta coefficients of one model
 #' @param regions_dat data on regions of labels. First column contains labels, second column contains regions

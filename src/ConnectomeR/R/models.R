@@ -11,11 +11,12 @@
 #' @param y_1 which levels of data$prmdiag use as 1
 #' @param data_source which dataset is it? (in case there have to be made adjustments)
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
+#' @param interactions include all two way interactions? default is false
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
 el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = NULL, y_1 = NULL, 
-                   data_source = "DELCODE", target_diag = TRUE, ...){
+                   data_source = "DELCODE", target_diag = TRUE, interactions = FALSE, ...){
 
 
   checkmate::assert_data_frame(test)
@@ -49,22 +50,24 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   }
   
   
+  # select only relevant variables
+  test <- test %>% select(y, vars)
+  train <- train %>% select(y, vars)
   
-  test <- test %>% select(y, vars_model)
-  train <- train %>% select(y, vars_model)
-  
+  # only complete cases
   test <- test[complete.cases(test), ]
   train <- train[complete.cases(train), ]
   
-  
+  # store data 
   data_list <- list(test, train)
   names(data_list) <- c("test", "train")
-
+  
+  
   # calculate elastic net for all alpha values
   results <- list()
   for(a in 1:length(alpha)){
     print(paste0("Calculation for alpha = ", alpha[a]))
-    results[[a]] <- calc_el_net(train, test, vars, alpha = alpha[a], target_diag, ...)
+    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, interactions, ...)
   }
   
   
@@ -81,26 +84,36 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
 #' calculates elastic net model for one alpha value (returns list with information and evaluation)
 #' @param data_train training data
 #' @param data_test test data
-#' @param vars which variables should be used? If null, columns containing connectivity data are automatically extracted
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
+#' @param interactions include all two way interactions? default is false
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-calc_el_net <- function(data_train, data_test, vars, alpha = 0, target_diag, ...){
+calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, interactions, ...){
   
   checkmate::assert_data_frame(data_train)
   checkmate::assert_data_frame(data_test)
-  checkmate::assert_character(vars)
   checkmate::assert_number(alpha, lower = 0, upper = 1)
   
+  
   if(target_diag == TRUE){
-    model <- glmnet(x = data_train[, vars], y = data_train$y, family = "binomial", alpha = alpha, ...)
-    } else{
-    model <- glmnet(x = data_train[, vars], y = data_train$y, family = "gaussian", alpha = alpha, ...)
+    fam <- "binomial"
+  } else{
+    fam = "gaussian"
   }
   
-  new_x <- as.matrix(data_test[, vars])
+  if(interactions == TRUE){
+    model <- glmnet(x = model.matrix(~.^2, data = select(data_train, -y)), y= data_train$y, family = fam, alpha = alpha, ...)
+    
+    new_x <- model.matrix(~.^2, data = select(data_test, -y))
+    } else{
+    model <- glmnet(x = select(data_train, -y), y= data_train$y, family = fam, alpha = alpha, ...)
+    
+    new_x <- as.matrix(select(data_test, -y))
+   
+  }
+   
   class(new_x) <- "numeric"
   pred <- predict(model, newx = new_x, type = "response") # predictions on test data for all lambda
   
