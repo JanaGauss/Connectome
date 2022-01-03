@@ -34,6 +34,7 @@ vars_model <- colnames(train)[!colnames(train) %in% vars_remove]
 elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
                         vars = vars_model) # for alpha = seq(0, 1, by = 0.1)
 # saveRDS(elastic_net_2, file = "data/elastic_net_2.rds")
+elastic_net_2 <- readRDS("data/elastic_net_2.rds")
 
 results_eval <- result_table_elnet(elastic_net_2)
 results_eval
@@ -53,6 +54,18 @@ sort(beta_best)[1:20]
 
 plot_matrix_coeffs(beta_best)
 plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7]) # best ridge model -> all coeffs != 0
+
+regions <- read.csv("references/subregion_func_network_Yeo_updated.csv", sep = ";")
+
+plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 4)]) + # yeo 7
+  labs(title = "Yeo_7network")
+
+plot_matrix_coeffs(beta_best, regions_dat = regions[, c(1, 4)]) +
+  labs(title = "Yeo_7network") # too few coeffs != 0
+
+plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 5)]) + # yeo 17
+  labs(title = "Yeo_17network")
+
 
 
 # accuracy intercept model
@@ -75,6 +88,9 @@ sort(beta_LM_best)[1:20]
 plot_matrix_coeffs(beta_LM_best)
 
 plot_matrix_coeffs(elnet_LM$results_models[[1]]$model$beta[, 60]) # best ridge model
+
+
+
 
 ## interactions (for alpha = 0)
 elastic_net_int <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
