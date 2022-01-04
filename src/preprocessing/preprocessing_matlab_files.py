@@ -48,14 +48,14 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
     print("Starting Preprocessing")
     if preprocessing_type == 'conn':
         # stack matrices
-        stacked = stack_matrices(res[0], upper)
+        stacked = stack_matrices(res[0], upper, preprocessing_type)
         # creating colnames and merging into one df
         colnames = col_names_final_df(delcode_excel, res[0][0].shape[0])
     elif preprocessing_type == 'aggregation':
         grpd_conn_mat = grouped_conn_mat(res[0], network=network, statistic=statistic)
 
         # stack matrices
-        stacked = stack_matrices(grpd_conn_mat, upper)
+        stacked = stack_matrices(grpd_conn_mat, upper, preprocessing_type)
         # creating colnames and merging into one df
         colnames = col_names_final_df(delcode_excel, grpd_conn_mat[0].shape[0])
 
@@ -105,7 +105,7 @@ def load_matlab_files(directory: str) -> tuple:
     return conn_matrices, worked
 
 
-def stack_matrices(matrices: list, upper: bool = True) -> np.ndarray:
+def stack_matrices(matrices: list, upper: bool = True, preprocessing_type: str = 'conn') -> np.ndarray:
     """
     this function stacks the connectivity matrices
     for the subjects upon each other 
@@ -114,6 +114,7 @@ def stack_matrices(matrices: list, upper: bool = True) -> np.ndarray:
     Args:
         matrices: List of connectivity matrix
         upper: whether only upper diagonal values should be considered
+        preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         A flattenened np.ndarray of connectivtity matrices
@@ -121,19 +122,20 @@ def stack_matrices(matrices: list, upper: bool = True) -> np.ndarray:
     flattened = []
     for i in matrices:
         # error handling in case one matrix should not work?
-        flattened.append(flatten_conn_matrix(i, upper))
+        flattened.append(flatten_conn_matrix(i, upper, preprocessing_type))
         # error handling for stacking
 
     return np.stack(flattened, axis=0)
 
 
-def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True) -> np.ndarray:
+def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True, preprocessing_type: str = 'conn') -> np.ndarray:
     """
     turns the connectivity matrix into a 1d array
 
     Args:
         matrix: A connectivity matrix
         upper: whether only the entries above the diagonal should be considered
+        preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         A flattenened connectivtity matrices as a 1d array
@@ -141,11 +143,15 @@ def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True) -> np.ndarray:
     assert isinstance(matrix, (np.ndarray, np.generic)), "provided matrix is not an ndarray"
     assert isinstance(upper, bool), "invalid option selected - privided input to upper is no bool"
 
-    #TODO: diagonal offset of one if preprocessing_type is equal to aggregation
-
     if upper:
-        sh = matrix.shape[0]
-        return matrix[np.triu_indices(sh, k=1)]
+        if preprocessing_type == 'conn':
+            sh = matrix.shape[0]
+            return matrix[np.triu_indices(sh, k=1)]
+        elif preprocessing_type == 'aggregation':
+            sh = matrix.shape[0]
+            return matrix[np.triu_indices(sh, k=0)]
+        elif preprocessing_type == 'graph':
+            pass
     else:
         return matrix.flatten()
 
