@@ -22,8 +22,8 @@ class TestGroupedConnMat(unittest.TestCase):
         self.assertEqual(mat_yeo7[0][244, 245], 20)
         self.assertEqual(mat_yeo7[0][245, 245], -1521)
 
-        self.assertEqual(mat_yeo7[1].mean(), self.__class__.matrices[1].mean())
-        self.assertEqual(mat_yeo7[1].min(), self.__class__.matrices[1].min())
+        self.assertAlmostEqual(mat_yeo7[1].mean(), self.__class__.matrices[1].mean())
+        self.assertAlmostEqual(mat_yeo7[1].min(), self.__class__.matrices[1].min())
 
 
     def test_reorder_yeo17(self):
