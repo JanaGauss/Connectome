@@ -11,12 +11,12 @@
 #' @param y_1 which levels of data$prmdiag use as 1
 #' @param data_source which dataset is it? (in case there have to be made adjustments)
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
-#' @param interactions include all two way interactions? default is false
+#' @param option standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions) abs: absolute value of variables
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
 el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = NULL, y_1 = NULL, 
-                   data_source = "DELCODE", target_diag = TRUE, interactions = FALSE, ...){
+                   data_source = "DELCODE", target_diag = TRUE, option = "standard", ...){
 
 
   checkmate::assert_data_frame(test)
@@ -24,6 +24,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   checkmate::assert_character(vars, null.ok = TRUE)
   checkmate::assert_numeric(alpha, lower = 0, upper = 1)
   checkmate::assert_choice(data_source, choices = c("DELCODE"))
+  checkmate::assert_choice(option, choices = c("standard", "interactions", "quadratic", "abs"))
   
   if(target_diag == TRUE){
     checkmate::assert_true(!is.null(y_0))
@@ -67,7 +68,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   results <- list()
   for(a in 1:length(alpha)){
     print(paste0("Calculation for alpha = ", alpha[a]))
-    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, interactions, ...)
+    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, option, ...)
   }
   
   
@@ -86,11 +87,11 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
 #' @param data_test test data
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
-#' @param interactions include all two way interactions? default is false
+#' @param option standard regression model, all two way interactions, ...
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, interactions, ...){
+calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, option, ...){
   
   checkmate::assert_data_frame(data_train)
   checkmate::assert_data_frame(data_test)
@@ -100,19 +101,65 @@ calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, interacti
   if(target_diag == TRUE){
     fam <- "binomial"
   } else{
-    fam = "gaussian"
+    fam <- "gaussian"
   }
   
-  if(interactions == TRUE){
-    model <- glmnet(x = model.matrix(~.^2, data = select(data_train, -y)), y= data_train$y, family = fam, alpha = alpha, ...)
+  if(option == "standard"){
     
-    new_x <- model.matrix(~.^2, data = select(data_test, -y))
-    } else{
     model <- glmnet(x = select(data_train, -y), y= data_train$y, family = fam, alpha = alpha, ...)
     
+    # model matrix for predicitons based on test data
     new_x <- as.matrix(select(data_test, -y))
-   
-  }
+    
+  } else if(option == "interactions"){
+    
+    # include all two way interactions in model matrix
+    model <- glmnet(x = model.matrix(~.^2, data = select(data_train, -y)), y= data_train$y, family = fam, alpha = alpha, ...)
+    
+    # model matrix for predicitons based on test data
+    new_x <- model.matrix(~.^2, data = select(data_test, -y))
+    
+    } else if(option == "quadratic") {
+      
+      # include all quadratic terms in model matrix
+      squared_terms <- data_train %>% 
+        select(-y) %>% 
+        select_if(is.numeric) %>%
+        mutate_all(function(x) x^2)
+      dat_model <- cbind(select(data_train, -y), squared_terms)
+      
+      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
+      
+      
+      # model matrix for predicitons based on test data
+      squared_terms_new <- data_test %>% 
+        select(-y) %>%  
+        select_if(is.numeric) %>%
+        mutate_all(function(x) x^2)
+      dat_model_new <- cbind(select(data_test, -y), squared_terms_new)
+      new_x <- as.matrix(dat_model_new)
+      
+    } else if(option == "abs"){
+        
+      # include only absolute values
+      abs_terms <- data_train %>% 
+        select(-y) %>% 
+        select_if(is.numeric) %>%
+        mutate_all(function(x) abs(x))
+      dat_model <- cbind(select(data_train, -y), abs_terms)
+      
+      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
+      
+      
+      # model matrix for predicitons based on test data
+      abs_terms_new <- data_test %>% 
+        select(-y) %>%
+        select_if(is.numeric) %>%
+        mutate_all(function(x) abs(x))
+      dat_model_new <- cbind(select(data_test, -y), abs_terms_new)
+      new_x <- as.matrix(dat_model_new)
+      
+      }
    
   class(new_x) <- "numeric"
   pred <- predict(model, newx = new_x, type = "response") # predictions on test data for all lambda

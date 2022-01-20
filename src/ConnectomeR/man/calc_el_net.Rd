@@ -4,7 +4,7 @@
 \alias{calc_el_net}
 \title{elastic net model for one alpha}
 \usage{
-calc_el_net(data_train, data_test, alpha = 0, target_diag, interactions, ...)
+calc_el_net(data_train, data_test, alpha = 0, target_diag, option, ...)
 }
 \arguments{
 \item{data_train}{training data}
@@ -15,7 +15,7 @@ calc_el_net(data_train, data_test, alpha = 0, target_diag, interactions, ...)
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
 
-\item{interactions}{include all two way interactions? default is false}
+\item{option}{standard regression model, all two way interactions, ...}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
