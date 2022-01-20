@@ -305,9 +305,12 @@ def main():
     excel_path = input(r'Input your path where the excel file is stored (with name + ".xlsx"): ')
     write_dir = input(r'Input your path where to write the final file: ')
     preprocessing_type = input(r'Input preprocessing type: conn, aeggregation or grouped: ')
+    if preprocessing_type == "aggregation":
+        statistic = input(r'Input summary statistic')
 
     transform_mat_write_to_hdf(matlab_dir=matlab_dir, excel_path=excel_path,
-                               write_dir=write_dir, preprocessing_type=preprocessing_type)
+                               write_dir=write_dir, preprocessing_type=preprocessing_type,
+                               statistic = statistic)
 
 
 if __name__ == "__main__":
