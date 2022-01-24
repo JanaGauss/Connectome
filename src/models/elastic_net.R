@@ -95,8 +95,13 @@ elastic_net_abs <- readRDS("data/elastic_net_abs.rds")
 
 result_table_elnet(elastic_net_abs)$accuracy
 result_table_elnet(elastic_net_standard)$accuracy
+# abs is worse
 
- # ToDo: calculate, add plots
+plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2]) # best ridge model
+plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2], regions_dat = regions[, c(1, 4)]) + # yeo 7
+  labs(title = "Yeo_7network")
+
+
 
 
 # LM for MEM-Score
