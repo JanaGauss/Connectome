@@ -111,6 +111,10 @@ def grouped_conn_mat(conn_matrices: list, network: str = 'yeo7', statistic: str 
                     grpd_mat[i, j] = mat.iloc[rows, cols].min().min()
                 elif statistic == 'max':
                     grpd_mat[i, j] = mat.iloc[rows, cols].max().max()
+                elif statistic == 'greater_zero':
+                    #calculate percentage value greater than 0
+                    temp = mat.iloc[rows, cols]
+                    grpd_mat[i, j] = temp[temp>0].count().sum()/ temp.count().sum()
 
         grpd_conn_mat.append(grpd_mat)
 
