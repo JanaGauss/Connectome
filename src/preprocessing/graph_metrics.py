@@ -4,12 +4,22 @@ import bct
 import matplotlib.pyplot as plt
 
 
-def get_graph_metrics(conns: list, threshold=0.65) -> dict:
+def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None,
+                      use_abs: bool = False) -> pd.DataFrame:
     """
-    computes graph metrics for the given connectivity data
-    Must work for list of np.arrays or pd.DataFrames
-    naming of columns is important afterwards!!
+    - computes graph metrics for the given connectivity data
+    - retransforms the connectivity matrices to pearson correlation before computing the adjacency matrices
+
+    Args:
+        conns: list of numpy arrays containing the connectivity data
+        threshold: threshold of correlation to compute adjacency matrices
+        col_names: colnames of the connectivity matrices in case those are reordered
+
+    Returns:
+        pd.DataFrame containing the computed graph metrics
+
     """
+
     n = len(conns)
     res = {
         "Degrees": [],
@@ -22,44 +32,84 @@ def get_graph_metrics(conns: list, threshold=0.65) -> dict:
         "Component Vectors": [],
         "Transitivity": []
     }
-
-    adj_matrices = res["Adjacency Matrices"] = np.where(np.stack(conns) > threshold, 1, 0)
+    stacked_conn = np.abs(np.tanh(np.stack(conns))) if use_abs else np.tanh(np.stack(conns))
+    adj_matrices = res["Adjacency Matrices"] = np.where(stacked_conn > threshold, 1, 0)
+    regions = adj_matrices[0, :, :].shape[0]
+    failed = {}
 
     for i in range(n):
-        # degrees
-        adj = adj_matrices[i, :, :]
-        res["Degrees"].append(bct.degrees_und(adj))
+        try:
+            # degrees
+            adj = adj_matrices[i, :, :]
+            res["Degrees"].append(bct.degrees_und(adj))
 
-        # community structure / modularity
-        community_struct = bct.modularity_und(adj)
-        res["Modularity"].append(community_struct[1])
-        res["Community Structure"].append(community_struct[0])
+            # community structure / modularity
+            community_struct = bct.modularity_und(adj)
+            res["Modularity"].append(community_struct[1])
+            res["Community Structure"].append(community_struct[0])
 
-        # clustering coef
-        res["Clustering Coefficient"].append(bct.clustering_coef_bu(adj))
+            # clustering coef
+            res["Clustering Coefficient"].append(bct.clustering_coef_bu(adj))
 
-        # distance
-        distance = bct.distance_bin(adj)
-        min_dist = np.min(distance, axis=1)
-        res["Characteristic Path Length"].append(np.array(np.mean(min_dist)))
+            # distance
+            distance = bct.distance_bin(adj)
+            min_dist = np.min(distance, axis=1)
+            res["Characteristic Path Length"].append(np.array(np.mean(min_dist)))
 
-        # node betweenness
-        res["Node Betweenness"].append(bct.betweenness_bin(adj))
+            # node betweenness
+            res["Node Betweenness"].append(bct.betweenness_bin(adj))
 
-        # density
-        res["Density"].append(np.array(bct.density_und(adj)))
+            # density
+            res["Density"].append(np.array(bct.density_und(adj)))
 
-        # components of an undirected graph
-        graph_comp = np.array(bct.get_components(adj))
-        res["Component Vectors"].append(graph_comp[0])
+            # components of an undirected graph
+            graph_comp = np.array(bct.get_components(adj))
+            res["Component Vectors"].append(graph_comp[0])
 
-        # transitivity
-        res["Transitivity"].append(bct.transitivity_bu(adj))
+            # transitivity
+            res["Transitivity"].append(bct.transitivity_bu(adj))
+
+        except Exception as e:
+            failed[i] = (e, adj_matrices[i, :, :])
 
     for key in res.keys():
-        res[key] = np.stack(res[key])
+        if key in ['Characteristic Path Length', 'Modularity', 'Transitivity']:
+            res[key] = np.stack(res[key]).reshape(n, 1)
+        else:
+            res[key] = np.stack(res[key])
 
-    return res
+    if col_names == None:
+        colnames = {
+            "Degrees": ["degree_" + str(i + 1) for i in range(regions)],
+            "Modularity": ["modularity"],
+            "Community Structure": ["community_structure_" + str(i + 1) for i in range(regions)],
+            "Clustering Coefficient": ["clustering_coefficient_" + str(i + 1) for i in range(regions)],
+            "Characteristic Path Length": ["characteristic_path_length"],
+            "Node Betweenness": ["node_betweenness_" + str(i + 1) for i in range(regions)],
+            "Density": ["density", "vertices", "edges"],
+            "Component Vectors": ["component_" + str(i + 1) for i in range(regions)],
+            "Transitivity": ["transitivity"]
+        }
+    else:
+        colnames = {
+            "Degrees": ["degree_" + str(i) for i in cols],
+            "Modularity": ["modularity"],
+            "Community Structure": ["community_structure_" + str(i) for i in cols],
+            "Clustering Coefficient": ["clustering_coefficient_" + str(i) for i in cols],
+            "Characteristic Path Length": ["characteristic_path_length"],
+            "Node Betweenness": ["node_betweenness_" + str(i) for i in cols],
+            "Density": ["density", "vertices", "edges"],
+            "Component Vectors": ["component_" + str(i) for i in cols],
+            "Transitivity": ["transitivity"]
+        }
+
+    dfs = []
+
+    for key in res.keys():
+        if key != "Adjacency Matrices":
+            dfs.append(pd.DataFrame(res[key], columns=colnames[key], index=range(n)))
+
+    return pd.concat(dfs, axis=1)
 
 
 # all functions work for one 2d or one 3d array (multiple 2d arrays - 1st dim = number of conn matrices)
