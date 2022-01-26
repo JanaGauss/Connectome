@@ -90,9 +90,7 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
 
     for key in res.keys():
         if key in ['Characteristic Path Length', 'Modularity', 'Transitivity']:
-            print(key)
             res[key] = np.stack(res[key]).reshape(n, 1)
-            print(key, " worked")
         else:
             res[key] = np.stack(res[key])
 
