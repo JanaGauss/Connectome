@@ -94,7 +94,7 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         else:
             res[key] = np.stack(res[key])
 
-    if col_names == None:
+    if col_names is None:
         colnames = {
             "Degrees": ["degree_" + str(i + 1) for i in range(regions)],
             "Modularity": ["modularity"],
