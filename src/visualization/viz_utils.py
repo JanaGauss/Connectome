@@ -36,4 +36,4 @@ def ordered_regions() -> list:
     sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
     sorted_keys_int = list(map(int, sorted_keys))
     sorted_keys_list= [x - 1 for x in sorted_keys_int]
-    return sorted_keys_list= 
+    return sorted_keys_list
