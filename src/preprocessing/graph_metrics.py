@@ -3,6 +3,17 @@ import numpy as np
 import bct
 import matplotlib.pyplot as plt
 import pandas as pd
+from IPython.display import clear_output
+
+# How to use:
+# given a list of connectivity matrices just call the "get_graph_metrics" function on this list
+# currently not implemented to work for pd.DataFrames
+# but the list of numpy arrays / conn matrices can be easily constructed using the "flat_to_mat" function
+# of the dataloader module. Just apply this function on the DataFrame with the
+# flattened conn data row-wise and obtain the list.
+# To get some explanations about the implemented graph metrics just call "explain_graph_metrics"
+# without specifying any arguments
+#
 
 
 def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None,
@@ -81,7 +92,7 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         else:
             res[key] = np.stack(res[key])
 
-    if col_names == None:
+    if col_names is None:
         colnames = {
             "Degrees": ["degree_" + str(i + 1) for i in range(regions)],
             "Modularity": ["modularity"],
@@ -95,14 +106,14 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         }
     else:
         colnames = {
-            "Degrees": ["degree_" + str(i) for i in cols],
+            "Degrees": ["degree_" + str(i) for i in col_names],
             "Modularity": ["modularity"],
-            "Community Structure": ["community_structure_" + str(i) for i in cols],
-            "Clustering Coefficient": ["clustering_coefficient_" + str(i) for i in cols],
+            "Community Structure": ["community_structure_" + str(i) for i in col_names],
+            "Clustering Coefficient": ["clustering_coefficient_" + str(i) for i in col_names],
             "Characteristic Path Length": ["characteristic_path_length"],
-            "Node Betweenness": ["node_betweenness_" + str(i) for i in cols],
+            "Node Betweenness": ["node_betweenness_" + str(i) for i in col_names],
             "Density": ["density", "vertices", "edges"],
-            "Component Vectors": ["component_" + str(i) for i in cols],
+            "Component Vectors": ["component_" + str(i) for i in col_names],
             "Transitivity": ["transitivity"]
         }
 
@@ -115,64 +126,40 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
     return pd.concat(dfs, axis=1)
 
 
-# all functions work for one 2d or one 3d array (multiple 2d arrays - 1st dim = number of conn matrices)
-def adjacency_matrix(mat: np.ndarray, threshold=0.) -> np.ndarray:
+def explain_graph_metrics() -> None:
     """
-    function to compute an adjacency matrix based on a given connectivity matrix and a threshold.
-    
-    Args:
-        mat: 
-        threshold: 
-    
-    Returns: 
-        an nd.array - the adjacency matrix
-    
-    Raises: 
-    
+    computes graph metrics for the given connectivity data
+    Must work for list of np.arrays or pd.DataFrames
+    naming of columns is important afterwards!!
     """
 
-    return np.where(mat > threshold, 1, 0)
+    docs = {
 
+        "Degrees": bct.degrees_und.__doc__,
+        "Modularity": bct.modularity_und.__doc__,
+        "Community Structure": bct.modularity_und.__doc__,
+        "Clustering Coefficient": bct.clustering_coef_bu.__doc__,
+        "Characteristic Path Length": bct.distance_bin.__doc__,
+        "Node Betweenness": bct.betweenness_bin.__doc__,
+        "Density": bct.density_und.__doc__,
+        "Component Vectors": bct.get_components.__doc__,
+        "Transitivity": bct.transitivity_bu.__doc__
+    }
+    explain = True
 
-def degree(adj_mat: np.ndarray) -> np.ndarray:
-    if len(adj_mat.shape) == 3:
-        return adj_mat.sum(axis=1)
-    else:
-        return adj_mat.sum(axis=0)
+    while explain:
+        print("So far implemented graph metrics:")
+        print(list(docs.keys()))
+        print("-" * 50 + "\n" * 2)
+        check = input("Which one to explain?\t")
 
-
-def average_degree(degrees: np.ndarray) -> tuple:
-    return degrees.mean()
-
-
-def degree_distr(degrees: np.ndarray, plot=False, max_num=246) -> tuple:
-    """
-    plotting is only supported if a 1D array is provided
-    """
-    bin_edges = [i + 0.5 for i in range(-1, max_num + 1)]
-    values = np.arange(max_num + 1)
-
-    if len(degrees.shape) == 2:
-        hists = []
-        for i in range(degrees.shape[0]):
-            hists.append(np.histogram(degrees[i], bins=bin_edges, density=True)[0])
-        return values, np.stack(hists)
-
-    else:
-        if plot:
-            # we start the range in list compr at -1 as we want to get density values for all values
-            # from 0 to 246 (max possible degree / connections)
-            # starting from -1 gives use the edges for value 0
-            return values, plt.hist(degrees, bins=bin_edges, density=True)[0]
-
+        if check not in docs.keys():
+            print("selected graph metric not implemented / spelling error")
         else:
-            return values, np.histogram(degrees, bins=bin_edges, density=True)[0]
+            print(docs[check])
+
+        contin = input("Continue?(y)\t")
+        clear_output(wait=True)  # only works well in a notebook environment
+        explain = False if contin != "y" else True
 
 
-def degree_stats(degrees: np.ndarray) -> np.ndarray:
-    if len(degrees.shape) == 2:
-        return np.stack([degrees.mean(axis=1), np.std(degrees, axis=1),
-                         np.median(degrees, axis=1), stats.mode(degrees, axis=1)[0].flatten()], axis=1)
-
-    else:
-        return np.array([degrees.mean(), np.std(degrees), np.median(degrees), stats.mode(degrees)[0][0]])
