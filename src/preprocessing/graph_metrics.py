@@ -2,6 +2,7 @@ from scipy import stats
 import numpy as np
 import bct
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None,
@@ -14,6 +15,8 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
         col_names: colnames of the connectivity matrices in case those are reordered
+        use_abs: boolean indicating whether to consider the absolute values
+                of the correlation before computing the adjacency matrices
 
     Returns:
         pd.DataFrame containing the computed graph metrics
