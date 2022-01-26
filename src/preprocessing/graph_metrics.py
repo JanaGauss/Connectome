@@ -1,7 +1,5 @@
-from scipy import stats
 import numpy as np
 import bct
-import matplotlib.pyplot as plt
 import pandas as pd
 from IPython.display import clear_output
 
@@ -16,8 +14,7 @@ from IPython.display import clear_output
 #
 
 
-def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None,
-                      use_abs: bool = False) -> pd.DataFrame:
+def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None, use_abs: bool = False) -> tuple:
     """
     - computes graph metrics for the given connectivity data
     - retransforms the connectivity matrices to pearson correlation before computing the adjacency matrices
@@ -26,8 +23,6 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
         col_names: colnames of the connectivity matrices in case those are reordered
-        use_abs: boolean indicating whether to consider the absolute values
-                of the correlation before computing the adjacency matrices
 
     Returns:
         pd.DataFrame containing the computed graph metrics
@@ -53,14 +48,20 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
 
     for i in range(n):
         try:
-            # degrees
             adj = adj_matrices[i, :, :]
-            res["Degrees"].append(bct.degrees_und(adj))
 
             # community structure / modularity
-            community_struct = bct.modularity_und(adj)
-            res["Modularity"].append(community_struct[1])
-            res["Community Structure"].append(community_struct[0])
+            if not any((adj != 0).flatten()):
+                res["Modularity"].append(0)
+                res["Community Structure"].append(np.zeros((regions,)))
+
+            else:
+                community_struct = bct.modularity_und(adj)
+                res["Modularity"].append(community_struct[1])
+                res["Community Structure"].append(community_struct[0])
+
+            # degrees
+            res["Degrees"].append(bct.degrees_und(adj))
 
             # clustering coef
             res["Clustering Coefficient"].append(bct.clustering_coef_bu(adj))
@@ -81,18 +82,21 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
             res["Component Vectors"].append(graph_comp[0])
 
             # transitivity
-            res["Transitivity"].append(bct.transitivity_bu(adj))
+            res["Transitivity"].append(0 if np.isnan(bct.transitivity_bu(adj))
+                                       else bct.transitivity_bu(adj))
 
         except Exception as e:
             failed[i] = (e, adj_matrices[i, :, :])
 
     for key in res.keys():
         if key in ['Characteristic Path Length', 'Modularity', 'Transitivity']:
-            res[key] = np.stack(res[key]).reshape(n - len(failed.keys()), 1)
+            print(key)
+            res[key] = np.stack(res[key]).reshape(n, 1)
+            print(key, " worked")
         else:
             res[key] = np.stack(res[key])
 
-    if col_names is None:
+    if col_names == None:
         colnames = {
             "Degrees": ["degree_" + str(i + 1) for i in range(regions)],
             "Modularity": ["modularity"],
@@ -104,6 +108,7 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
             "Component Vectors": ["component_" + str(i + 1) for i in range(regions)],
             "Transitivity": ["transitivity"]
         }
+
     else:
         colnames = {
             "Degrees": ["degree_" + str(i) for i in col_names],
@@ -123,7 +128,7 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         if key != "Adjacency Matrices":
             dfs.append(pd.DataFrame(res[key], columns=colnames[key], index=range(n)))
 
-    return pd.concat(dfs, axis=1)
+    return pd.concat(dfs, axis=1), failed
 
 
 def explain_graph_metrics() -> None:
