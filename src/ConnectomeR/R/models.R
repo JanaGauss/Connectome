@@ -11,7 +11,7 @@
 #' @param y_1 which levels of data$prmdiag use as 1
 #' @param data_source which dataset is it? (in case there have to be made adjustments)
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
-#' @param option standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions) abs: absolute value of variables
+#' @param option standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions), abs: absolute value of variables, squ: squared value of variables
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
@@ -24,7 +24,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   checkmate::assert_character(vars, null.ok = TRUE)
   checkmate::assert_numeric(alpha, lower = 0, upper = 1)
   checkmate::assert_choice(data_source, choices = c("DELCODE"))
-  checkmate::assert_choice(option, choices = c("standard", "interactions", "quadratic", "abs"))
+  checkmate::assert_choice(option, choices = c("standard", "interactions", "quadratic", "abs", "squ"))
   
   if(target_diag == TRUE){
     checkmate::assert_true(!is.null(y_0))
@@ -87,7 +87,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
 #' @param data_test test data
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
-#' @param option standard regression model, all two way interactions, ...
+#' @param option standard regression model, all two way interactions, ..., see el_net function
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
@@ -159,6 +159,21 @@ calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, option, .
       dat_model_new <- cbind(select(data_test, -y), abs_terms_new)
       new_x <- as.matrix(dat_model_new)
       
+    } else if(option == "squ"){
+      
+      # use squared value of (numeric) variables
+      dat_model <- data_train %>% 
+        select(-y) %>% 
+        mutate_if(is.numeric, function(x) x^2)
+      
+      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
+      
+      
+      # model matrix for predicitons based on test data
+      dat_model_new <- data_test %>% 
+        select(-y) %>%  
+        mutate_if(is.numeric, function(x) x^2)
+      new_x <- as.matrix(dat_model_new)
       }
    
   class(new_x) <- "numeric"

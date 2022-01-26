@@ -81,7 +81,7 @@ elastic_net_quadratic <- readRDS("data/elastic_net_quadratic.rds")
 
 result_table_elnet(elastic_net_quadratic)$accuracy
 result_table_elnet(elastic_net_standard)$accuracy
-# worse with quadratic functions
+# slightly worse with quadratic functions
 
 
 
@@ -89,7 +89,7 @@ result_table_elnet(elastic_net_standard)$accuracy
 # use absolute values instead of normal values
 elastic_net_abs <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
                                 vars = vars_model, option = "abs")
-saveRDS(elastic_net_abs, file = "data/elastic_net_abs.rds")
+# saveRDS(elastic_net_abs, file = "data/elastic_net_abs.rds")
 elastic_net_abs <- readRDS("data/elastic_net_abs.rds")
 
 
@@ -99,6 +99,23 @@ result_table_elnet(elastic_net_standard)$accuracy
 
 plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2]) # best ridge model
 plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2], regions_dat = regions[, c(1, 4)]) + # yeo 7
+  labs(title = "Yeo_7network")
+
+
+
+# use squared values instead of normal values
+elastic_net_squ <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+                          vars = vars_model, option = "squ")
+# saveRDS(elastic_net_squ, file = "data/elastic_net_squ.rds")
+elastic_net_squ <- readRDS("data/elastic_net_squ.rds")
+
+
+result_table_elnet(elastic_net_squ)$accuracy # works better for alpah = 0 (ridge)
+result_table_elnet(elastic_net_standard)$accuracy
+
+# ToDo choose best beta
+plot_matrix_coeffs(elastic_net_squ$results_models[[1]]$model$beta[, 76])
+plot_matrix_coeffs(elastic_net_squ$results_models[[1]]$model$beta[, 76], regions_dat = regions[, c(1, 4)]) + # yeo 7
   labs(title = "Yeo_7network")
 
 

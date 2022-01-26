@@ -15,7 +15,7 @@ calc_el_net(data_train, data_test, alpha = 0, target_diag, option, ...)
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
 
-\item{option}{standard regression model, all two way interactions, ...}
+\item{option}{standard regression model, all two way interactions, ..., see el_net function}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }

@@ -34,7 +34,7 @@ el_net(
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
 
-\item{option}{standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions) abs: absolute value of variables}
+\item{option}{standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions), abs: absolute value of variables, squ: squared value of variables}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }
