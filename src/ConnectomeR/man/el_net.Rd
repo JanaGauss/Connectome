@@ -13,7 +13,7 @@ el_net(
   y_1 = NULL,
   data_source = "DELCODE",
   target_diag = TRUE,
-  interactions = FALSE,
+  option = "standard",
   ...
 )
 }
@@ -34,7 +34,7 @@ el_net(
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
 
-\item{interactions}{include all two way interactions? default is false}
+\item{option}{standard: standard regression model, interactions: all two way interactions, quadratic: all quadratic terms (x1^2, x2^2, but no interactions), abs: absolute value of variables, squ: squared value of variables}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }

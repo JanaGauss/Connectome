@@ -31,20 +31,20 @@ vars_model <- colnames(train)[!colnames(train) %in% vars_remove]
 
 
 
-elastic_net_2 <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+elastic_net_standard <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
                         vars = vars_model) # for alpha = seq(0, 1, by = 0.1)
-# saveRDS(elastic_net_2, file = "data/elastic_net_2.rds")
-elastic_net_2 <- readRDS("data/elastic_net_2.rds")
+# saveRDS(elastic_net_standard, file = "data/elastic_net_2.rds")
+elastic_net_standard <- readRDS("data/elastic_net_2.rds")
 
-results_eval <- result_table_elnet(elastic_net_2)
+results_eval <- result_table_elnet(elastic_net_standard)
 results_eval
 max(results_eval$accuracy$value)
 results_eval$accuracy[which(results_eval$accuracy$value == max(results_eval$accuracy$value)), ]
 
-get_confMatrix_elnet(elastic_net_2, ind_alpha = 2, ind_lambda = 25)
+get_confMatrix_elnet(elastic_net_standard, ind_alpha = 2, ind_lambda = 25)
 
 
-beta_best <- elastic_net_2$results_models[[2]]$model$beta[, 25]
+beta_best <- elastic_net_standard$results_models[[2]]$model$beta[, 25]
 
 table(beta_best == 0)
 plot(density(beta_best))
@@ -53,27 +53,76 @@ table(beta_best > 0.01)
 sort(beta_best)[1:20]
 
 plot_matrix_coeffs(beta_best)
-plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7]) # best ridge model -> all coeffs != 0
+plot_matrix_coeffs(elastic_net_standard$results_models[[1]]$model$beta[, 7]) # best ridge model -> all coeffs != 0
 
 regions <- read.csv("references/subregion_func_network_Yeo_updated.csv", sep = ";")
 
-plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 4)]) + # yeo 7
+plot_matrix_coeffs(elastic_net_standard$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 4)]) + # yeo 7
   labs(title = "Yeo_7network")
 
 plot_matrix_coeffs(beta_best, regions_dat = regions[, c(1, 4)]) +
   labs(title = "Yeo_7network") # too few coeffs != 0
 
-plot_matrix_coeffs(elastic_net_2$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 5)]) + # yeo 17
+plot_matrix_coeffs(elastic_net_standard$results_models[[1]]$model$beta[, 7], regions_dat = regions[, c(1, 5)]) + # yeo 17
   labs(title = "Yeo_17network")
 
 
 
 # accuracy intercept model
-acc_intercept(elastic_net_2)
+acc_intercept(elastic_net_standard)
+
+
+# include quadratic terms
+elastic_net_quadratic <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+                        vars = vars_model, option = "quadratic")
+# saveRDS(elastic_net_quadratic, file = "data/elastic_net_quadratic.rds")
+elastic_net_quadratic <- readRDS("data/elastic_net_quadratic.rds")
+
+
+result_table_elnet(elastic_net_quadratic)$accuracy
+result_table_elnet(elastic_net_standard)$accuracy
+# slightly worse with quadratic functions
+
+
+
+
+# use absolute values instead of normal values
+elastic_net_abs <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+                                vars = vars_model, option = "abs")
+# saveRDS(elastic_net_abs, file = "data/elastic_net_abs.rds")
+elastic_net_abs <- readRDS("data/elastic_net_abs.rds")
+
+
+result_table_elnet(elastic_net_abs)$accuracy
+result_table_elnet(elastic_net_standard)$accuracy
+# abs is worse
+
+plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2]) # best ridge model
+plot_matrix_coeffs(elastic_net_abs$results_models[[1]]$model$beta[, 2], regions_dat = regions[, c(1, 4)]) + # yeo 7
+  labs(title = "Yeo_7network")
+
+
+
+# use squared values instead of normal values
+elastic_net_squ <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
+                          vars = vars_model, option = "squ")
+# saveRDS(elastic_net_squ, file = "data/elastic_net_squ.rds")
+elastic_net_squ <- readRDS("data/elastic_net_squ.rds")
+
+
+result_table_elnet(elastic_net_squ)$accuracy # works better for alpah = 0 (ridge)
+result_table_elnet(elastic_net_standard)$accuracy
+
+# ToDo choose best beta
+plot_matrix_coeffs(elastic_net_squ$results_models[[1]]$model$beta[, 76])
+plot_matrix_coeffs(elastic_net_squ$results_models[[1]]$model$beta[, 76], regions_dat = regions[, c(1, 4)]) + # yeo 7
+  labs(title = "Yeo_7network")
+
+
 
 
 # LM for MEM-Score
-elnet_LM <- el_net(test = test, train = train,  vars = vars_model, target_diag = FALSE)
+elnet_LM <- el_net(test = test, train = train,  vars = vars_model, option = "interactions")
 # saveRDS(elnet_LM, file = "data/elnet_LM.rds")
 
 result_table_elnet(elnet_LM) # best MSE_test value: 0.61
@@ -94,7 +143,7 @@ plot_matrix_coeffs(elnet_LM$results_models[[1]]$model$beta[, 60]) # best ridge m
 
 ## interactions (for alpha = 0)
 elastic_net_int <- el_net(test = test, train = train, y_0 = c("0"), y_1 = c("2", "3"), 
-                        vars = vars_model, alpha = c(0), interactions = TRUE)
+                        vars = vars_model, alpha = c(0), option = "interactions")
 
 # # "recreate" best model
 # test_2 <- test %>%
