@@ -50,14 +50,14 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
         # stack matrices
         stacked = stack_matrices(res[0], upper, preprocessing_type)
         # creating colnames and merging into one df
-        colnames = col_names_final_df(delcode_excel, res[0][0].shape[0])
+        colnames = col_names_final_df(delcode_excel, res[0][0].shape[0], preprocessing_type)
     elif preprocessing_type == 'aggregation':
         grpd_conn_mat = grouped_conn_mat(res[0], network=network, statistic=statistic)
 
         # stack matrices
         stacked = stack_matrices(grpd_conn_mat, upper, preprocessing_type)
         # creating colnames and merging into one df
-        colnames = col_names_final_df(delcode_excel, grpd_conn_mat[0].shape[0])
+        colnames = col_names_final_df(delcode_excel, grpd_conn_mat[0].shape[0], preprocessing_type)
 
     elif preprocessing_type == 'graph':
         pass
@@ -156,10 +156,11 @@ def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True, preprocessing_ty
         return matrix.flatten()
 
 
-def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
+def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246, preprocessing_type: str = 'conn') -> list:
     """
     creates the columns names for the final data frame 
     based on shape / number of columns of the used connectivity matrix
+    preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Args:
         data_from_excel: A pd.Dataframe
@@ -171,14 +172,15 @@ def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246) -> list:
     assert isinstance(data_from_excel, pd.DataFrame), "provided data_from_excel is no pd.DataFrame"
 
     colnames = ["IDs"]
-    colnames = colnames + col_names_conn_matrix(shape)
+    colnames = colnames + col_names_conn_matrix(shape, preprocessing_type)
     final_columns = list(data_from_excel.columns) + colnames
     return final_columns
 
 
-def col_names_conn_matrix(n: int):
+def col_names_conn_matrix(n: int, preprocessing_type: str = 'conn'):
     """
     creates the column names for the flattened connectivity matrix
+    preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Args:
         n: number of columns in connectivity matrix
@@ -186,7 +188,11 @@ def col_names_conn_matrix(n: int):
     Returns:
         Column names for connectivity matrix
     """
-    return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
+    if preprocessing_type == 'conn':
+        return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
+    elif preprocessing_type == 'aggregation':
+        return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i, n + 1)]
+
 
 
 def create_final_df(file_names: list, final_columns: list,
@@ -304,9 +310,9 @@ def main():
     matlab_dir = input(r'Input your path where the matlab files are stored: ')
     excel_path = input(r'Input your path where the excel file is stored (with name + ".xlsx"): ')
     write_dir = input(r'Input your path where to write the final file: ')
-    preprocessing_type = input(r'Input preprocessing type: conn, aeggregation or grouped: ')
+    preprocessing_type = input(r'Input preprocessing type: conn, aggregation or grouped: ')
     if preprocessing_type == "aggregation":
-        statistic = input(r'Input summary statistic')
+        statistic = input(r'Input summary statistic: ')
 
     transform_mat_write_to_hdf(matlab_dir=matlab_dir, excel_path=excel_path,
                                write_dir=write_dir, preprocessing_type=preprocessing_type,

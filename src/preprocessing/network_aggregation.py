@@ -17,7 +17,8 @@ def grouped_conn_mat(conn_matrices: list, network: str = 'yeo7', statistic: str 
     """
 
     assert isinstance(network, str) & (network == "yeo7" or network == "yeo17"), "invalid network"
-    assert isinstance(statistic, str) & (statistic == "mean" or statistic == "min" or statistic == "max"), "invalid summary statistic"
+    assert isinstance(statistic, str) & (statistic == "mean" or statistic == "min" or statistic == "max" or
+                                         statistic == 'greater_zero'), "invalid summary statistic"
 
     lab_to_yeo7 = {'1': '6', '2': '4', '3': '7', '4': '6', '5': '7', '6': '7', '7': '3', '8': '3', '9': '2', '10': '2',
                    '11': '7', '12': '6', '13': '7', '14': '7', '15': '4', '16': '6', '17': '6', '18': '6', '19': '6',
