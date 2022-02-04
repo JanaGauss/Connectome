@@ -48,21 +48,41 @@ result_table_elnet <- function(elnet_result){
 #'
 #' @param elnet_result result of el_net function
 #' @param ind_alpha index of alpha that should be used
-#' @param ind index of lambda value that should be used
+#' @param ind_lambda index of lambda value that should be used
+#' @param test logical: use test or train data
+#' @param print logical: should alpha and lambda be printed
 #' @import dplyr caret checkmate
 #' @export
-get_confMatrix_elnet <- function(elnet_result, ind_alpha, ind_lambda){
+get_confMatrix_elnet <- function(elnet_result, ind_alpha, ind_lambda, test = TRUE, print = TRUE){
   
-  print(paste("alpha: ", elnet_result$results_models[[ind_alpha]]$alpha))
-  print(paste("lambda: ", elnet_result$results_models[[ind_alpha]]$model$lambda[ind_lambda]))
+  if(print == TRUE){
+    print(paste("alpha: ", elnet_result$results_models[[ind_alpha]]$alpha))
+    print(paste("lambda: ", elnet_result$results_models[[ind_alpha]]$model$lambda[ind_lambda]))
+    }
   
-  new_x <- as.matrix(elnet_result$data_list$test[, dimnames(elnet_result$results_models[[ind_alpha]]$model$beta)[[1]]])
-  class(new_x) <- "numeric"
-  pred <- predict(elnet_result$results_models[[ind_alpha]]$model, newx = new_x, type = "response") 
+  if(test == TRUE){
+    
+    new_x <- as.matrix(select(elnet_result$data_list$test, -y))
+    class(new_x) <- "numeric"
+    
+    pred <- predict(elnet_result$results_models[[ind_alpha]]$model, newx = new_x, type = "response") 
   
-  x <- confusionMatrix(reference = factor(elnet_result$data_list$test$y), 
-                       data = factor(as.integer(pred[, ind_lambda]>0.5), levels = c("0", "1")),
-                       positive = "1")
+    x <- confusionMatrix(reference = factor(elnet_result$data_list$test$y), 
+                        data = factor(as.integer(pred[, ind_lambda]>0.5), levels = c("0", "1")),
+                        positive = "1")
+  } else{
+    
+    new_x <- as.matrix(select(elnet_result$data_list$train, -y))
+    class(new_x) <- "numeric"
+    
+    pred <- predict(elnet_result$results_models[[ind_alpha]]$model, newx = new_x, type = "response") 
+    
+    x <- confusionMatrix(reference = factor(elnet_result$data_list$train$y), 
+                         data = factor(as.integer(pred[, ind_lambda]>0.5), levels = c("0", "1")),
+                         positive = "1")  
+  }
+  
+  
   
   return(x)
 }
@@ -145,6 +165,12 @@ plot_matrix_coeffs <- function(beta, regions_dat = NULL){
       scale_x_continuous(breaks = ticks$m, labels = ticks$region1) +
       scale_y_continuous(breaks = ticks$m, labels = ticks$region1, trans = "reverse") +
       theme(axis.ticks = element_blank()) +
+      labs(x = "Region", y = "Region")
+  }
+  
+  if(nrow(dat_plot) == 72){ # data aggregated by regions
+    plot <- plot + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + 
+      scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
       labs(x = "Region", y = "Region")
   }
   

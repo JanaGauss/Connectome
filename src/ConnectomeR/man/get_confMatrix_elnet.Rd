@@ -4,14 +4,24 @@
 \alias{get_confMatrix_elnet}
 \title{get confusion matrix for elastic net model}
 \usage{
-get_confMatrix_elnet(elnet_result, ind_alpha, ind_lambda)
+get_confMatrix_elnet(
+  elnet_result,
+  ind_alpha,
+  ind_lambda,
+  test = TRUE,
+  print = TRUE
+)
 }
 \arguments{
 \item{elnet_result}{result of el_net function}
 
 \item{ind_alpha}{index of alpha that should be used}
 
-\item{ind}{index of lambda value that should be used}
+\item{ind_lambda}{index of lambda value that should be used}
+
+\item{test}{logical: use test or train data}
+
+\item{print}{logical: should alpha and lambda be printed}
 }
 \description{
 get confusion matrix for elastic net model

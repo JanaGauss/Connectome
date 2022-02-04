@@ -59,6 +59,74 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   test <- test[complete.cases(test), ]
   train <- train[complete.cases(train), ]
   
+  # prepare test/train data depending on option
+  if(option == "interactions"){
+    
+    train_inter <- as.data.frame(model.matrix(~.^2, data = select(train, -y))) %>% select(-"(Intercept)")
+    train_inter$y <- train$y
+    
+    train <- train_inter
+    
+    test_inter <- as.data.frame(model.matrix(~.^2, data = select(test, -y))) %>% select(-"(Intercept)")
+    test_inter$y <- test$y
+    
+    test <- test_inter
+    
+  } else if(option == "quadratic") {
+    
+    # include all quadratic terms in model matrix
+    squared_terms_train <- train %>% 
+      select(-y) %>% 
+      select_if(is.numeric) %>%
+      mutate_all(function(x) x^2)
+    squared_terms_test <- test %>% 
+      select(-y) %>% 
+      select_if(is.numeric) %>%
+      mutate_all(function(x) x^2)
+    
+    colnames(squared_terms_train) <- paste0(colnames(squared_terms_train), "_squ")
+    colnames(squared_terms_test) <- paste0(colnames(squared_terms_test), "_squ")
+    
+    train <- cbind(train, squared_terms_train)
+    test <- cbind(test, squared_terms_test)
+
+    
+  } else if(option == "abs"){
+    
+    # include only absolute values
+    abs_train <- train %>% 
+      select(-y) %>% 
+      mutate_if(is.numeric, function(x) abs(x))
+    
+    abs_train$y <- train$y 
+    train <- abs_train
+    
+    abs_test <- test %>% 
+      select(-y) %>% 
+      mutate_if(is.numeric, function(x) abs(x))
+    
+    abs_test$y <- test$y 
+    test <- abs_test
+    
+  } else if(option == "squ"){
+    
+    # use squared value of (numeric) variables
+    squ_train <- train %>% 
+      select(-y) %>% 
+      mutate_if(is.numeric, function(x) x^2)
+    
+    squ_train$y <- train$y 
+    train <- squ_train
+    
+    squ_test <- test %>% 
+      select(-y) %>% 
+      mutate_if(is.numeric, function(x) x^2)
+    
+    squ_test$y <- test$y 
+    test <- squ_test
+    
+  }
+  
   # store data 
   data_list <- list(test, train)
   names(data_list) <- c("test", "train")
@@ -68,7 +136,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   results <- list()
   for(a in 1:length(alpha)){
     print(paste0("Calculation for alpha = ", alpha[a]))
-    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, option, ...)
+    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, ...)
   }
   
   
@@ -87,11 +155,10 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
 #' @param data_test test data
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
-#' @param option standard regression model, all two way interactions, ..., see el_net function
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, option, ...){
+calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, ...){
   
   checkmate::assert_data_frame(data_train)
   checkmate::assert_data_frame(data_test)
@@ -104,78 +171,10 @@ calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, option, .
     fam <- "gaussian"
   }
   
-  if(option == "standard"){
-    
-    model <- glmnet(x = select(data_train, -y), y= data_train$y, family = fam, alpha = alpha, ...)
-    
-    # model matrix for predicitons based on test data
-    new_x <- as.matrix(select(data_test, -y))
-    
-  } else if(option == "interactions"){
-    
-    # include all two way interactions in model matrix
-    model <- glmnet(x = model.matrix(~.^2, data = select(data_train, -y)), y= data_train$y, family = fam, alpha = alpha, ...)
-    
-    # model matrix for predicitons based on test data
-    new_x <- model.matrix(~.^2, data = select(data_test, -y))
-    
-    } else if(option == "quadratic") {
-      
-      # include all quadratic terms in model matrix
-      squared_terms <- data_train %>% 
-        select(-y) %>% 
-        select_if(is.numeric) %>%
-        mutate_all(function(x) x^2)
-      dat_model <- cbind(select(data_train, -y), squared_terms)
-      
-      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
-      
-      
-      # model matrix for predicitons based on test data
-      squared_terms_new <- data_test %>% 
-        select(-y) %>%  
-        select_if(is.numeric) %>%
-        mutate_all(function(x) x^2)
-      dat_model_new <- cbind(select(data_test, -y), squared_terms_new)
-      new_x <- as.matrix(dat_model_new)
-      
-    } else if(option == "abs"){
-        
-      # include only absolute values
-      abs_terms <- data_train %>% 
-        select(-y) %>% 
-        select_if(is.numeric) %>%
-        mutate_all(function(x) abs(x))
-      dat_model <- cbind(select(data_train, -y), abs_terms)
-      
-      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
-      
-      
-      # model matrix for predicitons based on test data
-      abs_terms_new <- data_test %>% 
-        select(-y) %>%
-        select_if(is.numeric) %>%
-        mutate_all(function(x) abs(x))
-      dat_model_new <- cbind(select(data_test, -y), abs_terms_new)
-      new_x <- as.matrix(dat_model_new)
-      
-    } else if(option == "squ"){
-      
-      # use squared value of (numeric) variables
-      dat_model <- data_train %>% 
-        select(-y) %>% 
-        mutate_if(is.numeric, function(x) x^2)
-      
-      model <- glmnet(x = dat_model, y= data_train$y, family = fam, alpha = alpha, ...)
-      
-      
-      # model matrix for predicitons based on test data
-      dat_model_new <- data_test %>% 
-        select(-y) %>%  
-        mutate_if(is.numeric, function(x) x^2)
-      new_x <- as.matrix(dat_model_new)
-      }
-   
+  
+  model <- glmnet(x = select(data_train, -y), y= data_train$y, family = fam, alpha = alpha, ...)
+  
+  new_x <- as.matrix(select(data_test, -y))
   class(new_x) <- "numeric"
   pred <- predict(model, newx = new_x, type = "response") # predictions on test data for all lambda
   
