@@ -191,7 +191,7 @@ def col_names_conn_matrix(n: int, preprocessing_type: str = 'conn'):
     if preprocessing_type == 'conn':
         return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
     elif preprocessing_type == 'aggregation':
-        return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i, n + 1)]
+        return [str(i) + "_" + str(j) for i in range(0, n) for j in range(i, n)]
 
 
 
