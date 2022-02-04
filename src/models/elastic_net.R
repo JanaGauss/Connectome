@@ -6,7 +6,6 @@
 library(dplyr)
 library(glmnet)
 library(caret)
-library(dplyr)
 # devtools::install("src/ConnectomeR") # only necessary if there are changes
 library(ConnectomeR)
 

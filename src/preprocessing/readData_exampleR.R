@@ -1,6 +1,5 @@
 # example code for reading and preparing data in R
-
-
+## OLD!!##
 # devtools::install("01_Code/ConnectomeR") # only necessary if there are changes
 library(ConnectomeR)
 
