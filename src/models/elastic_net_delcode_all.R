@@ -37,18 +37,18 @@ names(test_list) <- c("conn", "agg_zero", "agg_max", "agg_mean", "gm_only", "gm_
 
 # data frame containing name of model, data, option
 params <- rbind(
-  # c("elnet_conn", "conn", "standard"),
-  # c("elnet_agg_zero", "agg_zero", "standard"),
-  # c("elnet_agg_max", "agg_max", "standard"),
-  # c("elnet_agg_mean", "agg_mean", "standard"),
-  # c("elnet_gm_only", "gm_only", "standard"),
-  # c("elnet_gm_conn", "gm_conn", "standard"),
-  # c("elnet_conn_abs", "conn", "abs"),
-  # c("elnet_conn_squ", "conn", "squ"),
-  # c("elnet_conn_quadratic", "conn", "quadratic"),
-  # c("elnet_agg_zero_inter", "agg_zero", "interactions"),
-  # c("elnet_agg_max_inter", "agg_max", "interactions"),
-  # c("elnet_agg_mean_inter", "agg_mean", "interactions"),
+  c("elnet_conn", "conn", "standard"),
+  c("elnet_agg_zero", "agg_zero", "standard"),
+  c("elnet_agg_max", "agg_max", "standard"),
+  c("elnet_agg_mean", "agg_mean", "standard"),
+  c("elnet_gm_only", "gm_only", "standard"),
+  c("elnet_gm_conn", "gm_conn", "standard"),
+  c("elnet_conn_abs", "conn", "abs"),
+  c("elnet_conn_squ", "conn", "squ"),
+  c("elnet_conn_quadratic", "conn", "quadratic"),
+  c("elnet_agg_zero_inter", "agg_zero", "interactions"),
+  c("elnet_agg_max_inter", "agg_max", "interactions"),
+  c("elnet_agg_mean_inter", "agg_mean", "interactions"),
   c("elnet_conn_inter", "conn", "interactions")
   )
 
@@ -84,3 +84,15 @@ for(i in 1:nrow(params)){
   
 }
 
+
+
+#### intercept model accuraccy and model without connectivity data ####
+
+vars_without_conn <- c("age", "sex", "edyears")
+
+model_without_conn <- el_net(test = test_conn, train = train_conn,
+                             y_0 = c("0"), y_1 = c("2", "3"),
+                             vars = vars_without_conn)
+
+result_table_elnet(model_without_conn) # 71.8 (best accuracy)
+acc_intercept(model_without_conn) # 56.5
