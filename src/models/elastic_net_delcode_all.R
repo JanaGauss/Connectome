@@ -48,8 +48,8 @@ params <- rbind(
   c("elnet_conn_quadratic", "conn", "quadratic"),
   c("elnet_agg_zero_inter", "agg_zero", "interactions"),
   c("elnet_agg_max_inter", "agg_max", "interactions"),
-  c("elnet_agg_mean_inter", "agg_mean", "interactions"),
-  c("elnet_conn_inter", "conn", "interactions")
+  c("elnet_agg_mean_inter", "agg_mean", "interactions") #,
+  # c("elnet_conn_inter", "conn", "interactions")
   )
 
 params <- as.data.frame(params)
