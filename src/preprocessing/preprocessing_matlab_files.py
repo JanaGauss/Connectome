@@ -285,7 +285,7 @@ def write_to_dir(dataset: pd.DataFrame, save_file: bool, t_direct: str, file_for
         FileNotFoundError
     """
     assert isinstance(t_direct, str), "invalid path (write_dir) provided"
-    assert isinstance(datasets, list), "no list of datasets provided"
+    assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
     assert isinstance(file_format, str) & ((file_format == "csv") | (file_format == "h5")), \
         "invalid file format selected"
 
