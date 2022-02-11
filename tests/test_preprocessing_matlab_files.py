@@ -50,10 +50,10 @@ class TestMatlabToHdf(unittest.TestCase):
     def test_write_to_dir(self):
 
         with self.assertRaises(FileNotFoundError):
-            mth.write_to_dir([], "no valid directory", "csv")
+            mth.write_to_dir(excel_data, "no valid directory", "csv")
 
         with self.assertRaises(AssertionError):
-            mth.write_to_dir([], os.getcwd(), "excel")
+            mth.write_to_dir(excel_data, os.getcwd(), "excel")
 
     def test_get_subject_ids(self):
 
