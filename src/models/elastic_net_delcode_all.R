@@ -94,5 +94,15 @@ model_without_conn <- el_net(test = test_conn, train = train_conn,
                              y_0 = c("0"), y_1 = c("2", "3"),
                              vars = vars_without_conn)
 
-result_table_elnet(model_without_conn) # 71.8 (best accuracy)
+eval <- result_table_elnet(model_without_conn) 
+get_confMatrix_elnet(model_without_conn, 
+                     ind_alpha = which(eval$accuracy$value == max(eval$accuracy$value))[1], 
+                     ind_lambda = eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "ind_lambda"][1], 
+                     test = TRUE, print = FALSE) # accuracy: 68.2
+get_auc_elnet(model_without_conn, 
+              ind_alpha = which(eval$accuracy$value == max(eval$accuracy$value))[1], 
+              ind_lambda = eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "ind_lambda"][1]) # auc: 72.4
+
 acc_intercept(model_without_conn) # 56.5
+
+

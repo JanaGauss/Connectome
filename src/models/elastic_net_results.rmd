@@ -55,7 +55,7 @@ names(result_list) <- c("elnet_conn", "elnet_conn_abs", "elnet_conn_squ" , "elne
 
 # Performance - Comparison
 
-The table includes the accuracy on test data, best alpha for accuracy on test data, AUC on test data, best alpha for AUC on test data, accuracy on training data, number of parameters.
+The table includes the best alpha, accuracy on test data, AUC on test data, accuracy on training data, number of parameters.
 
 **Models:** 
 
@@ -135,7 +135,7 @@ for(i in 1:length(result_list)){
 
 ```
 
-For elnet_agg_max, all coffecients of the region-matrix are zero for alpha = 0.3 (best model), only the coefficients of age and sex are unequal to zero.
+
 
 \newpage 
 

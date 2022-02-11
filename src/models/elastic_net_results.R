@@ -50,11 +50,18 @@ for(i in 1:length(result_list)){
   
   eval <- result_table_elnet(model)
   
-  acc_test <- eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "value"][1] %>% round(., 3)*100 # [1] to take the first value if there are several alpha with same accuracy
-  alpha_acc <- eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "alpha"][1]
+  alpha <- eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "alpha"][1]
   
-  auc_test <- eval$auc[which(eval$auc$value == max(eval$auc$value)), "value"][1] %>% round(., 3)*100
-  alpha_auc <- eval$accuracy[which(eval$auc$value == max(eval$auc$value)), "alpha"][1]
+  
+  
+  acc_test <- get_confMatrix_elnet(model, 
+                                    ind_alpha = which(eval$accuracy$value == max(eval$accuracy$value))[1], 
+                                    ind_lambda = eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "ind_lambda"][1], 
+                                    test = TRUE, print = FALSE)$overall["Accuracy"]  %>% round(., 3)*100
+  
+  auc_test <- get_auc_elnet(model, 
+                             ind_alpha = which(eval$accuracy$value == max(eval$accuracy$value))[1], 
+                             ind_lambda = eval$accuracy[which(eval$accuracy$value == max(eval$accuracy$value)), "ind_lambda"][1]) %>% round(., 3)*100
   
   acc_train <- get_confMatrix_elnet(model, 
                                     ind_alpha = which(eval$accuracy$value == max(eval$accuracy$value))[1], 
@@ -64,12 +71,11 @@ for(i in 1:length(result_list)){
   n_par <- nrow(model$results_models[[1]]$model$beta)
   
   result_table <- result_table %>% 
-    rbind(c(model_name, acc_test, alpha_acc, auc_test, alpha_auc, acc_train, n_par))
+    rbind(c(model_name, alpha, acc_test, auc_test, acc_train, n_par))
   
 }
 
-names(result_table) <- c("model", "accuracy_test", "alpha_accuracy", "auc_test", "alpha_auc", "accuracy_train", "n_params")
+names(result_table) <- c("model", "alpha", "accuracy_test", "auc_test", "accuracy_train", "n_params")
 write.csv(result_table, file = "../../../results/result_table_elnet.csv")
-
 
 
