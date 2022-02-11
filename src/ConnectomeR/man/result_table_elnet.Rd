@@ -2,7 +2,7 @@
 % Please edit documentation in R/models_evaluation.R
 \name{result_table_elnet}
 \alias{result_table_elnet}
-\title{get result table based on metric for el_net result}
+\title{get result table based on metric for el_net result on validation data}
 \usage{
 result_table_elnet(elnet_result)
 }
@@ -10,5 +10,5 @@ result_table_elnet(elnet_result)
 \item{elnet_result}{result of el_net function}
 }
 \description{
-returns best values (mretric, lambda) for each alpha
+returns best values (metric, lambda) for each alpha
 }

@@ -3,8 +3,8 @@
 #' elastic net model 
 #'
 #' calculates elastic net model for several alpha values
-#' @param test test data
-#' @param train training data
+#' @param test test data (will not be used, but will be prepaired like train data)
+#' @param train train data
 #' @param vars which variables should be used? If null, columns containing connectivity data are automatically extracted
 #' @param alpha alpha values for glmnet. 0 = Lasso, 1 = Ridge
 #' @param y_0 which levels of data$prmdiag use as 0
@@ -136,7 +136,7 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
   results <- list()
   for(a in 1:length(alpha)){
     print(paste0("Calculation for alpha = ", alpha[a]))
-    results[[a]] <- calc_el_net(train, test, alpha = alpha[a], target_diag, ...)
+    results[[a]] <- calc_el_net(train, alpha = alpha[a], target_diag, ...)
   }
   
   
@@ -151,18 +151,18 @@ el_net <- function(test, train, vars = NULL, alpha = seq(0, 1, by = 0.1), y_0 = 
 #' elastic net model for one alpha
 #'
 #' calculates elastic net model for one alpha value (returns list with information and evaluation)
-#' @param data_train training data
-#' @param data_test test data
+#' @param data data, will be splitted into training and validation data
 #' @param alpha alpha value for glmnet. 0 = Lasso, 1 = Ridge
 #' @param target_diag diagnosis as target variable (logistic regression) or linear model for MEM-score
+#' @param val_size size of validation data set
 #' @param ... Additional parameters for glmnet function, e.g. nlambda
 #' @import dplyr glmnet checkmate
 #' @export
-calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, ...){
+calc_el_net <- function(data, alpha = 0, target_diag, val_size = 0.2, ...){
   
-  checkmate::assert_data_frame(data_train)
-  checkmate::assert_data_frame(data_test)
+  checkmate::assert_data_frame(data)
   checkmate::assert_number(alpha, lower = 0, upper = 1)
+  checkmate::assert_number(val_size, lower = 0, upper = 1)
   
   
   if(target_diag == TRUE){
@@ -171,14 +171,19 @@ calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, ...){
     fam <- "gaussian"
   }
   
+  # split data in training and validation data
+  ind_val <- sample(1:nrow(data), size = round(nrow(data)*val_size), replace = FALSE)
+  val <- data[ind_val,]
+  data_train <- data[-ind_val,]
+  
   
   model <- glmnet(x = select(data_train, -y), y= data_train$y, family = fam, alpha = alpha, ...)
   
-  new_x <- as.matrix(select(data_test, -y))
+  new_x <- as.matrix(select(val, -y))
   class(new_x) <- "numeric"
-  pred <- predict(model, newx = new_x, type = "response") # predictions on test data for all lambda
+  pred <- predict(model, newx = new_x, type = "response") # predictions on validation data for all lambda
   
-  eval <- evaluation_elnet(pred, data_test$y)
+  eval <- evaluation_elnet(pred, val$y)
   
   result <- list()
   result[["model"]] <- model
@@ -191,7 +196,7 @@ calc_el_net <- function(data_train, data_test, alpha = 0, target_diag, ...){
 
 
 
-#' evaluation for one elastic net model
+#' evaluation on validation data for one elastic net model
 #'
 #' calculates accuracy, auc etc (logistic regression) or MSE (LM) for one elastic net model for several lambda values
 #' @param pred matrix with predictions

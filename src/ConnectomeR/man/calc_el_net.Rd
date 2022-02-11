@@ -4,16 +4,16 @@
 \alias{calc_el_net}
 \title{elastic net model for one alpha}
 \usage{
-calc_el_net(data_train, data_test, alpha = 0, target_diag, ...)
+calc_el_net(data, alpha = 0, target_diag, val_size = 0.2, ...)
 }
 \arguments{
-\item{data_train}{training data}
-
-\item{data_test}{test data}
+\item{data}{data, will be splitted into training and validation data}
 
 \item{alpha}{alpha value for glmnet. 0 = Lasso, 1 = Ridge}
 
 \item{target_diag}{diagnosis as target variable (logistic regression) or linear model for MEM-score}
+
+\item{val_size}{size of validation data set}
 
 \item{...}{Additional parameters for glmnet function, e.g. nlambda}
 }

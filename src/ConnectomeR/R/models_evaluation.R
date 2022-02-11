@@ -1,8 +1,8 @@
 # R functions for evaluation/interpretation of models
 
-#' get result table based on metric for el_net result
+#' get result table based on metric for el_net result on validation data
 #'
-#' returns best values (mretric, lambda) for each alpha
+#' returns best values (metric, lambda) for each alpha
 #' @param elnet_result result of el_net function
 #' @import dplyr 
 #' @export
@@ -85,6 +85,44 @@ get_confMatrix_elnet <- function(elnet_result, ind_alpha, ind_lambda, test = TRU
   
   
   return(x)
+}
+
+
+#' get auc for elastic net model
+#'
+#' @param elnet_result result of el_net function
+#' @param ind_alpha index of alpha that should be used
+#' @param ind_lambda index of lambda value that should be used
+#' @param test logical: use test or train data
+#' @import dplyr caret checkmate pROC
+#' @export
+get_auc_elnet <- function(elnet_result, ind_alpha, ind_lambda, test = TRUE){
+  
+  
+  
+  if(test == TRUE){
+    
+    new_x <- as.matrix(select(elnet_result$data_list$test, -y))
+    class(new_x) <- "numeric"
+    
+    pred <- predict(elnet_result$results_models[[ind_alpha]]$model, newx = new_x, type = "response") 
+    
+    auc <- roc(response = factor(elnet_result$data_list$test$y), predictor = pred[, ind_lambda], quiet = TRUE)$auc
+    
+  } else{
+    
+    new_x <- as.matrix(select(elnet_result$data_list$train, -y))
+    class(new_x) <- "numeric"
+    
+    pred <- predict(elnet_result$results_models[[ind_alpha]]$model, newx = new_x, type = "response") 
+    
+    auc <- roc(response = factor(elnet_result$data_list$train$y), predictor = pred[, ind_lambda], quiet = TRUE)$auc
+    
+  }
+  
+  
+  
+  return(auc)
 }
 
 

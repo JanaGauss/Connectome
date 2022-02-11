@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{evaluation_elnet}
 \alias{evaluation_elnet}
-\title{evaluation for one elastic net model}
+\title{evaluation on validation data for one elastic net model}
 \usage{
 evaluation_elnet(pred, y)
 }

@@ -18,9 +18,9 @@ el_net(
 )
 }
 \arguments{
-\item{test}{test data}
+\item{test}{test data (will not be used, but will be prepaired like train data)}
 
-\item{train}{training data}
+\item{train}{train data}
 
 \item{vars}{which variables should be used? If null, columns containing connectivity data are automatically extracted}
 
