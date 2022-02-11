@@ -267,7 +267,7 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     return train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
 
 
-def write_to_dir(dataset: pd.DataFrame, save_file: bool, t_direct: str, file_format: str = "csv") -> str:
+def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str = None, file_format: str = "csv") -> str:
     """
     writes the list of train/test splits to hdf files for future use in python or csv for future use in R 
     in the specified directory
