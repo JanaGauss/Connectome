@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from src.preprocessing.network_aggregation import grouped_conn_mat
 
 
-def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
+def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool = False, write_dir: str = None,
                                preprocessing_type: str = 'conn', network: str = 'yeo7', statistic: str = 'mean',
                                upper: bool = True, split_size: float = .8, seed: int = 42,
                                file_format: str = "csv") -> None:
@@ -18,7 +18,8 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
     Args:
         matlab_dir: path to matlab files
         excel_path: path to excel list
-        write_dir: path where to write the dataset to
+        save_file: If false return as pd dataframe
+        write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
         network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
         statistic: Summary statistic to be applied (only applicable if preprocessing_type = aggregation)
@@ -32,6 +33,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
     """
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
+    assert isinstance(save_file, bool), "invalid datatype for argument save_file"
     assert isinstance(write_dir, str),  "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & (preprocessing_type == "conn" or preprocessing_type == "aggregation" or
                                             preprocessing_type == "graph"), "invalid preprocessing type"
@@ -66,10 +68,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, write_dir: str,
     final_df = create_final_df(file_names=res[1], final_columns=colnames,
                                stacked_matrices=stacked, data_from_excel=delcode_excel)
 
-    # create train test splits
-    train, test = create_train_test_split(data=final_df, split_size=split_size, seed=seed)
-
-    write_to_dir(datasets=[train, test], t_direct=write_dir, file_format=file_format)
+    write_to_dir(dataset=final_df, save_file=save_file, t_direct=write_dir, file_format=file_format)
     print("Done!")
 
 def load_matlab_files(directory: str) -> tuple:
@@ -268,13 +267,14 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     return train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
 
 
-def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str:
+def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str = None, file_format: str = "csv") -> str:
     """
     writes the list of train/test splits to hdf files for future use in python or csv for future use in R 
     in the specified directory
 
     Args:
-        datasets: a list of datasets
+        dataset: the final dataset to save
+        save_file: If false return pd.DataFrame
         t_direct: path where to save the dataframes to
         file_format: The fileformat the data should be saved as (csv of hdf) -> input must be csv or h5
 
@@ -285,7 +285,7 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
         FileNotFoundError
     """
     assert isinstance(t_direct, str), "invalid path (write_dir) provided"
-    assert isinstance(datasets, list), "no list of datasets provided"
+    assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
     assert isinstance(file_format, str) & ((file_format == "csv") | (file_format == "h5")), \
         "invalid file format selected"
 
@@ -295,15 +295,13 @@ def write_to_dir(datasets: list, t_direct: str, file_format: str = "csv") -> str
         print("invalid path (write to dir)")
         raise
 
-    # Gibts ne elegantere Lösung?
-    names = ["train", "test"]
-    names = list(map(lambda k: k + "." + file_format, names))
-    if file_format == "h5":
-        for i, dataset in enumerate(datasets):
-            dataset.to_hdf(names[i], key='df', mode='w')
-    elif file_format == "csv":
-        for i, dataset in enumerate(datasets):
-            dataset.to_csv(names[i], index=False)
+    if save_file:
+        if file_format == "h5":
+            dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
+        elif file_format == "csv":
+            dataset.to_csv('preprocessed_df.csv', index=False)
+    else:
+        return dataset
 
 
 def main():
