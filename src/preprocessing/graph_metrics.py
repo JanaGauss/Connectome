@@ -14,7 +14,19 @@ from IPython.display import clear_output
 #
 
 
-def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = None, use_abs: bool = False) -> tuple:
+def get_graph_metrics(conns: list,
+                      threshold: float = 0.65,
+                      col_names: list = None,
+                      use_abs: bool = False,
+                      gms: tuple = ('Degrees',
+                                    'Modularity',
+                                    'Community Structure',
+                                    'Clustering Coefficient',
+                                    'Characteristic Path Length',
+                                    'Node Betweenness',
+                                    'Density',
+                                    'Component Vectors',
+                                    'Transitivity')) -> tuple:
     """
     - computes graph metrics for the given connectivity data
     - retransforms the connectivity matrices to pearson correlation before computing the adjacency matrices
@@ -23,6 +35,12 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
         col_names: colnames of the connectivity matrices in case those are reordered
+        use_abs: whether absolute connectivity values should be used
+        gms: graph metrics to be computed - can be any of:
+                        ['Degrees', 'Modularity',
+                        'Community Structure', 'Clustering Coefficient',
+                        'Characteristic Path Length', 'Node Betweenness',
+                        'Density', 'Component Vectors', 'Transitivity']
 
     Returns:
         pd.DataFrame containing the computed graph metrics
@@ -51,39 +69,47 @@ def get_graph_metrics(conns: list, threshold: float = 0.65, col_names: list = No
             adj = adj_matrices[i, :, :]
 
             # community structure / modularity
-            if not any((adj != 0).flatten()):
-                res["Modularity"].append(0)
-                res["Community Structure"].append(np.zeros((regions,)))
+            if "Modularity" in gms:
+                if not any((adj != 0).flatten()):
+                    res["Modularity"].append(0)
+                    res["Community Structure"].append(np.zeros((regions,)))
 
-            else:
-                community_struct = bct.modularity_und(adj)
-                res["Modularity"].append(community_struct[1])
-                res["Community Structure"].append(community_struct[0])
+                else:
+                    community_struct = bct.modularity_und(adj)
+                    res["Modularity"].append(community_struct[1])
+                    res["Community Structure"].append(community_struct[0])
 
             # degrees
-            res["Degrees"].append(bct.degrees_und(adj))
+            if "Degrees" in gms:
+                res["Degrees"].append(bct.degrees_und(adj))
 
             # clustering coef
-            res["Clustering Coefficient"].append(bct.clustering_coef_bu(adj))
+            if "Clustering Coefficient" in gms:
+                res["Clustering Coefficient"].append(bct.clustering_coef_bu(adj))
 
             # distance
-            distance = bct.distance_bin(adj)
-            min_dist = np.min(distance, axis=1)
-            res["Characteristic Path Length"].append(np.array(np.mean(min_dist)))
+            if "Characteristic Path Length" in gms:
+                distance = bct.distance_bin(adj)
+                min_dist = np.min(distance, axis=1)
+                res["Characteristic Path Length"].append(np.array(np.mean(min_dist)))
 
             # node betweenness
-            res["Node Betweenness"].append(bct.betweenness_bin(adj))
+            if "Node Betweenness" in gms:
+                res["Node Betweenness"].append(bct.betweenness_bin(adj))
 
             # density
-            res["Density"].append(np.array(bct.density_und(adj)))
+            if "Density" in gms:
+                res["Density"].append(np.array(bct.density_und(adj)))
 
             # components of an undirected graph
-            graph_comp = np.array(bct.get_components(adj))
-            res["Component Vectors"].append(graph_comp[0])
+            if "Component Vectors" in gms:
+                graph_comp = np.array(bct.get_components(adj))
+                res["Component Vectors"].append(graph_comp[0])
 
             # transitivity
-            res["Transitivity"].append(0 if np.isnan(bct.transitivity_bu(adj))
-                                       else bct.transitivity_bu(adj))
+            if "Transitivity" in gms:
+                res["Transitivity"].append(0 if np.isnan(bct.transitivity_bu(adj))
+                                           else bct.transitivity_bu(adj))
 
         except Exception as e:
             failed[i] = (e, adj_matrices[i, :, :])
@@ -164,5 +190,3 @@ def explain_graph_metrics() -> None:
         contin = input("Continue?(y)\t")
         clear_output(wait=True)  # only works well in a notebook environment
         explain = False if contin != "y" else True
-
-
