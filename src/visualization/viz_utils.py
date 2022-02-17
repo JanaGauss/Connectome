@@ -1,3 +1,59 @@
+import matplotlib.pyplot as plt
+
+def plot_feature_map(heatmap, title, aggregated_network = False):
+    if aggregated_network:
+        ticklabel = ["0","1","2","3","4","5","6","7"]
+
+        fig, ax = plt.subplots(figsize=(10, 10))
+        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.colorbar()
+        ax.set_xticks([0,1,2,3,4,5,6,7])
+        ax.set_yticks([0,1,2,3,4,5,6,7])
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
+        plt.vlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+    else:
+        #create borders and labels for plot
+        ordered_roi, ordered_region = ordered_regions()
+        ordered_region = list(map(int, ordered_region))
+
+        hlines = []
+        for i in range(len(ordered_region)-1):
+            if ordered_region[i] < ordered_region[i+1]:
+              hlines.append(i)
+        temp = hlines
+        temp.append(246)
+        temp.insert(0,0)
+        ticks = []
+        for i in range(len(temp)-1):
+            ticks.append(np.round(np.mean([temp[i], temp[i+1]])))
+        
+        ticklabel = ["0","1","2","3","4","5","6","7"]
+
+        #create plot
+        fig, ax = plt.subplots(figsize=(10, 10))
+        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.colorbar()
+        ax.set_xticks(ticks)
+        ax.set_yticks(ticks)
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines(hlines,0,246,linewidth = 2)
+        plt.vlines(hlines,0,246,linewidth = 2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+
 def ordered_regions() -> list:
     """
     return list of indexes from yeo 7
@@ -35,5 +91,7 @@ def ordered_regions() -> list:
 
     sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
     sorted_keys_int = list(map(int, sorted_keys))
-    sorted_keys_list= [x - 1 for x in sorted_keys_int]
-    return sorted_keys_list
+    sorted_keys_list = [x - 1 for x in sorted_keys_int]
+    ordered_region =  list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
+    ordered_region = list(map(int, ordered_region))
+    return (sorted_keys_list, ordered_region)
