@@ -2,28 +2,6 @@ import numpy as np
 import pandas as pd
 
 
-def load_data(train: bool = True) -> pd.DataFrame:
-    """
-    loads the datasets (csv-files) from specified path
-
-    Args:
-        train:
-
-    Returns:
-
-    """
-    assert isinstance(train, bool), "invalid input [train]"
-
-    if train:
-        ds = "train"
-    else:
-        ds = "test"
-
-    path = input(r"Input path to {} dataset (with name + .csv): ".format(ds))
-
-    return pd.read_csv(path)
-
-
 def preprocess_data(dataset: pd.DataFrame) -> tuple:
     """
     Combines several preprocessing steps which are to be performed on the given dataset.
