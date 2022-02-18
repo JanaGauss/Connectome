@@ -6,10 +6,17 @@ from sklearn.model_selection import train_test_split
 from src.preprocessing.network_aggregation import grouped_conn_mat
 
 
-def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool = False, write_dir: str = None,
-                               preprocessing_type: str = 'conn', network: str = 'yeo7', statistic: str = 'mean',
-                               upper: bool = True, split_size: float = .8, seed: int = 42,
-                               file_format: str = "csv") -> None:
+def preprocess_mat_files(matlab_dir: str = None,
+                         excel_path: str = None,
+                         save_file: bool = False,
+                         write_dir: str = None,
+                         preprocessing_type: str = 'conn',
+                         network: str = 'yeo7',
+                         upper: bool = True,
+                         statistic: str = 'mean',
+                         split_size: float = .8,
+                         seed: int = 42,
+                         file_format: str = "csv") -> None:
     """
     Final function which combines all the other functions to read in
     and transform the data.
@@ -20,7 +27,8 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
         excel_path: path to excel list
         save_file: If false return as pd dataframe
         write_dir: path where to write the dataset to if save_file = True
-        preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
+        preprocessing_type: conn for connectivity matrix,
+            "aggregation" for aggregated conn matrix, "graph" for graph matrices
         network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
         statistic: Summary statistic to be applied (only applicable if preprocessing_type = aggregation)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
@@ -31,16 +39,33 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
     Returns:
         Two files (a train/test split of datasets) for further use in modelling.
     """
+
+    if matlab_dir is None:
+        matlab_dir = input(r'Input your path where the matlab files are stored: ')
+    if excel_path is None:
+        excel_path = input(r'Input your path where the excel '
+                           r'file is stored (with name + ".xlsx"): ')
+    if write_dir is None:
+        write_dir = input(r'Input your path where '
+                          r'to write the final file: ')
+
+    if preprocessing_type == "aggregation":
+        statistic = input(r'Input summary statistic: ')
+
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
     assert isinstance(save_file, bool), "invalid datatype for argument save_file"
-    assert isinstance(write_dir, str),  "invalid path (write_dir) provided"
-    assert isinstance(preprocessing_type, str) & (preprocessing_type == "conn" or preprocessing_type == "aggregation" or
-                                            preprocessing_type == "graph"), "invalid preprocessing type"
-    assert isinstance(upper, bool),   "invalid datatype for argument flatten"
-    assert isinstance(split_size, float) & (split_size >= 0.0) & (split_size <= 1.0), "invalid path provided"
-    assert isinstance(seed, int),       "provided seed is no integer"
-    assert isinstance(file_format, str) & (file_format == "csv" or file_format == "h5"), "invalid file format selected"
+    assert isinstance(write_dir, str), "invalid path (write_dir) provided"
+    assert isinstance(preprocessing_type, str) & \
+           (preprocessing_type == "conn" or
+            preprocessing_type == "aggregation" or
+            preprocessing_type == "graph"), "invalid preprocessing type"
+    assert isinstance(upper, bool), "invalid datatype for argument flatten"
+    assert isinstance(split_size, float) & (split_size >= 0.0) & \
+           (split_size <= 1.0), "invalid path provided"
+    assert isinstance(seed, int), "provided seed is no integer"
+    assert isinstance(file_format, str) & \
+           (file_format == "csv" or file_format == "h5"), "invalid file format selected"
 
     print('loading files')
     # load matlab files and excel
@@ -52,24 +77,34 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
         # stack matrices
         stacked = stack_matrices(res[0], upper, preprocessing_type)
         # creating colnames and merging into one df
-        colnames = col_names_final_df(delcode_excel, res[0][0].shape[0], preprocessing_type)
+        colnames = col_names_final_df(delcode_excel,
+                                      res[0][0].shape[0],
+                                      preprocessing_type)
     elif preprocessing_type == 'aggregation':
         grpd_conn_mat = grouped_conn_mat(res[0], network=network, statistic=statistic)
 
         # stack matrices
         stacked = stack_matrices(grpd_conn_mat, upper, preprocessing_type)
         # creating colnames and merging into one df
-        colnames = col_names_final_df(delcode_excel, grpd_conn_mat[0].shape[0], preprocessing_type)
+        colnames = col_names_final_df(delcode_excel,
+                                      grpd_conn_mat[0].shape[0],
+                                      preprocessing_type)
 
     elif preprocessing_type == 'graph':
         pass
 
     print("Creating Final Dataset")
-    final_df = create_final_df(file_names=res[1], final_columns=colnames,
-                               stacked_matrices=stacked, data_from_excel=delcode_excel)
+    final_df = create_final_df(file_names=res[1],
+                               final_columns=colnames,
+                               stacked_matrices=stacked,
+                               data_from_excel=delcode_excel)
 
-    write_to_dir(dataset=final_df, save_file=save_file, t_direct=write_dir, file_format=file_format)
+    write_to_dir(dataset=final_df,
+                 save_file=save_file,
+                 t_direct=write_dir,
+                 file_format=file_format)
     print("Done!")
+
 
 def load_matlab_files(directory: str) -> tuple:
     """
@@ -104,7 +139,9 @@ def load_matlab_files(directory: str) -> tuple:
     return conn_matrices, worked
 
 
-def stack_matrices(matrices: list, upper: bool = True, preprocessing_type: str = 'conn') -> np.ndarray:
+def stack_matrices(matrices: list,
+                   upper: bool = True,
+                   preprocessing_type: str = 'conn') -> np.ndarray:
     """
     this function stacks the connectivity matrices
     for the subjects upon each other 
@@ -113,7 +150,8 @@ def stack_matrices(matrices: list, upper: bool = True, preprocessing_type: str =
     Args:
         matrices: List of connectivity matrix
         upper: whether only upper diagonal values should be considered
-        preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
+        preprocessing_type: conn for connectivity matrix,
+            "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         A flattenened np.ndarray of connectivtity matrices
@@ -127,14 +165,17 @@ def stack_matrices(matrices: list, upper: bool = True, preprocessing_type: str =
     return np.stack(flattened, axis=0)
 
 
-def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True, preprocessing_type: str = 'conn') -> np.ndarray:
+def flatten_conn_matrix(matrix: np.ndarray,
+                        upper: bool = True,
+                        preprocessing_type: str = 'conn') -> np.ndarray:
     """
     turns the connectivity matrix into a 1d array
 
     Args:
         matrix: A connectivity matrix
         upper: whether only the entries above the diagonal should be considered
-        preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
+        preprocessing_type: conn for connectivity matrix,
+            "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         A flattenened connectivtity matrices as a 1d array
@@ -155,15 +196,19 @@ def flatten_conn_matrix(matrix: np.ndarray, upper: bool = True, preprocessing_ty
         return matrix.flatten()
 
 
-def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246, preprocessing_type: str = 'conn') -> list:
+def col_names_final_df(data_from_excel: pd.DataFrame,
+                       shape: int = 246,
+                       preprocessing_type: str = 'conn') -> list:
     """
     creates the columns names for the final data frame 
     based on shape / number of columns of the used connectivity matrix
-    preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
+
 
     Args:
         data_from_excel: A pd.Dataframe
         shape: number of columns in connectivity matrix
+        preprocessing_type: conn for connectivity matrix,
+            "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         A list of column names for the final dataset
@@ -176,26 +221,31 @@ def col_names_final_df(data_from_excel: pd.DataFrame, shape: int = 246, preproce
     return final_columns
 
 
-def col_names_conn_matrix(n: int, preprocessing_type: str = 'conn'):
+def col_names_conn_matrix(n: int,
+                          preprocessing_type: str = 'conn'):
     """
     creates the column names for the flattened connectivity matrix
-    preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
+
 
     Args:
         n: number of columns in connectivity matrix
+        preprocessing_type: conn for connectivity matrix,
+            "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
         Column names for connectivity matrix
     """
     if preprocessing_type == 'conn':
-        return [str(i) + "_" + str(j) for i in range(1, n + 1) for j in range(i + 1, n + 1)]
+        return [str(i) + "_" + str(j) for i in range(1, n + 1)
+                for j in range(i + 1, n + 1)]
     elif preprocessing_type == 'aggregation':
         return [str(i) + "_" + str(j) for i in range(0, n) for j in range(i, n)]
 
 
-
-def create_final_df(file_names: list, final_columns: list,
-                    stacked_matrices: np.ndarray, data_from_excel: pd.DataFrame) -> pd.DataFrame:
+def create_final_df(file_names: list,
+                    final_columns: list,
+                    stacked_matrices: np.ndarray,
+                    data_from_excel: pd.DataFrame) -> pd.DataFrame:
     """
     this function merges the connectivity matrices, the excel and the subject ids
 
@@ -241,7 +291,9 @@ def get_subject_ids(file_names: list) -> np.ndarray:
     return np.array([int(i.split("Subject", 1)[1][0:3]) for i in file_names])
 
 
-def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: int = 42) -> list:
+def create_train_test_split(data: pd.DataFrame,
+                            split_size: float = .8,
+                            seed: int = 42) -> list:
     """
     takes the final data set and splits it into random train and test subsets. 
     Returns a list containing train-test split of inputs
@@ -267,16 +319,20 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     return train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
 
 
-def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str = None, file_format: str = "csv") -> str:
+def write_to_dir(dataset: pd.DataFrame,
+                 save_file: bool = False,
+                 t_direct: str = None,
+                 file_format: str = "csv") -> str:
     """
-    writes the list of train/test splits to hdf files for future use in python or csv for future use in R 
-    in the specified directory
+    writes the list of train/test splits to hdf files for future use in python or
+    csv for future use in R into the specified directory
 
     Args:
         dataset: the final dataset to save
         save_file: If false return pd.DataFrame
         t_direct: path where to save the dataframes to
-        file_format: The fileformat the data should be saved as (csv of hdf) -> input must be csv or h5
+        file_format: The fileformat the data should be saved as (csv of hdf)
+            -> input must be csv or h5
 
     Returns:
         A train and test dataset as csv or hdf file
@@ -286,8 +342,9 @@ def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str =
     """
     assert isinstance(t_direct, str), "invalid path (write_dir) provided"
     assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
-    assert isinstance(file_format, str) & ((file_format == "csv") | (file_format == "h5")), \
-        "invalid file format selected"
+    assert isinstance(file_format, str) & \
+           ((file_format == "csv") | (file_format == "h5")), \
+           "invalid file format selected"
 
     try:
         os.chdir(t_direct)
@@ -305,16 +362,11 @@ def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str =
 
 
 def main():
-    matlab_dir = input(r'Input your path where the matlab files are stored: ')
-    excel_path = input(r'Input your path where the excel file is stored (with name + ".xlsx"): ')
-    write_dir = input(r'Input your path where to write the final file: ')
     preprocessing_type = input(r'Input preprocessing type: conn, aggregation or grouped: ')
     if preprocessing_type == "aggregation":
         statistic = input(r'Input summary statistic: ')
 
-    transform_mat_write_to_hdf(matlab_dir=matlab_dir, excel_path=excel_path,
-                               write_dir=write_dir, preprocessing_type=preprocessing_type,
-                               statistic = statistic)
+    preprocess_mat_files(preprocessing_type=preprocessing_type, statistic=statistic)
 
 
 if __name__ == "__main__":
