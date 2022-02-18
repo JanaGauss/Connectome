@@ -59,23 +59,13 @@ def model_brainnet_cnn(X, y, aggregation=True, train_data=True, augmentation=Fal
 def preprocess_for_cnn(X,y, aggregation=True, train_data=True, augmentation=False, scale=.07):
     # create target
 
-    #y, X = dtl.preprocess_data(df)
-    #y = np.array(y, dtype=np.float32)
-
-    # create X_struc and X_img
-
-    # X_struc = X[["age", "sex", "edyears"]]
-    #
-    #
-    # #drop columns
-    # cols_to_drop = ["MEM_score", "Apoe", "age", "sex", "edyears"]
-    # X.drop(columns=cols_to_drop, inplace = True)
-    #
-    # #standardize data
-    # if train_data:
-    #     scaler.fit_transform(X)
-    # else:
-    #     scaler.transform(X)
+    X_img = []
+    X_struc = []
+    for x in X.columns:
+        if len(x.split("_"))>1 and x.split("_")[0].isdigit() and x.split("_")[1].isdigit():
+            X_img.append(x)
+        else:
+            X_struc.append(x)
 
     # turn flat array to matrix
     if aggregation:
