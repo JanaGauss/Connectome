@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_feature_map(heatmap, title, aggregated_network = False):
     if aggregated_network:
