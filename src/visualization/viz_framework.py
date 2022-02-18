@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from viz_utils import plot_feature_map
+from viz_utils import plot_feature_map, plot_coef_elastic_net
 from viz_nn import nn_feature_visualization
 
 
@@ -33,7 +33,7 @@ def visualization_framework(model,
 
     #Elastic Net
     elif viz_method == "elastic_net":
-       pass
+       return plot_coef_elastic_net(model)
 
     # Shapley Values
     elif viz_method == "shapley":

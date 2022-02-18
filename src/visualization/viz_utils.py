@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def plot_feature_map(heatmap, title, aggregated_network = False):
     if aggregated_network:
         ticklabel = ["0","1","2","3","4","5","6","7"]
@@ -96,3 +97,41 @@ def ordered_regions() -> list:
     ordered_region =  list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
     ordered_region = list(map(int, ordered_region))
     return (sorted_keys_list, ordered_region)
+
+
+
+
+def plot_coef_elastic_net(model):
+  """
+  plot coefficients of elastic net model
+  
+  Args:
+    model: fitted elastic net model
+        
+  Returns:
+    plot
+  
+  """
+  # extract indices of conn variables
+  ind_conn_cols = []
+  for x in range(len(model.feature_names_in_)):
+    if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
+      ind_conn_cols.append(x)
+
+  mat = flat_to_mat(model.coef_[ind_conn_cols])
+
+  # define if aggregated or not depending on shape
+  if mat.shape[0] == 246:
+    aggregated = False
+  else: 
+    aggregated = True
+
+
+  if aggregated:
+    plot = plot_feature_map(mat, title = "Elastic Net coefficients", aggregated_network = True)
+  else: # reorder by regions
+    plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
+    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False)
+  
+
+  return plot
