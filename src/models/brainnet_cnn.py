@@ -216,7 +216,8 @@ def flat_to_mat_aggregation(x: np.ndarray) -> np.ndarray:
     A = np.zeros(n_a * n_a).reshape(n_a, n_a)
     ind = np.triu_indices(n_a, k=0)
     A[ind] = x
-    return A.T + A
+    mat = A.T + A
+    return mat - .5 * np.diag(mat) * np.identity(8)
 
 
 def data_augmentation_gaussian(X, X_struc, y, scale=.07):
