@@ -8,7 +8,7 @@ from src.preprocessing.network_aggregation import grouped_conn_mat
 
 def preprocess_mat_files(matlab_dir: str = None,
                          excel_path: str = None,
-                         save_file: bool = False,
+                         export_file: bool = False,
                          write_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
@@ -25,7 +25,7 @@ def preprocess_mat_files(matlab_dir: str = None,
     Args:
         matlab_dir: path to matlab files
         excel_path: path to excel list
-        save_file: If false return as pd dataframe
+        export_file: If false return as pd dataframe
         write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix, "graph" for graph matrices
@@ -54,7 +54,7 @@ def preprocess_mat_files(matlab_dir: str = None,
 
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
-    assert isinstance(save_file, bool), "invalid datatype for argument save_file"
+    assert isinstance(export_file, bool), "invalid datatype for argument export_file"
     assert isinstance(write_dir, str), "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & \
            (preprocessing_type == "conn" or
@@ -98,12 +98,13 @@ def preprocess_mat_files(matlab_dir: str = None,
                                final_columns=colnames,
                                stacked_matrices=stacked,
                                data_from_excel=delcode_excel)
-
-    write_to_dir(dataset=final_df,
-                 save_file=save_file,
-                 t_direct=write_dir,
-                 file_format=file_format)
-    print("Done!")
+    if export_file:
+        write_to_dir(dataset=final_df,
+                     t_direct=write_dir,
+                     file_format=file_format)
+    else:
+        print("Done!")
+        return final_df
 
 
 def load_matlab_files(directory: str) -> tuple:
@@ -320,7 +321,6 @@ def create_train_test_split(data: pd.DataFrame,
 
 
 def write_to_dir(dataset: pd.DataFrame,
-                 save_file: bool = False,
                  t_direct: str = None,
                  file_format: str = "csv") -> str:
     """
@@ -329,7 +329,6 @@ def write_to_dir(dataset: pd.DataFrame,
 
     Args:
         dataset: the final dataset to save
-        save_file: If false return pd.DataFrame
         t_direct: path where to save the dataframes to
         file_format: The fileformat the data should be saved as (csv of hdf)
             -> input must be csv or h5
@@ -344,7 +343,7 @@ def write_to_dir(dataset: pd.DataFrame,
     assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
     assert isinstance(file_format, str) & \
            ((file_format == "csv") | (file_format == "h5")), \
-           "invalid file format selected"
+        "invalid file format selected"
 
     try:
         os.chdir(t_direct)
@@ -352,13 +351,11 @@ def write_to_dir(dataset: pd.DataFrame,
         print("invalid path (write to dir)")
         raise
 
-    if save_file:
-        if file_format == "h5":
-            dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
-        elif file_format == "csv":
-            dataset.to_csv('preprocessed_df.csv', index=False)
-    else:
-        return dataset
+    if file_format == "h5":
+        dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
+    elif file_format == "csv":
+        dataset.to_csv('preprocessed_df.csv', index=False)
+
 
 
 def main():
