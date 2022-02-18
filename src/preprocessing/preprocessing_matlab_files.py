@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from src.preprocessing.network_aggregation import grouped_conn_mat
 
 
-def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool = False, write_dir: str = None,
+def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, export_file: bool = False, write_dir: str = None,
                                preprocessing_type: str = 'conn', network: str = 'yeo7', statistic: str = 'mean',
                                upper: bool = True, split_size: float = .8, seed: int = 42,
                                file_format: str = "csv") -> None:
@@ -18,7 +18,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
     Args:
         matlab_dir: path to matlab files
         excel_path: path to excel list
-        save_file: If false return as pd dataframe
+        export_file: If false return as pd dataframe
         write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix, "aggregation" for aggregated conn matrix, "graph" for graph matrices
         network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
@@ -33,7 +33,7 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
     """
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
-    assert isinstance(save_file, bool), "invalid datatype for argument save_file"
+    assert isinstance(export_file, bool), "invalid datatype for argument export_file"
     assert isinstance(write_dir, str),  "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & (preprocessing_type == "conn" or preprocessing_type == "aggregation" or
                                             preprocessing_type == "graph"), "invalid preprocessing type"
@@ -67,9 +67,12 @@ def transform_mat_write_to_hdf(matlab_dir: str, excel_path: str, save_file: bool
     print("Creating Final Dataset")
     final_df = create_final_df(file_names=res[1], final_columns=colnames,
                                stacked_matrices=stacked, data_from_excel=delcode_excel)
+    if export_file:
+        write_to_dir(dataset=final_df, t_direct=write_dir, file_format=file_format)
+    else:
+        print("Done!")
+        return final_df
 
-    write_to_dir(dataset=final_df, save_file=save_file, t_direct=write_dir, file_format=file_format)
-    print("Done!")
 
 def load_matlab_files(directory: str) -> tuple:
     """
@@ -267,14 +270,13 @@ def create_train_test_split(data: pd.DataFrame, split_size: float = .8, seed: in
     return train_test_split(data, train_size=split_size, random_state=seed, shuffle=True)
 
 
-def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str = None, file_format: str = "csv") -> str:
+def write_to_dir(dataset: pd.DataFrame, t_direct: str = None, file_format: str = "csv") -> str:
     """
     writes the list of train/test splits to hdf files for future use in python or csv for future use in R 
     in the specified directory
 
     Args:
         dataset: the final dataset to save
-        save_file: If false return pd.DataFrame
         t_direct: path where to save the dataframes to
         file_format: The fileformat the data should be saved as (csv of hdf) -> input must be csv or h5
 
@@ -295,13 +297,11 @@ def write_to_dir(dataset: pd.DataFrame, save_file: bool = False, t_direct: str =
         print("invalid path (write to dir)")
         raise
 
-    if save_file:
-        if file_format == "h5":
-            dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
-        elif file_format == "csv":
-            dataset.to_csv('preprocessed_df.csv', index=False)
-    else:
-        return dataset
+    if file_format == "h5":
+        dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
+    elif file_format == "csv":
+        dataset.to_csv('preprocessed_df.csv', index=False)
+
 
 
 def main():
