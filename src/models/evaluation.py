@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, reca
 import numpy as np
 import pandas as pd
 
+
 def model_evaluation(model, X_test, y_test):
     """
     Evaluates the model based on a set of metrics
