@@ -135,3 +135,32 @@ def plot_coef_elastic_net(model):
   
 
   return plot
+
+
+def plot_grouped_FI(df_importance):
+  """
+  plot results grouped feature importance
+  
+  Args:
+    df_importance: pd.DataFrame with results from calculation grouped FI
+        
+  Returns:
+    plot
+  
+  """ 
+
+  # reorder results 
+  order_regs = ['0_0', '0_1', '0_2', '0_3',
+       '0_4', '0_5', '0_6', '0_7', '1_1', '1_2', '1_3', '1_4', '1_5', '1_6',
+       '1_7', '2_2', '2_3', '2_4', '2_5', '2_6', '2_7', '3_3', '3_4', '3_5',
+       '3_6', '3_7', '4_4', '4_5', '4_6', '4_7', '5_5', '5_6', '5_7', '6_6',
+       '6_7', '7_7']
+
+  result = []
+  for i in order_regs:
+    res_i = df_importance.loc[df['region'] == i][df_importance.columns[1]].values[0] # reorder Feature Importance Values -> ordered like in order_regs
+    result.append(res_i)
+
+  plot_mat = flat_to_mat_aggregation(result)
+  return plot_feature_map(plot_mat, title = "Grouped Feature Importance", aggregated_network = True)
+  
