@@ -29,7 +29,7 @@ def preprocess_mat_files(matlab_dir: str = None,
         write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix, "graph" for graph matrices
-        network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
+        network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
         statistic: Summary statistic to be applied (only applicable if preprocessing_type = aggregation)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
         split_size: the size of the train dataset (default .8)
