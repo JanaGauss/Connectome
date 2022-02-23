@@ -122,7 +122,7 @@ def load_matlab_files(directory: str) -> tuple:
     """
 
     try:
-        os.path.isdir(directory)
+        os.path.exists(directory)
     except FileNotFoundError:
         print("invalid directory (matlab files)")
         raise
@@ -348,7 +348,7 @@ def write_to_dir(dataset: pd.DataFrame,
            "invalid file format selected"
 
     try:
-        os.path.isdir(t_direct)
+        os.path.exists(t_direct)
     except FileNotFoundError:
         print("invalid path (write to dir)")
         raise
