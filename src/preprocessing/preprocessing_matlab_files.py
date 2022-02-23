@@ -121,11 +121,8 @@ def load_matlab_files(directory: str) -> tuple:
         KeyError: FileNotFoundError
     """
 
-    try:
-        os.path.exists(directory)
-    except FileNotFoundError:
-        print("invalid directory (matlab files)")
-        raise
+    if not os.path.exists(directory):
+        raise FileNotFoundError("invalid directory (matlab files)")
 
     mat_files_names = os.listdir(directory)
     mat_files_names = [os.path.join(directory, file) for file in mat_files_names]
@@ -347,11 +344,8 @@ def write_to_dir(dataset: pd.DataFrame,
            ((file_format == "csv") | (file_format == "h5")), \
            "invalid file format selected"
 
-    try:
-        os.path.exists(t_direct)
-    except FileNotFoundError:
-        print("invalid path (write to dir)")
-        raise
+    if not os.path.exists(t_direct):
+        raise FileNotFoundError("invalid path (write to dir)")
 
     if save_file:
         filename = os.path.join(t_direct, ("preprocessed_df.h5"
