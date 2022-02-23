@@ -369,8 +369,9 @@ def main():
     preprocessing_type = input(r'Input preprocessing type: conn, aggregation or grouped: ')
     if preprocessing_type == "aggregation":
         statistic = input(r'Input summary statistic: ')
-
-    preprocess_mat_files(preprocessing_type=preprocessing_type, statistic=statistic)
+        preprocess_mat_files(preprocessing_type=preprocessing_type, statistic=statistic)
+    else:
+        preprocess_mat_files(preprocessing_type=preprocessing_type)
 
 
 if __name__ == "__main__":
