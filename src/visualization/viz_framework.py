@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
 from viz_nn import nn_feature_visualization
-from group_inp import grouped_permutation_FI, group_only_permutation_FI
+from group_imp import grouped_permutation_FI, group_only_permutation_FI
 
 
 def visualization_framework(model,
