@@ -122,12 +122,13 @@ def load_matlab_files(directory: str) -> tuple:
     """
 
     try:
-        os.chdir(directory)
+        os.path.isdir(directory)
     except FileNotFoundError:
         print("invalid directory (matlab files)")
         raise
 
-    mat_files_names = os.listdir()
+    mat_files_names = os.listdir(directory)
+    mat_files_names = [os.path.join(directory, file) for file in mat_files_names]
     conn_matrices = []
     worked = []
 
@@ -347,16 +348,19 @@ def write_to_dir(dataset: pd.DataFrame,
            "invalid file format selected"
 
     try:
-        os.chdir(t_direct)
+        os.path.isdir(t_direct)
     except FileNotFoundError:
         print("invalid path (write to dir)")
         raise
 
     if save_file:
+        filename = os.path.join(t_direct, ("preprocessed_df.h5"
+                                           if file_format == "h5"
+                                           else "preprocessed_df.csv"))
         if file_format == "h5":
-            dataset.to_hdf('preprocessed_df.csv', key='df', mode='w')
+            dataset.to_hdf(filename, key='df', mode='w')
         elif file_format == "csv":
-            dataset.to_csv('preprocessed_df.csv', index=False)
+            dataset.to_csv(filename, index=False)
     else:
         return dataset
 
