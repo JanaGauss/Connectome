@@ -1,3 +1,7 @@
+import pandas as pd
+from typing import Union
+
+
 def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	"""
 	takes a list of colnames in the brainnetome format/naming and converts them to yeo_7 regions
@@ -48,7 +52,19 @@ def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	return [str(i[0]) + "_" + str(i[1]) for i in new_names]
 
 
+def get_colnames_df(df: bool = True) -> pd.DataFrame:
+	conn_names = [str(i) + "_" + str(j) for i in range(1, 247) for j in range(1, 247)]
+
+	return (pd.DataFrame({
+		"conn_name": conn_names, 
+		"region": colnames_to_yeo_7(conn_names)
+		}) if df 
+		else dict(zip(conn_names, 
+			colnames_to_yeo_7(conn_names))))
+
+
 if __name__ == "__main__":
 	print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"]))
 	print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"], order=False))
+	print(get_colnames_df(True))
 	
