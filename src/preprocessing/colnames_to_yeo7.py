@@ -2,12 +2,13 @@ from typing import Union
 import pandas as pd
 
 
-def colnames_to_yeo_7(colnames: list) -> list:
+def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	"""
 	takes a list of colnames in the brainnetome format/naming and converts them to yeo_7 regions
 
 	Args:
 		colnames: list of the brainnetome colnames
+		order: whether the resulting colnames should be ordered
 
 	Return: 
 		list of yeo_7 converted colnames
@@ -47,10 +48,11 @@ def colnames_to_yeo_7(colnames: list) -> list:
 		}
 	
 	splitted = [[int(j) for j in i.split("_")] for i in colnames]
-
-	return [str(lookup[i[0]]) + "_" + str(lookup[i[1]]) for i in splitted]
+	new_names = [sorted([lookup[i] for i in j]) if order else [lookup[i] for i in j] for j in splitted]
+	return [str(i[0]) + "_" + str(i[1]) for i in new_names]
 
 
 if __name__ == "__main__":
-	print(colnames_to_yeo_7(["108_110", "1_2"]))
+	print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"]))
+	print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"], order=False))
 	
