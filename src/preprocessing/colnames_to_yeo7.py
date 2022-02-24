@@ -1,7 +1,3 @@
-from typing import Union
-import pandas as pd
-
-
 def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	"""
 	takes a list of colnames in the brainnetome format/naming and converts them to yeo_7 regions
