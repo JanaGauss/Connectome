@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, accuracy_score
 
-def grouped_permutation_FI(model, Xtest, ytest, groups_df, m):
+def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 5):
   """
   grouped permutation feature importance, see paper, section 2.2.1. Shuffle observations of group g and calculate metric after shuffle
   
@@ -74,7 +74,7 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m):
 
 
 
-def group_only_permutation_FI(model, Xtest, ytest, groups_df, m):
+def group_only_permutation_FI(model, Xtest, ytest, groups_df, m = 5):
   """
   grouped permutation feature importance, see paper, section 2.2.2. Compare the metric after permuting all features jointly with
   the metric after permuting all features except the considered group
