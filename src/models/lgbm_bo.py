@@ -21,6 +21,25 @@ def bayes_parameter_opt_lgb(
         default_params: dict = None
         ) -> tuple:
 
+    """
+    Bayesian Optimization for lightgbm model
+    Args:
+        X: features
+        y: target
+        n_folds: number of folds for cv
+        random_seed: for reproducibility
+        init_points: BO parameter - How many steps of random exploration you want to perform.
+            Random exploration can help by diversifying the exploration space
+        n_iter: BO parameter - How many steps of bayesian optimization you want to perform.
+            The more steps the more likely to find a good maximum you are
+        sklearn_cv: whether the sklearn RepeatedKFold should be used or basic lightgbm cv
+        ranges: ranges for the parameters to be tuned
+        default_params: fixed parameters
+
+    Returns:
+
+    """
+
     # parameters
     if ranges is None:
         ranges = {
@@ -56,7 +75,26 @@ def bayes_parameter_opt_lgb(
             min_child_weight,
             subsample,
             num_iterations
-    ):
+    ) -> float:
+        """
+        fits an lgb model using the chosen cv method given the parameters
+
+        Args:
+            learning_rate: Boosting learning rate
+            num_leaves: Maximum tree leaves for base learners.
+            feature_fraction: LightGBM will randomly select a subset of features
+                on each iteration (tree) if feature_fraction is smaller than 1.0
+            max_depth: Maximum tree depth for base learners, <=0 means no limit
+            min_split_gain: Minimum loss reduction required to make a
+                further partition on a leaf node of the tree.
+            min_child_weight: Minimum sum of instance weight (hessian)
+                needed in a child (leaf).
+            subsample: Subsample ratio of the training instance
+            num_iterations: Number of boosted trees to fit
+
+        Returns:
+
+        """
 
         params['learning_rate'] = max(min(learning_rate, 1), 0)
         params["num_leaves"] = int(round(num_leaves))
@@ -78,8 +116,8 @@ def bayes_parameter_opt_lgb(
                             stratified=False,
                             verbose_eval=50,
                             nfold=None if sklearn_cv else n_folds,
-                            shuffle=False if sklearn_cv else True,
-                            folds=splits if sklearn_cv else None,
+                            shuffle=(False if sklearn_cv else True),
+                            folds=(splits if sklearn_cv else None),
                             metrics=['auc'])
 
         return max(cv_results['auc-mean'])
@@ -128,7 +166,8 @@ def hpo_lgbm(
             raise FileNotFoundError("invalid directory specified")
 
         if name is None:
-            name = input(r'Input the name under which the model should be saved (without filename extension)')
+            name = input(r'Input the name under which the model '
+                         r'should be saved (without filename extension)')
 
     # perform BO based on given parameters
     res = bayes_parameter_opt_lgb(X, y, **kwargs)
@@ -174,5 +213,6 @@ if __name__ == "__main__":
         n_folds=2,
         init_points=2,
         n_iter=1,
+        sklearn_cv=True,
         save_model=False)
     )
