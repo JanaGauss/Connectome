@@ -17,6 +17,7 @@ def bayes_parameter_opt_lgb(
         init_points: int = 15,
         n_iter: int = 3,
         sklearn_cv: bool = False,
+        n_repeats: int = 3,
         ranges: dict = None,
         default_params: dict = None,
         classification: bool = True,
@@ -38,6 +39,7 @@ def bayes_parameter_opt_lgb(
             find a good maximum you are.
         sklearn_cv: whether the sklearn RepeatedKFold should be used or
             basic lightgbm cv
+        n_repeats: number of repeats if repeatedKFold is used
         ranges: ranges for the parameters to be tuned
         default_params: fixed parameters
         classification: whether a classification or regression case is optimised
@@ -116,7 +118,7 @@ def bayes_parameter_opt_lgb(
         params['num_iterations'] = int(num_iterations)
 
         if sklearn_cv:
-            kf = RepeatedKFold(n_splits=n_folds, n_repeats=3)
+            kf = RepeatedKFold(n_splits=n_folds, n_repeats=n_repeats)
             splits = kf.split(X, y)
 
         train_data = lgb.Dataset(data=X, label=y, free_raw_data=False)
@@ -174,9 +176,9 @@ def hpo_lgbm(
         either a trained LGBM model or a dictionary with the best parameters
     """
 
-    if save_model and save_dir is None:
-        save_dir = input(r'Input the directory where to save the resulting model')
-
+    if save_model:
+        if save_dir is None:
+            save_dir = input(r'Input the directory where to save the resulting model')
         if not os.path.exists(save_dir):
             raise FileNotFoundError("invalid directory specified")
 
@@ -213,7 +215,8 @@ def hpo_lgbm(
 
         # save model before returning
         if save_model:
-            lgb_tuned.booster_.save_model(name + ".txt")
+            t_dir = os.path.join(save_dir, name + ".txt")
+            lgb_tuned.booster_.save_model(t_dir)
 
         return lgb_tuned
 
