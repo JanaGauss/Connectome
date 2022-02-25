@@ -3,6 +3,7 @@ import pandas as pd
 from viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
 from viz_nn import nn_feature_visualization
 from group_imp import grouped_permutation_FI, group_only_permutation_FI
+from src.preprocessing.colnames_to_yeo7 import colnames_to_yeo7
 
 
 def visualization_framework(model,
@@ -30,12 +31,16 @@ def visualization_framework(model,
 
     #
     if viz_method == "GFI":
-	groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
+	# groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
+	groups_df = get_colnames_df()
+	groups_df = groups_df.loc[np.in1d(groups_df["conn_name"], X.columns)] # remove entries of groups_df that are not in colnames of X
 	df_importance = grouped_permutation_FI(model, X, y, groups_df, m = 5)
 	return plot_grouped_FI(df_importance)
         
     elif viz_method == "GFI_only":
-	groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
+	# groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
+	groups_df = get_colnames_df()
+	groups_df = groups_df.loc[np.in1d(groups_df["conn_name"], X.columns)] # remove entries of groups_df that are not in colnames of X
 	df_importance = group_only_permutation_FI(model, X, y, groups_df, m = 5)
 	return plot_grouped_FI(df_importance)
 
