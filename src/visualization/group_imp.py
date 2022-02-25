@@ -33,11 +33,11 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m):
   
   result = []
 
-  for g in groups["region"].unique():
+  for g in groups_df["region"].unique():
 
     metric_group = [] # store result
 
-    conn_names_region = groups.loc[groups["region"] == g]["conn_name"]
+    conn_names_region = groups_df.loc[groups_df["region"] == g]["conn_name"]
     subset_group = Xtest[conn_names_region] # extract variables belonging to region g
 
     for i in range(m):
@@ -100,11 +100,11 @@ def group_only_permutation_FI(model, Xtest, ytest, groups_df, m):
 
   result = []
 
-  for g in groups["region"].unique():
+  for g in groups_df["region"].unique():
 
     metric_group = [] # store result
 
-    conn_names_region = groups.loc[groups["region"] == g]["conn_name"]
+    conn_names_region = groups_df.loc[groups_df["region"] == g]["conn_name"]
     subset_group = Xtest[conn_names_region] # extract variables belonging to region g
 
     for i in range(m):
