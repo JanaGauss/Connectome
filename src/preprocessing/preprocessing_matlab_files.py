@@ -4,6 +4,7 @@ import pandas as pd
 import h5py
 from sklearn.model_selection import train_test_split
 from src.preprocessing.network_aggregation import grouped_conn_mat
+from typing import Union
 
 
 def preprocess_mat_files(matlab_dir: str = None,
@@ -16,7 +17,8 @@ def preprocess_mat_files(matlab_dir: str = None,
                          statistic: str = 'mean',
                          split_size: float = .8,
                          seed: int = 42,
-                         file_format: str = "csv") -> None:
+                         file_format: str = "csv") -> Union[pd.DataFrame, None]:
+
     """
     Final function which combines all the other functions to read in
     and transform the data.
@@ -27,8 +29,8 @@ def preprocess_mat_files(matlab_dir: str = None,
         export_file: If false return as pd dataframe
         write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix,
-            "aggregation" for aggregated conn matrix, "graph" for graph matrices
-        network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
+            "aggregation" for aggregated conn matrix
+        network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
         statistic: Summary statistic to be applied
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
@@ -36,10 +38,11 @@ def preprocess_mat_files(matlab_dir: str = None,
         split_size: the size of the train dataset (default .8)
         seed: pass an int for reproducibility purposes (default 42)
         file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
-    Returns:
-        Two files (a train/test split of datasets) for further use in modelling.
-    """
 
+    Returns:
+        - DataFrame containing the processes matlab files + excel file
+        - optionally saves a file (a train/test split of datasets) for further use in modelling.
+    """
     if matlab_dir is None:
         matlab_dir = input(r'Input your path where the matlab files are stored: ')
     if excel_path is None:
@@ -55,8 +58,7 @@ def preprocess_mat_files(matlab_dir: str = None,
     assert isinstance(write_dir, str), "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & \
            (preprocessing_type == "conn" or
-            preprocessing_type == "aggregation" or
-            preprocessing_type == "graph"), "invalid preprocessing type"
+            preprocessing_type == "aggregation"), "invalid preprocessing type"
     assert isinstance(upper, bool), "invalid datatype for argument flatten"
     assert isinstance(split_size, float) & (split_size >= 0.0) & \
            (split_size <= 1.0), "invalid path provided"
@@ -96,6 +98,7 @@ def preprocess_mat_files(matlab_dir: str = None,
         write_to_dir(dataset=final_df,
                      t_direct=write_dir,
                      file_format=file_format)
+        print("Done!")
     else:
         print("Done!")
         return final_df
@@ -171,7 +174,7 @@ def flatten_conn_matrix(matrix: np.ndarray,
             "aggregation" for aggregated conn matrix, "graph" for graph matrices
 
     Returns:
-        A flattenened connectivtity matrices as a 1d array
+        flattened connectivity matrix as a 1d array
     """
     assert isinstance(matrix, (np.ndarray, np.generic)), "provided matrix is not an ndarray"
     assert isinstance(upper, bool), "invalid option selected - privided input to upper is no bool"
@@ -183,8 +186,7 @@ def flatten_conn_matrix(matrix: np.ndarray,
         elif preprocessing_type == 'aggregation':
             sh = matrix.shape[0]
             return matrix[np.triu_indices(sh, k=0)]
-        elif preprocessing_type == 'graph':
-            pass
+
     else:
         return matrix.flatten()
 
@@ -313,22 +315,20 @@ def create_train_test_split(data: pd.DataFrame,
 
 
 def write_to_dir(dataset: pd.DataFrame,
-                 save_file: bool = False,
                  t_direct: str = None,
-                 file_format: str = "csv") -> str:
+                 file_format: str = "csv") -> None:
     """
     writes the list of train/test splits to hdf files for future use in python or
     csv for future use in R into the specified directory
 
     Args:
         dataset: the final dataset to save
-        save_file: If false return pd.DataFrame
         t_direct: path where to save the dataframes to
         file_format: The fileformat the data should be saved as (csv of hdf)
             -> input must be csv or h5
 
     Returns:
-        A train and test dataset as csv or hdf file
+        None - saves a csv or hdf file
 
     Raises:
         FileNotFoundError
@@ -342,16 +342,14 @@ def write_to_dir(dataset: pd.DataFrame,
     if not os.path.exists(t_direct):
         raise FileNotFoundError("invalid path (write to dir)")
 
-    if save_file:
-        filename = os.path.join(t_direct, ("preprocessed_df.h5"
-                                           if file_format == "h5"
-                                           else "preprocessed_df.csv"))
-        if file_format == "h5":
-            dataset.to_hdf(filename, key='df', mode='w')
-        elif file_format == "csv":
-            dataset.to_csv(filename, index=False)
-    else:
-        return dataset
+    filename = os.path.join(t_direct, ("preprocessed_df.h5"
+                                       if file_format == "h5"
+                                       else "preprocessed_df.csv"))
+
+    if file_format == "h5":
+        dataset.to_hdf(filename, key='df', mode='w')
+    elif file_format == "csv":
+        dataset.to_csv(filename, index=False)
 
 
 def main():
