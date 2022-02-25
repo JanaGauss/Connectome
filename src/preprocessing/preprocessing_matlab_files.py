@@ -8,7 +8,7 @@ from src.preprocessing.network_aggregation import grouped_conn_mat
 
 def preprocess_mat_files(matlab_dir: str = None,
                          excel_path: str = None,
-                         save_file: bool = False,
+                         export_file: bool = False,
                          write_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
@@ -21,21 +21,21 @@ def preprocess_mat_files(matlab_dir: str = None,
     Final function which combines all the other functions to read in
     and transform the data.
 
-    
     Args:
         matlab_dir: path to matlab files
         excel_path: path to excel list
-        save_file: If false return as pd dataframe
+        export_file: If false return as pd dataframe
         write_dir: path where to write the dataset to if save_file = True
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix, "graph" for graph matrices
-        network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
-        statistic: Summary statistic to be applied (only applicable if preprocessing_type = aggregation)
+        network: Yeo7 or Yeo17 network (only applicable if preprocessing_type = aggregation)
+        statistic: Summary statistic to be applied
+            - only applicable if preprocessing_type = aggregation
+            - one of (mean, max, min and greater_zero)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
         split_size: the size of the train dataset (default .8)
         seed: pass an int for reproducibility purposes (default 42)
         file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
-
     Returns:
         Two files (a train/test split of datasets) for further use in modelling.
     """
@@ -54,7 +54,7 @@ def preprocess_mat_files(matlab_dir: str = None,
 
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
-    assert isinstance(save_file, bool), "invalid datatype for argument save_file"
+    assert isinstance(export_file, bool), "invalid datatype for argument export_file"
     assert isinstance(write_dir, str), "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & \
            (preprocessing_type == "conn" or
@@ -98,12 +98,13 @@ def preprocess_mat_files(matlab_dir: str = None,
                                final_columns=colnames,
                                stacked_matrices=stacked,
                                data_from_excel=delcode_excel)
-
-    write_to_dir(dataset=final_df,
-                 save_file=save_file,
-                 t_direct=write_dir,
-                 file_format=file_format)
-    print("Done!")
+    if export_file:
+        write_to_dir(dataset=final_df,
+                     t_direct=write_dir,
+                     file_format=file_format)
+    else:
+        print("Done!")
+        return final_df
 
 
 def load_matlab_files(directory: str) -> tuple:
