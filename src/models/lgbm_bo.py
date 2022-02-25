@@ -24,11 +24,8 @@ import os
 def bayes_parameter_opt_lgb(
         X: np.ndarray,
         y: np.ndarray,
-        init_round: int = 15,
-        opt_round: int = 15,
         n_folds: int = 5,
         random_seed: int = 6,
-        output_process: bool = False,
         init_points: int = 15,
         n_iter: int = 3,
         sklearn_cv: bool = False,
@@ -184,10 +181,10 @@ def hpo_lgbm(
 
 if __name__ == "__main__":
     X, y = make_classification(n_informative=10)
-    print(hpo_lgbm(X, y,
-             init_round=1,
-             opt_round=2,
-             n_folds=2,
-             init_points=2,
-             n_iter=1,
-             save_model=False))
+    print(hpo_lgbm(
+        X, y,
+        n_folds=2,
+        init_points=2,
+        n_iter=1,
+        save_model=False)
+    )
