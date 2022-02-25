@@ -4,7 +4,7 @@ from sklearn.model_selection import RepeatedKFold
 import lightgbm as lgb
 from bayes_opt import BayesianOptimization
 from typing import Union
-from sklearn.datasets import make_classification
+from sklearn.datasets import make_classification, make_regression
 from sklearn.model_selection import train_test_split
 import os
 
@@ -18,7 +18,8 @@ def bayes_parameter_opt_lgb(
         n_iter: int = 3,
         sklearn_cv: bool = False,
         ranges: dict = None,
-        default_params: dict = None
+        default_params: dict = None,
+        classification: bool = True
         ) -> tuple:
 
     """
@@ -38,6 +39,7 @@ def bayes_parameter_opt_lgb(
             basic lightgbm cv
         ranges: ranges for the parameters to be tuned
         default_params: fixed parameters
+        classification: whether a classification or regression case is optimised
 
     Returns:
 
@@ -60,7 +62,7 @@ def bayes_parameter_opt_lgb(
         default_params = {
             'application': 'binary',
             'histogram_pool_size': 1000,  # reduce to lower RAM usage
-            'metric': 'auc',
+            'metric': ('auc' if classification else 'rmse'),
             'verbose': -1,
             'early_stopping_round': 100,
             'max_bin': 60,  # default 255, reduce to lower RAM usage
@@ -120,10 +122,11 @@ def bayes_parameter_opt_lgb(
                             verbose_eval=50,
                             nfold=None if sklearn_cv else n_folds,
                             shuffle=(False if sklearn_cv else True),
-                            folds=(splits if sklearn_cv else None),
-                            metrics=['auc'])
+                            folds=(splits if sklearn_cv else None))
 
-        return max(cv_results['auc-mean'])
+        return (max(cv_results['auc-mean'])
+                if classification
+                else -max(cv_results['rmse-mean']))
 
     lgbBO = BayesianOptimization(lgb_eval, ranges, random_state=random_seed)
 
@@ -145,18 +148,22 @@ def hpo_lgbm(
         return_model: bool = False,
         save_model: bool = True,
         name: str = None,
+        classification: bool = True,
         **kwargs
-) -> Union[lgb.sklearn.LGBMClassifier, dict]:
+) -> Union[lgb.sklearn.LGBMModel, dict]:
     """
-    performs Bayesian Optimisation for LGBM model
+    wraps the BO process for the LGBM model, fits and saves model or
+    returns the best parameters. Parameter ranges or different default
+    parameters can be passed via kwargs
 
     Args:
-        X:
-        y:
-        save_dir:
-        return_model:
-        save_model:
-        name:
+        X: features
+        y: target
+        save_dir: directory where to save the model to
+        return_model: whether to return the best model after performing HPO
+        save_model: save the model in save_dir if True
+        name: name for the model if saving
+        classification: whether a classification or regression should be optimized
 
     Returns:
         either a trained LGBM model or a dictionary with the best parameters
@@ -173,7 +180,7 @@ def hpo_lgbm(
                          r'should be saved (without filename extension)')
 
     # perform BO based on given parameters
-    res = bayes_parameter_opt_lgb(X, y, **kwargs)
+    res = bayes_parameter_opt_lgb(X, y, classification=classification, **kwargs)
     default_params = res[2]
     best_params = res[1]
 
@@ -217,5 +224,24 @@ if __name__ == "__main__":
         init_points=2,
         n_iter=1,
         sklearn_cv=True,
+        save_model=False)
+    )
+    X, y = make_classification(n_informative=10)
+    print(hpo_lgbm(
+        X, y,
+        n_folds=2,
+        init_points=2,
+        n_iter=1,
+        sklearn_cv=False,
+        save_model=False)
+    )
+    X_regr, y_regr = make_regression(n_informative=15)
+    print(hpo_lgbm(
+        X_regr, y_regr,
+        n_folds=2,
+        init_points=2,
+        n_iter=1,
+        sklearn_cv=True,
+        classification=False,
         save_model=False)
     )
