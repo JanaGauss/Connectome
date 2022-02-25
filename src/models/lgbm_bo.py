@@ -28,11 +28,14 @@ def bayes_parameter_opt_lgb(
         y: target
         n_folds: number of folds for cv
         random_seed: for reproducibility
-        init_points: BO parameter - How many steps of random exploration you want to perform.
-            Random exploration can help by diversifying the exploration space
-        n_iter: BO parameter - How many steps of bayesian optimization you want to perform.
-            The more steps the more likely to find a good maximum you are
-        sklearn_cv: whether the sklearn RepeatedKFold should be used or basic lightgbm cv
+        init_points: BO parameter - How many steps of random exploration
+            you want to perform. Random exploration can help by diversifying
+            the exploration space
+        n_iter: BO parameter - How many steps of bayesian optimization
+            you want to perform. The more steps the more likely to
+            find a good maximum you are.
+        sklearn_cv: whether the sklearn RepeatedKFold should be used or
+            basic lightgbm cv
         ranges: ranges for the parameters to be tuned
         default_params: fixed parameters
 
@@ -131,8 +134,8 @@ def bayes_parameter_opt_lgb(
         model_auc.append(lgbBO.res[model]['target'])
 
     # return best parameters
-    return lgbBO.res[pd.Series(model_auc).idxmax()]['target'], lgbBO.res[pd.Series(model_auc).idxmax()][
-        'params'], default_params
+    return (lgbBO.res[pd.Series(model_auc).idxmax()]['target'],
+            lgbBO.res[pd.Series(model_auc).idxmax()]['params'], default_params)
 
 
 def hpo_lgbm(
