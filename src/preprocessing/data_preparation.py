@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 def prepare_data(data: pd.DataFrame, classification: bool = True, 
                  columns_drop: list = ["ConnID", "Repseudonym", "siteid" "visdat", "MEM_Score", "Apoe", "IDs"], 
                  target: str = "prmdiag", y_0: list = [0], y_1: list = [2, 3],
-                 train_size: float = 0.8, seed: int = 123) -> list:
+                 train_size: float = 0.8, seed: int = 123, split = True):
     """
     Function that prepares the data for modelling
     
@@ -18,8 +19,9 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
         y_1: (only relevant for classification task) which values of target should be treated as 1
         train_size: size of the training data (default 0.8)
         seed: seed for reproducibility of train/test split
+        split: should a train/test split be performed or not?
     Returns:
-        A list containing the training data (index 0) and the test data (index 1) with a y-column and all columns that shouldn't be used for modelling are dropped
+        ytrain, Xtrain, ytest, Xtest
     """
 
     # check input types
@@ -34,6 +36,7 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
     assert all(isinstance(x, int) for x in y_1), "invalid y_1, elements must be integers"
     assert isinstance(train_size, float), "invalid train size, must be float"
     assert isinstance(seed, int), "provided seed is no integer"
+    assert isinstance(split, bool), "split is no boolean"
 
     # check if inputs are valid
     assert (train_size > 0.0) & (train_size < 1.0), "invalid train size, must be > 0 and < 1" 
@@ -69,10 +72,34 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
     # reorder data so that y is the first variable
     data = pd.concat([data["y"], data.drop(columns = ["y"])], axis=1)
 
-    # perform train/test split
-    data_list = train_test_split(data, train_size=train_size, random_state=seed, shuffle=True)
+    if split:
+      # perform train/test split
+      data_list = train_test_split(data, train_size=train_size, random_state=seed, shuffle=True)
 
-    return data_list
+      ytrain, Xtrain, ytest, Xtest = data_list[0]["y"], data_list[0].drop(columns="y"), data_list[1]["y"], data_list[1].drop(columns="y")
+
+      scaler = StandardScaler()
+
+      Xtrain_scale = scaler.fit_transform(Xtrain)
+      Xtrain = pd.DataFrame(Xtrain_scale, index = Xtrain.index, columns = Xtrain.columns)
+      Xtest_scale = scaler.transform(Xtest)
+      Xtest = pd.DataFrame(Xtest_scale, index = Xtest.index, columns = Xtest.columns)
+
+    else:
+      
+      scaler = StandardScaler()
+
+      y, X = data["y"], data.drop(columns = "y")
+      X_scale = scaler.fit_transform(X)
+      X = pd.DataFrame(X_scale, index = X.index, columns = X.columns)
+
+      Xtest = X
+      ytest = y
+      Xtrain = None
+      ytrain = None
 
 
- 
+
+
+
+    return ytrain, Xtrain, ytest, Xtest

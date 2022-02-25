@@ -1,3 +1,61 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def plot_feature_map(heatmap, title, aggregated_network = False):
+    if aggregated_network:
+        ticklabel = ["0","1","2","3","4","5","6","7"]
+
+        fig, ax = plt.subplots(figsize=(10, 10))
+        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.colorbar()
+        ax.set_xticks([0,1,2,3,4,5,6,7])
+        ax.set_yticks([0,1,2,3,4,5,6,7])
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
+        plt.vlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+    else:
+        #create borders and labels for plot
+        ordered_roi, ordered_region = ordered_regions()
+        ordered_region = list(map(int, ordered_region))
+
+        hlines = []
+        for i in range(len(ordered_region)-1):
+            if ordered_region[i] < ordered_region[i+1]:
+              hlines.append(i)
+        temp = hlines
+        temp.append(246)
+        temp.insert(0,0)
+        ticks = []
+        for i in range(len(temp)-1):
+            ticks.append(np.round(np.mean([temp[i], temp[i+1]])))
+        
+        ticklabel = ["0","1","2","3","4","5","6","7"]
+
+        #create plot
+        fig, ax = plt.subplots(figsize=(10, 10))
+        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.colorbar()
+        ax.set_xticks(ticks)
+        ax.set_yticks(ticks)
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines(hlines,0,246,linewidth = 2)
+        plt.vlines(hlines,0,246,linewidth = 2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+
 def ordered_regions() -> list:
     """
     return list of indexes from yeo 7
@@ -35,5 +93,74 @@ def ordered_regions() -> list:
 
     sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
     sorted_keys_int = list(map(int, sorted_keys))
-    sorted_keys_list= [x - 1 for x in sorted_keys_int]
-    return sorted_keys_list
+    sorted_keys_list = [x - 1 for x in sorted_keys_int]
+    ordered_region =  list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
+    ordered_region = list(map(int, ordered_region))
+    return (sorted_keys_list, ordered_region)
+
+
+
+
+def plot_coef_elastic_net(model):
+  """
+  plot coefficients of elastic net model
+  
+  Args:
+    model: fitted elastic net model
+        
+  Returns:
+    plot
+  
+  """
+  # extract indices of conn variables
+  ind_conn_cols = []
+  for x in range(len(model.feature_names_in_)):
+    if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
+      ind_conn_cols.append(x)
+
+  mat = flat_to_mat(model.coef_[ind_conn_cols])
+
+  # define if aggregated or not depending on shape
+  if mat.shape[0] == 246:
+    aggregated = False
+  else: 
+    aggregated = True
+
+
+  if aggregated:
+    plot = plot_feature_map(mat, title = "Elastic Net coefficients", aggregated_network = True)
+  else: # reorder by regions
+    plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
+    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False)
+  
+
+  return plot
+
+
+def plot_grouped_FI(df_importance):
+  """
+  plot results grouped feature importance
+  
+  Args:
+    df_importance: pd.DataFrame with results from calculation grouped FI
+        
+  Returns:
+    plot
+  
+  """ 
+
+  # reorder results 
+  order_regs = ['0_0', '0_1', '0_2', '0_3',
+       '0_4', '0_5', '0_6', '0_7', '1_1', '1_2', '1_3', '1_4', '1_5', '1_6',
+       '1_7', '2_2', '2_3', '2_4', '2_5', '2_6', '2_7', '3_3', '3_4', '3_5',
+       '3_6', '3_7', '4_4', '4_5', '4_6', '4_7', '5_5', '5_6', '5_7', '6_6',
+       '6_7', '7_7']
+
+  result = []
+  for i in order_regs:
+    res_i = df_importance.loc[df['region'] == i][df_importance.columns[1]].values[0] # reorder Feature Importance Values -> ordered like in order_regs
+    result.append(res_i)
+
+  plot_mat = flat_to_mat_aggregation(result)
+  return plot_feature_map(plot_mat, title = "Grouped Feature Importance", aggregated_network = True)
+  

@@ -99,6 +99,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                      t_direct=write_dir,
                      file_format=file_format)
         print("Done!")
+
     else:
         print("Done!")
         return final_df
@@ -337,7 +338,7 @@ def write_to_dir(dataset: pd.DataFrame,
     assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
     assert isinstance(file_format, str) & \
            ((file_format == "csv") | (file_format == "h5")), \
-           "invalid file format selected"
+        "invalid file format selected"
 
     if not os.path.exists(t_direct):
         raise FileNotFoundError("invalid path (write to dir)")
