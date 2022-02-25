@@ -19,7 +19,8 @@ def bayes_parameter_opt_lgb(
         sklearn_cv: bool = False,
         ranges: dict = None,
         default_params: dict = None,
-        classification: bool = True
+        classification: bool = True,
+        gpu: bool = False,
         ) -> tuple:
 
     """
@@ -40,6 +41,7 @@ def bayes_parameter_opt_lgb(
         ranges: ranges for the parameters to be tuned
         default_params: fixed parameters
         classification: whether a classification or regression case is optimised
+        gpu: whether gpu is available and should be used
 
     Returns:
 
@@ -70,6 +72,9 @@ def bayes_parameter_opt_lgb(
             # 'n_threads': 2
         }
     params = default_params.copy()
+
+    if gpu:
+        params['device_type'] = 'gpu'
 
     def lgb_eval(
             learning_rate,
