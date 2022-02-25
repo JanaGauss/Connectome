@@ -37,11 +37,11 @@ def bayes_parameter_opt_lgb(
     if default_params is None:
         default_params = {
             'application': 'binary',
-            'histogram_pool_size': 1000,
+            'histogram_pool_size': 1000, # reduce to lower RAM usage
             'metric': 'auc',
             'verbose': -1,
             'early_stopping_round': 100,
-            'max_bin': 60,  # default 255
+            'max_bin': 60,  # default 255, reduce to lower RAM usage
             'n_jobs': -1
             # 'n_threads': 2
         }
