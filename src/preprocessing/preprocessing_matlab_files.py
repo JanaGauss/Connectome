@@ -49,9 +49,6 @@ def preprocess_mat_files(matlab_dir: str = None,
         write_dir = input(r'Input your path where '
                           r'to write the final file: ')
 
-    if preprocessing_type == "aggregation":
-        statistic = input(r'Input summary statistic: ')
-
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
     assert isinstance(export_file, bool), "invalid datatype for argument export_file"
@@ -89,9 +86,6 @@ def preprocess_mat_files(matlab_dir: str = None,
         colnames = col_names_final_df(delcode_excel,
                                       grpd_conn_mat[0].shape[0],
                                       preprocessing_type)
-
-    elif preprocessing_type == 'graph':
-        pass
 
     print("Creating Final Dataset")
     final_df = create_final_df(file_names=res[1],
