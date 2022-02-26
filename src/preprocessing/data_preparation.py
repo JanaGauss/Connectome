@@ -44,35 +44,37 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
       assert all(x in data[target].unique() for x in y_0), "y_0 not found in target variable"
       assert all(x in data[target].unique() for x in y_1), "y_1 not found in target variable"
 
+    dat = data.copy()
+
 
     # create y variable
     if classification:
             
       # create 0 and 1 based on target and y_0 and y_1
-      target_0 = data[target].isin(y_0)
-      target_1 = data[target].isin(y_1)
+      target_0 = dat[target].isin(y_0)
+      target_1 = dat[target].isin(y_1)
   
-      data.loc[target_0, "y"] = 0
-      data.loc[target_1, "y"] = 1
+      dat.loc[target_0, "y"] = 0
+      dat.loc[target_1, "y"] = 1
 
       # drop NAs in y
-      data.dropna(subset = ["y"], inplace = True)
+      dat.dropna(subset = ["y"], inplace = True)
 
     else: # regression
 
-      data["y"] = data[target]
+      dat["y"] = dat[target]
 
     # drop target (as y was created) and other columns 
-    data.drop(columns=columns_drop, inplace = True)
-    data.drop(columns=[target], inplace = True)
+    dat.drop(columns=columns_drop, inplace = True)
+    dat.drop(columns=[target], inplace = True)
 
 
     # reorder data so that y is the first variable
-    data = pd.concat([data["y"], data.drop(columns = ["y"])], axis=1)
+    dat = pd.concat([dat["y"], dat.drop(columns = ["y"])], axis=1)
 
     if split:
       # perform train/test split
-      data_list = train_test_split(data, train_size=train_size, random_state=seed, shuffle=True)
+      data_list = train_test_split(dat, train_size=train_size, random_state=seed, shuffle=True)
 
       ytrain, Xtrain, ytest, Xtest = data_list[0]["y"], data_list[0].drop(columns="y"), data_list[1]["y"], data_list[1].drop(columns="y")
 
@@ -87,7 +89,7 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
       
       scaler = StandardScaler()
 
-      y, X = data["y"], data.drop(columns = "y")
+      y, X = dat["y"], dat.drop(columns = "y")
       X_scale = scaler.fit_transform(X)
       X = pd.DataFrame(X_scale, index = X.index, columns = X.columns)
 
