@@ -10,9 +10,9 @@ from keras.layers import Dense, Dropout, Flatten, Concatenate
 from keras.layers import Conv2D, MaxPooling2D
 from sklearn.preprocessing import StandardScaler
 from keras.layers.advanced_activations import LeakyReLU
-from tf.keras.optimizers import Adam
-from tf.keras.losses import BinaryCrossentropy
-from tf.keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.losses import BinaryCrossentropy
+from tensorflow.keras.callbacks import EarlyStopping
 
 import src.preprocessing.data_loader as dtl
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
