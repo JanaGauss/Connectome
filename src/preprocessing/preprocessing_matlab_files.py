@@ -17,7 +17,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                          statistic: str = 'mean',
                          split_size: float = .8,
                          seed: int = 42,
-                         file_format: str = "csv") -> Union[pd.DataFrame, None]:
+                         file_format: str = "csv") -> pd.DataFrame:
 
     """
     Final function which combines all the other functions to read in
@@ -99,6 +99,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                      t_direct=write_dir,
                      file_format=file_format)
         print("Done!")
+        return final_df
 
     else:
         print("Done!")
