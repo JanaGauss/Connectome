@@ -20,7 +20,7 @@ def prepare_data_elastic_net(data: pd.DataFrame,
     """
 
     assert isinstance(option, str), "invalid option, must be string"
-    assert option in ["abs", "squ", "quadr", "inter"], "please provide a valid option (abs, squ or quadr)"
+    assert option in ["abs", "squ", "quadr"], "please provide a valid option (abs, squ or quadr)"
     
 
 
