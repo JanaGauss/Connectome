@@ -98,12 +98,8 @@ def preprocess_mat_files(matlab_dir: str = None,
         write_to_dir(dataset=final_df,
                      t_direct=write_dir,
                      file_format=file_format)
-        print("Done!")
-        return final_df
-
-    else:
-        print("Done!")
-        return final_df
+    print("Done!")
+    return final_df
 
 
 def load_matlab_files(directory: str) -> tuple:
