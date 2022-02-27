@@ -3,7 +3,7 @@ import pandas as pd
 from viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
 from viz_nn import nn_feature_visualization
 from group_imp import grouped_permutation_FI, group_only_permutation_FI
-from src.preprocessing.colnames_to_yeo7 import colnames_to_yeo7
+from src.preprocessing.colnames_to_yeo7 import get_colnames_df
 
 
 def visualization_framework(model,
