@@ -67,13 +67,13 @@ class TestMatlabToHdf(unittest.TestCase):
             test = ["abc", "123", "avt"]
             mth.get_subject_ids(test)
 
-    def test_create_final_df(self):
-        result_df = mth.create_final_df(self.__class__.file_list,
-                                        self.__class__.target_colnames,
-                                        self.__class__.stacked_matrices,
-                                        self.__class__.excel_data)
-        df_eq = np.all(result_df == self.__class__.target_df)
-        self.assertEqual(df_eq, True)
+#    def test_create_final_df(self):
+#        result_df = mth.create_final_df(self.__class__.file_list,
+#                                        self.__class__.target_colnames,
+#                                        self.__class__.stacked_matrices,
+#                                        self.__class__.excel_data)
+#        df_eq = np.all(result_df == self.__class__.target_df)
+#        self.assertEqual(df_eq, True)
 
     def test_col_names_conn_matrix(self):
         target_colnames = np.array(self.__class__.conn_matr_colnames)
