@@ -259,10 +259,11 @@ def create_final_df(file_names: list,
 
     ids = get_subject_ids(file_names)
     ids_added = np.c_[ids, stacked_matrices]
+    ids_added_df = pd.DataFrame(ids_added) # create df, first column contains IDs
 
     # final_columns = col_names_final_df(data_from_excel = data_from_excel)
-    final_df = np.c_[np.array(data_from_excel), ids_added]
-    final_df = pd.DataFrame(final_df, columns=final_columns)
+    final_df_0 = data_from_excel.merge(ids_added_df, left_on = 'ConnID', right_on = 0) # merge two data frames by connID column/first column of ids_added_df
+    final_df = pd.DataFrame(np.array(final_df_0), columns=final_columns) # rename columns
 
     return final_df
 
