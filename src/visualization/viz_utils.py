@@ -166,6 +166,8 @@ def plot_grouped_FI(df_importance):
     plot
   
   """ 
+  # set values < 0 to 0
+  df_importance.iloc[:,1][df_importance.iloc[:,1] < 0] = 0
 
   # reorder results 
   order_regs = ['0_0', '0_1', '0_2', '0_3',
