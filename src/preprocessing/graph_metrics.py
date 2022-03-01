@@ -1,15 +1,14 @@
 import numpy as np
 import bct
 import pandas as pd
+from data_loader import flat_to_mat
 from IPython.display import clear_output
 
 # How to use:
-# given a list of connectivity matrices just call the "get_graph_metrics" function on this list
-# currently not implemented to work for pd.DataFrames
-# but the list of numpy arrays / conn matrices can be easily constructed using the "flat_to_mat" function
-# of the dataloader module. Just apply this function on the DataFrame with the
-# flattened conn data row-wise and obtain the list.
-# To get some explanations about the implemented graph metrics just call "explain_graph_metrics"
+# given a list of connectivity matrices just call the
+# "get_graph_metrics" function on this list
+# To get some explanations about the implemented
+# graph metrics just call "explain_graph_metrics"
 # without specifying any arguments
 #
 
@@ -29,12 +28,14 @@ def get_graph_metrics(conns: list,
                                     'Transitivity')) -> tuple:
     """
     - computes graph metrics for the given connectivity data
-    - retransforms the connectivity matrices to pearson correlation before computing the adjacency matrices
+    - retransforms the connectivity matrices to pearson correlation before
+      computing the adjacency matrices
 
     Args:
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
         col_names: colnames of the connectivity matrices in case those are reordered
+            IMPORTANT: refers to the regions - e.g. "1", "4" instead of "1_4", "1_5"
         use_abs: whether absolute connectivity values should be used
         gms: graph metrics to be computed - can be any of:
                         ['Degrees', 'Modularity',
@@ -59,7 +60,8 @@ def get_graph_metrics(conns: list,
         "Component Vectors": [],
         "Transitivity": []
     }
-    stacked_conn = np.abs(np.tanh(np.stack(conns))) if use_abs else np.tanh(np.stack(conns))
+    stacked_conn = np.abs(np.tanh(np.stack(conns))) \
+        if use_abs else np.tanh(np.stack(conns))
     adj_matrices = res["Adjacency Matrices"] = np.where(stacked_conn > threshold, 1, 0)
     regions = adj_matrices[0, :, :].shape[0]
     failed = {}
@@ -122,37 +124,120 @@ def get_graph_metrics(conns: list,
 
     if col_names is None:
         colnames = {
-            "Degrees": ["degree_" + str(i + 1) for i in range(regions)],
-            "Modularity": ["modularity"],
-            "Community Structure": ["community_structure_" + str(i + 1) for i in range(regions)],
-            "Clustering Coefficient": ["clustering_coefficient_" + str(i + 1) for i in range(regions)],
-            "Characteristic Path Length": ["characteristic_path_length"],
-            "Node Betweenness": ["node_betweenness_" + str(i + 1) for i in range(regions)],
-            "Density": ["density", "vertices", "edges"],
-            "Component Vectors": ["component_" + str(i + 1) for i in range(regions)],
-            "Transitivity": ["transitivity"]
+            "Degrees":
+                ["degree_" + str(i + 1) for i in range(regions)],
+
+            "Modularity":
+                ["modularity"],
+
+            "Community Structure":
+                ["community_structure_" + str(i + 1) for i in range(regions)],
+
+            "Clustering Coefficient":
+                ["clustering_coefficient_" + str(i + 1) for i in range(regions)],
+
+            "Characteristic Path Length":
+                ["characteristic_path_length"],
+
+            "Node Betweenness":
+                ["node_betweenness_" + str(i + 1) for i in range(regions)],
+
+            "Density":
+                ["density", "vertices", "edges"],
+
+            "Component Vectors":
+                ["component_" + str(i + 1) for i in range(regions)],
+
+            "Transitivity":
+                ["transitivity"]
         }
 
     else:
         colnames = {
-            "Degrees": ["degree_" + str(i) for i in col_names],
-            "Modularity": ["modularity"],
-            "Community Structure": ["community_structure_" + str(i) for i in col_names],
-            "Clustering Coefficient": ["clustering_coefficient_" + str(i) for i in col_names],
-            "Characteristic Path Length": ["characteristic_path_length"],
-            "Node Betweenness": ["node_betweenness_" + str(i) for i in col_names],
-            "Density": ["density", "vertices", "edges"],
-            "Component Vectors": ["component_" + str(i) for i in col_names],
-            "Transitivity": ["transitivity"]
+            "Degrees":
+                ["degree_" + str(i) for i in col_names],
+
+            "Modularity":
+                ["modularity"],
+
+            "Community Structure":
+                ["community_structure_" + str(i) for i in col_names],
+
+            "Clustering Coefficient":
+                ["clustering_coefficient_" + str(i) for i in col_names],
+
+            "Characteristic Path Length":
+                ["characteristic_path_length"],
+
+            "Node Betweenness":
+                ["node_betweenness_" + str(i) for i in col_names],
+
+            "Density":
+                ["density", "vertices", "edges"],
+
+            "Component Vectors":
+                ["component_" + str(i) for i in col_names],
+
+            "Transitivity":
+                ["transitivity"]
         }
 
     dfs = []
 
     for key in res.keys():
         if key != "Adjacency Matrices":
+            print(key)
             dfs.append(pd.DataFrame(res[key], columns=colnames[key], index=range(n)))
 
     return pd.concat(dfs, axis=1), failed
+
+
+def is_conn_col(x: str):
+    spl = x.split("_")
+    if len(spl) < 2:
+        return False
+    else:
+        try:
+            res = (isinstance(int(spl[0]), int) and
+                   isinstance(int(spl[1]), int))
+        except:
+            res = False
+        if res:
+            return True
+        else:
+            return False
+
+
+def pd_to_arrays(data: pd.DataFrame,
+                 cols: list) -> list:
+
+    if cols is None:
+        cols = [col for col in data.columns if is_conn_col(col)]
+    conn_data = data.loc[:, cols].copy()
+    return [flat_to_mat(np.array(row)) for ind, row in conn_data.iterrows()]
+
+
+def get_gms_from_pd(data: pd.DataFrame,
+                    regions: list,
+                    cols: list,
+                    **kwargs) -> pd.DataFrame:
+    """
+
+    Args:
+        data: dataFrame containing the conn data
+        regions: list of names of the regions of the conn matrix
+        cols: list of columns of the DataFrame data which contain conn data
+        **kwargs: anything that´s passed to "get_grap_metrics"
+
+    Returns:
+        DataFram containing the computed graph metrics
+
+    """
+
+    arrays = pd_to_arrays(data, cols)
+    return get_graph_metrics(conns=arrays,
+                             #col_names=regions,
+                             **kwargs)[0]
 
 
 def explain_graph_metrics() -> None:
@@ -190,3 +275,24 @@ def explain_graph_metrics() -> None:
         contin = input("Continue?(y)\t")
         clear_output(wait=True)  # only works well in a notebook environment
         explain = False if contin != "y" else True
+
+
+if __name__ == "__main__":
+    # checking the is_conn_col() function
+    test_names = ["1_2", "asf", "as_asd"]
+    print([is_conn_col(x) for x in test_names])
+
+    # checking the get_gms_from_pd function
+    k = 8  # dim of the conn matrix
+    obs = 10  # observations
+    conn = pd.DataFrame(
+        np.random.normal(
+            loc=0.1,
+            scale=1.2,
+            size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+            columns=[str(i) + "_" + str(j)
+                     for i in range(k)
+                     for j in range(i+1, k)])
+    print(conn)
+    print(get_gms_from_pd(conn, conn.columns))
+
