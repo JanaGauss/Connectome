@@ -102,4 +102,4 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
 
 
 
-    return ytrain, Xtrain, ytest, Xtest
+    return Xtrain, ytrain, Xtest, ytest
