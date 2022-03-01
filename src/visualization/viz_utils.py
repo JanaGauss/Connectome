@@ -1,15 +1,23 @@
 import matplotlib.pyplot as plt
+from matplotlib import colors
 import numpy as np
 from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
 
 
-def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_heat_r'):
+def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_heat_r', center_0 = False):
     if aggregated_network:
         ticklabel = ["0","1","2","3","4","5","6","7"]
 
         fig, ax = plt.subplots(figsize=(10, 10))
-        plt.imshow(heatmap, cmap=cmap)
+
+        if center_0:
+          divnorm=colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+          plt.imshow(heatmap, cmap=cmap, norm = divnorm)
+        else:
+          plt.imshow(heatmap, cmap=cmap)        
+
+        
         plt.colorbar()
         ax.set_xticks([0,1,2,3,4,5,6,7])
         ax.set_yticks([0,1,2,3,4,5,6,7])
@@ -43,7 +51,14 @@ def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_he
 
         #create plot
         fig, ax = plt.subplots(figsize=(10, 10))
-        plt.imshow(heatmap, cmap=cmap)
+
+        if center_0:
+          divnorm=colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+          plt.imshow(heatmap, cmap=cmap, norm = divnorm)
+        else:
+          plt.imshow(heatmap, cmap=cmap)
+          
+          
         plt.colorbar()
         ax.set_xticks(ticks)
         ax.set_yticks(ticks)
