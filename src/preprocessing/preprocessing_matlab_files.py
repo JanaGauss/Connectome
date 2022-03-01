@@ -69,6 +69,9 @@ def preprocess_mat_files(matlab_dir: str = None,
     print('loading files')
     # load matlab files and excel
     res = load_matlab_files(matlab_dir)
+    
+    if not os.path.exists(excel_path):
+        raise FileNotFoundError("invalid directory (excel file)")
     delcode_excel = pd.read_excel(excel_path)
 
     print("Starting Preprocessing")
