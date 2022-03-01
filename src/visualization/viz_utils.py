@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from src.preprocessing.data_loader import flat_to_mat
+from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
-from src.models.brainnet_cnn import flat_to_mat_aggregation
 
 
 def plot_feature_map(heatmap, title, aggregated_network = False):
