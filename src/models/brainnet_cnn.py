@@ -16,6 +16,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 import src.preprocessing.data_loader as dtl
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
+from src.preprocessing.data_loader import flat_to_mat_aggregation
 from src.models.E2E_conv import E2E_conv
 
 
@@ -197,27 +198,7 @@ def brain_net_cnn(input_dim_img, input_dim_struc, output_dim: int = 1, kernel_re
     return model
 
 
-def flat_to_mat_aggregation(x: np.ndarray) -> np.ndarray:
-    """
-    - converts a flat np.array into a matrix by turning
-      the values of the array into a symmetric matrix
-    - excluding diagonal
 
-    Args:
-         x: 1D array which should be turned into symmetric matrix
-
-    Returns:
-         np.ndarray - matrix
-
-    """
-
-    n = len(x)
-    n_a = 8
-    A = np.zeros(n_a * n_a).reshape(n_a, n_a)
-    ind = np.triu_indices(n_a, k=0)
-    A[ind] = x
-    mat = A.T + A
-    return mat - .5 * np.diag(mat) * np.identity(8)
 
 
 def data_augmentation_gaussian(X, X_struc, y, scale=.07):
