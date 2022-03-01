@@ -120,7 +120,7 @@ def plot_coef_elastic_net(model):
     if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
       ind_conn_cols.append(x)
 
-  mat = flat_to_mat(model.coef_[ind_conn_cols])
+  mat = flat_to_mat(model.coef_[0][ind_conn_cols])
 
   # define if aggregated or not depending on shape
   if mat.shape[0] == 246:
