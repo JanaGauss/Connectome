@@ -4,12 +4,12 @@ from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
 
 
-def plot_feature_map(heatmap, title, aggregated_network = False):
+def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_heat_r'):
     if aggregated_network:
         ticklabel = ["0","1","2","3","4","5","6","7"]
 
         fig, ax = plt.subplots(figsize=(10, 10))
-        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.imshow(heatmap, cmap=cmap)
         plt.colorbar()
         ax.set_xticks([0,1,2,3,4,5,6,7])
         ax.set_yticks([0,1,2,3,4,5,6,7])
@@ -43,7 +43,7 @@ def plot_feature_map(heatmap, title, aggregated_network = False):
 
         #create plot
         fig, ax = plt.subplots(figsize=(10, 10))
-        plt.imshow(heatmap, cmap='gist_heat_r')
+        plt.imshow(heatmap, cmap=cmap)
         plt.colorbar()
         ax.set_xticks(ticks)
         ax.set_yticks(ticks)
@@ -130,10 +130,10 @@ def plot_coef_elastic_net(model):
 
 
   if aggregated:
-    plot = plot_feature_map(mat, title = "Elastic Net coefficients", aggregated_network = True)
+    plot = plot_feature_map(mat, title = "Elastic Net coefficients", aggregated_network = True, cmap = 'seismic')
   else: # reorder by regions
     plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
-    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False)
+    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False, cmap = 'seismic')
   
 
   return plot
