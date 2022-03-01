@@ -176,7 +176,7 @@ def plot_grouped_FI(df_importance):
 
   result = []
   for i in order_regs:
-    res_i = df_importance.loc[df['region'] == i][df_importance.columns[1]].values[0] # reorder Feature Importance Values -> ordered like in order_regs
+    res_i = df_importance.loc[df_importance['region'] == i][df_importance.columns[1]].values[0] # reorder Feature Importance Values -> ordered like in order_regs
     result.append(res_i)
 
   plot_mat = flat_to_mat_aggregation(result)
