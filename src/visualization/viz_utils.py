@@ -130,7 +130,8 @@ def plot_coef_elastic_net(model):
 
 
   if aggregated:
-    plot = plot_feature_map(mat, title = "Elastic Net coefficients", aggregated_network = True, cmap = 'seismic')
+    plot_mat = flat_to_mat_aggregation(model.coef_[0][ind_conn_cols])
+    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = True, cmap = 'seismic')
   else: # reorder by regions
     plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
     plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False, cmap = 'seismic')
