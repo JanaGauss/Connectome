@@ -10,12 +10,13 @@ from interpret import show
 
 
 class EBMmi:
-
     def __init__(self,
                  features: Union[np.ndarray, pd.DataFrame],
                  target: np.ndarray,
                  feature_names: list = None,
-                 classification: bool = True
+                 classification: bool = True,
+                 fit_directly: bool = True,
+                 **kwargs
                  ):
 
         if isinstance(features, pd.DataFrame):
@@ -42,15 +43,20 @@ class EBMmi:
         self.ebm = ExplainableBoostingClassifier() \
             if self.classification \
             else ExplainableBoostingRegressor()
+        if fit_directly:
+            self.fit(**kwargs)
 
     def fit(self,
             n_features: int = 650,
             return_model: bool = False):
+        if n_features > len(self.feature_names):
+            n_features = len(self.feature_names)
 
         self.get_selected_features(n_features)
-        self.ebm = self.ebm.fit(self.x_mi, self.target)
         if return_model:
             return self.ebm.fit(self.x_mi, self.target)
+        else:
+            self.ebm = self.ebm.fit(self.x_mi, self.target)
 
     def get_selected_features(self,
                               n: int = 650
@@ -126,13 +132,17 @@ class EBMmi:
     def plot_b_imp_contr(self):
         pass
 
-    def save_model(self, name: str = "ebm"):
+    def save_model(self,
+                   t_dir: str,
+                   name: str = "ebm"
+                   ):
         pass
 
     def refit(self):
         pass
 
-    def load_model(self):
+    def load_model(self,
+                   path: str):
         pass
 
 
@@ -150,12 +160,12 @@ if __name__ == "__main__":
                  for i in range(X_regr.shape[1])])
 
     # initialize some models
-    ebm_class = EBMmi(X, y, classification=True)
-    ebm_regr = EBMmi(X_regr, y_regr, classification=False)
+    ebm_class = EBMmi(X, y, classification=True, fit_directly=True)
+    ebm_regr = EBMmi(X_regr, y_regr, classification=False, fit_directly=True)
 
     # fit the models
-    ebm_class.fit(n_features=10)
-    ebm_regr.fit(n_features=10)
+    #ebm_class.fit()
+    #ebm_regr.fit()
 
     # plot functions
     ebm_class.plot_mi(n=5)
