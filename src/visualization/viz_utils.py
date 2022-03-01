@@ -118,7 +118,7 @@ def ordered_regions() -> list:
 
 
 
-def plot_coef_elastic_net(model):
+def plot_coef_elastic_net(model, title = "Elastic Net coefficients"):
   """
   plot coefficients of elastic net model
   
@@ -146,16 +146,16 @@ def plot_coef_elastic_net(model):
 
   if aggregated:
     plot_mat = flat_to_mat_aggregation(model.coef_[0][ind_conn_cols])
-    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = True, cmap = 'seismic', center_0 = True)
+    plot = plot_feature_map(plot_mat, title = title, aggregated_network = True, cmap = 'seismic', center_0 = True)
   else: # reorder by regions
     plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
-    plot = plot_feature_map(plot_mat, title = "Elastic Net coefficients", aggregated_network = False, cmap = 'seismic', center_0 = True)
+    plot = plot_feature_map(plot_mat, title = title, aggregated_network = False, cmap = 'seismic', center_0 = True)
   
 
   return plot
 
 
-def plot_grouped_FI(df_importance):
+def plot_grouped_FI(df_importance, title = "Grouped Permutation Feature Importance"):
   """
   plot results grouped feature importance
   
@@ -182,5 +182,5 @@ def plot_grouped_FI(df_importance):
     result.append(res_i)
 
   plot_mat = flat_to_mat_aggregation(result)
-  return plot_feature_map(plot_mat, title = "Grouped Feature Importance", aggregated_network = True)
+  return plot_feature_map(plot_mat, title = title, aggregated_network = True)
   
