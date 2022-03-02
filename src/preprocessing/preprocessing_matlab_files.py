@@ -4,6 +4,7 @@ import pandas as pd
 import h5py
 from sklearn.model_selection import train_test_split
 from src.preprocessing.network_aggregation import grouped_conn_mat
+from graph_metrics import is_conn_col, pd_to_arrays
 from typing import Union
 
 
@@ -354,6 +355,47 @@ def write_to_dir(dataset: pd.DataFrame,
         dataset.to_csv(filename, index=False)
 
 
+def grouped_conn_df(data: pd.DataFrame,
+                    regions: list = None,
+                    cols: list = None,
+                    return_arrays: bool = True,
+                    stack_options: dict = None,
+                    **kwargs) -> Union[list, pd.DataFrame]:
+    """
+    function to compute the grouped / aggregated conn matrices from a pd.DataFrame
+    Args:
+        data: dataFrame containing the conn data
+        regions: list of names of the regions of the conn matrix in case reordered
+                 IMPORTANT: region names AFTER aggregation needed
+        cols: list of columns of the DataFrame data which contain conn data
+        return_arrays: whether the aggregated data should be returned in the form
+            of arrays or a dataframe
+        stack_options: options passed to "stack_matrices"
+        **kwargs: anything that´s passed to "grouped_conn_mat"
+    Returns:
+        list containing the grouped connectivity matrices or dataFrame
+    """
+    if stack_options is None:
+        stack_options = {"upper": True,
+                         "preprocessing_type": 'conn'}
+
+    arrays = pd_to_arrays(data, cols)
+    grouped_conn = grouped_conn_mat(conn_matrices=arrays,
+                                   **kwargs)
+    if return_arrays:
+        return grouped_conn
+
+    stacked = stack_matrices(grouped_conn, **stack_options)
+    p = grouped_conn[0].shape[0]
+
+    if regions is None:
+        regions = [str(i+1) + "_" + str(j+1)
+                   for i in range(p)
+                   for j in range(i+1, p)]
+
+    return pd.DataFrame(stacked, columns=regions)
+
+
 def main():
     preprocessing_type = input(r'Input preprocessing type: conn, aggregation or grouped: ')
     if preprocessing_type == "aggregation":
@@ -363,5 +405,40 @@ def main():
         preprocess_mat_files(preprocessing_type=preprocessing_type)
 
 
+def test_grouped_conn_df():
+    # NOTE: use the following to build unittests later
+    # checking the get_gms_from_pd function
+    k = 246  # dim of the conn matrix
+    obs = 10  # observations
+    conn = pd.DataFrame(
+        np.random.normal(
+            loc=0.1,
+            scale=1.2,
+            size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+            columns=[str(i) + "_" + str(j)
+                     for i in range(k)
+                     for j in range(i+1, k)])
+    print("data")
+    print(conn)
+    # check option returning arrays
+    res = grouped_conn_df(conn)
+    print("result")
+    print(res)
+
+    print(len(res))
+    print("checking for correctness of shape")
+    print([r.shape for r in res])
+
+    # check option returning DataFrame
+    res = grouped_conn_df(conn, return_arrays=False)
+    print("result DF")
+    print(res)
+
+    print(len(res))
+    print("checking for correctness of shape")
+    print(res.shape)
+
+
 if __name__ == "__main__":
-    main()
+    test_grouped_conn_df()
+
