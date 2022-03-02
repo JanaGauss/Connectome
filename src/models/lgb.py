@@ -12,6 +12,7 @@ class GB:
                  feature_names: list = None,
                  classification: bool = True,
                  fit_directly: bool = True,
+                 dart: bool = False,
                  **kwargs
                  ):
 
@@ -25,9 +26,9 @@ class GB:
         self.features = features
         self.target = target
         self.classification = classification
-        self.lgbm = LGBMClassifier() \
+        self.lgbm = LGBMClassifier(boosting_type='dart' if dart else 'gbt') \
             if self.classification \
-            else LGBMRegressor()
+            else LGBMRegressor(boosting_type='dart' if dart else 'gbt')
         self.fitted = False
         if fit_directly:
             self.fit(**kwargs)
