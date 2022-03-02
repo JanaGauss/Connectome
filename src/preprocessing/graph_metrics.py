@@ -204,8 +204,7 @@ def is_conn_col(x: str):
             res = False
         if res:
             return True
-        else:
-            return False
+        return False
 
 
 def pd_to_arrays(data: pd.DataFrame,
@@ -295,4 +294,3 @@ if __name__ == "__main__":
                      for j in range(i+1, k)])
     print(conn)
     print(get_gms_from_pd(conn, conn.columns))
-
