@@ -41,7 +41,7 @@ def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_he
             if ordered_region[i] < ordered_region[i+1]:
               hlines.append(i)
         temp = hlines
-        temp.append(246)
+        temp.append(245.5)
         temp.insert(0,0)
         ticks = []
         for i in range(len(temp)-1):
@@ -65,8 +65,8 @@ def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_he
         ax.set_xticklabels(ticklabel)
         ax.set_yticklabels(ticklabel)
 
-        plt.hlines(hlines,0,246,linewidth = 2)
-        plt.vlines(hlines,0,246,linewidth = 2)
+        plt.hlines(hlines,0,245,linewidth = 2)
+        plt.vlines(hlines,0,245,linewidth = 2)
         plt.title(title)
         plt.tight_layout()
         plt.close()

@@ -26,9 +26,9 @@ class GB:
         self.features = features
         self.target = target
         self.classification = classification
-        self.lgbm = LGBMClassifier(boosting_type='dart' if dart else 'gbt') \
+        self.lgbm = LGBMClassifier(boosting_type='dart' if dart else 'gbdt') \
             if self.classification \
-            else LGBMRegressor(boosting_type='dart' if dart else 'gbt')
+            else LGBMRegressor(boosting_type='dart' if dart else 'gbdt')
         self.fitted = False
         if fit_directly:
             self.fit(**kwargs)

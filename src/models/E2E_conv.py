@@ -11,8 +11,8 @@ from keras import activations
 from keras import initializers
 from keras import regularizers
 from keras import constraints
-from keras.engine import Layer
-from keras.engine import InputSpec
+from keras.layers import Layer
+from keras.layers import InputSpec
 from keras.utils import conv_utils
 
 class E2E_conv(Layer):
