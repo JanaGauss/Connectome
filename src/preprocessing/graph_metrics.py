@@ -30,6 +30,7 @@ def get_graph_metrics(conns: list,
     - computes graph metrics for the given connectivity data
     - retransforms the connectivity matrices to pearson correlation before
       computing the adjacency matrices
+
     Args:
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
@@ -41,8 +42,10 @@ def get_graph_metrics(conns: list,
                         'Community Structure', 'Clustering Coefficient',
                         'Characteristic Path Length', 'Node Betweenness',
                         'Density', 'Component Vectors', 'Transitivity']
+
     Returns:
         pd.DataFrame containing the computed graph metrics
+
     """
 
     n = len(conns)
@@ -218,13 +221,16 @@ def get_gms_from_pd(data: pd.DataFrame,
                     cols: list,
                     **kwargs) -> pd.DataFrame:
     """
+
     Args:
         data: dataFrame containing the conn data
         regions: list of names of the regions of the conn matrix
         cols: list of columns of the DataFrame data which contain conn data
         **kwargs: anything that´s passed to "get_grap_metrics"
+
     Returns:
         DataFram containing the computed graph metrics
+
     """
 
     arrays = pd_to_arrays(data, cols)
