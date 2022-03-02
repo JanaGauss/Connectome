@@ -217,8 +217,8 @@ def pd_to_arrays(data: pd.DataFrame,
 
 
 def get_gms_from_pd(data: pd.DataFrame,
-                    regions: list,
-                    cols: list,
+                    regions: list = None,
+                    cols: list = None,
                     **kwargs) -> pd.DataFrame:
     """
 
