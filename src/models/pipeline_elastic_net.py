@@ -45,9 +45,9 @@ def model_elastic_net(X_train, y_train,
                       n_alphas_linreg = 10,
                       cv_logreg = 5, 
                       cv_linreg = 5, 
-			    l1_ratios_logreg = np.linspace(0,  1, 11).tolist(),
+		      l1_ratios_logreg = np.linspace(0,  1, 11).tolist(),
                       l1_ratios_linreg = np.linspace(0.01,  1, 11).tolist(), 
-			    verbose = 1,
+		      verbose = 1,
                       **kwargs):
   """
   Function that fits an elastic net model and searches for best parameters via CV. 
@@ -86,16 +86,16 @@ def model_elastic_net(X_train, y_train,
     model = LogisticRegressionCV(Cs = n_alphas_logreg, penalty = "elasticnet", 
                                  cv = cv_logreg, solver = "saga", 
                                  l1_ratios = l1_ratios_logreg, 
-					   verbose = verbose,
+				 verbose = verbose,
                                  **kwargs)
     
   else:
 
     model = ElasticNetCV(l1_ratio = l1_ratios_linreg, 
                          n_alphas = n_alphas_linreg,
-				 cv = cv_linreg, 
-				 verbose = verbose,
-				 **kwargs)
+			 cv = cv_linreg, 
+			 verbose = verbose,
+			 **kwargs)
     
 
   fit_model = model.fit(X_train, y_train)
