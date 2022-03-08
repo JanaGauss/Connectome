@@ -24,6 +24,9 @@ def visualization_framework(model,
     Returns:
         List of reordered connectvity Matrices
     """
+    # TODO: add further checks, e.g. if model is compatible with selected viz_method, maybe in if loops like for elastic net
+    assert isinstance(viz_method, str), "invalid viz_method, must be string"
+    assert viz_method in ["GFI", "GFI_only", "FI", "FI_only", "elastic_net", "shapley", "feature_attribution"], "please provide a valid viz_method (GFI, GFI_only, FI, FI_only, elastic_net, shapley, feature_attribution)"
 
     if type(X) == list:
         assert X[0].shape[0] == len(y), 'X_test and y_test are not of equal length'
@@ -32,24 +35,43 @@ def visualization_framework(model,
 
     #
     if viz_method == "GFI":
-        # groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
         groups_df = get_colnames_df()
         groups_df = groups_df.loc[
             np.in1d(groups_df["conn_name"], X.columns)]  # remove entries of groups_df that are not in colnames of X
-        df_importance = grouped_permutation_FI(model, X, y, groups_df)
+        df_importance = grouped_permutation_FI(model, X, y, groups_df, **kwargs)
         return plot_grouped_FI(df_importance)
 
     elif viz_method == "GFI_only":
-        # groups_df = pd.read_csv("references/colnames_to_yeo7.csv")
         groups_df = get_colnames_df()
         groups_df = groups_df.loc[
             np.in1d(groups_df["conn_name"], X.columns)]  # remove entries of groups_df that are not in colnames of X
-        df_importance = group_only_permutation_FI(model, X, y, groups_df)
-        return plot_grouped_FI(df_importance)
+        df_importance = group_only_permutation_FI(model, X, y, groups_df, **kwargs)
+        return plot_grouped_FI(df_importance, title = "Group only Permutation Feature Importance")
+
+    elif viz_method == "FI": # normal permutation feature importance -> use function for grouped importance
+      ind_conn_cols = [] # extract all connectivity variables
+      for x in range(len(model.feature_names_in_)):
+        if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
+          ind_conn_cols.append(x)
+
+      groups_df = pd.DataFrame({'conn_name': model.feature_names_in_[ind_conn_cols], 'region': model.feature_names_in_[ind_conn_cols]}) # create groups_df, but region contains the same entries as conn_name
+      df_importance = grouped_permutation_FI(model, X, y, groups_df, **kwargs)
+      return plot_grouped_FI(df_importance, title = "Permutation Feature Importance")
+
+    elif viz_method == "FI_only": # normal permutation only feature importance -> use function for grouped importance
+      ind_conn_cols = [] # extract all connectivity variables
+      for x in range(len(model.feature_names_in_)):
+        if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
+          ind_conn_cols.append(x)
+
+      groups_df = pd.DataFrame({'conn_name': model.feature_names_in_[ind_conn_cols], 'region': model.feature_names_in_[ind_conn_cols]}) # create groups_df, but region contains the same entries as conn_name
+      df_importance = group_only_permutation_FI(model, X, y, groups_df, **kwargs)
+      return plot_grouped_FI(df_importance, title = "Permutation Feature Importance")
 
     # Elastic Net
     elif viz_method == "elastic_net":
-        return plot_coef_elastic_net(model)
+      assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV'], "if viz_method = elastic net, an elastic net model has to be provided"
+      return plot_coef_elastic_net(model)
 
     # Shapley Values
     elif viz_method == "shapley":
