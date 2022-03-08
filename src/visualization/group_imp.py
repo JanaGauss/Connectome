@@ -39,7 +39,7 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
 
   predictions = model.predict(Xtest)
   if classification:
-    metric_test = accuracy_score(ytest, predictions)
+    metric_test = accuracy_score(ytest, np.round(predictions))
   else:
     metric_test = mean_squared_error(ytest, predictions)
 
@@ -62,7 +62,7 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
       predictions_shuffled = model.predict(Xtest_shuffle)
 
       if classification:        
-        metric_shuffled = accuracy_score(ytest, predictions_shuffled)
+        metric_shuffled = accuracy_score(ytest, np.round(predictions_shuffled))
       else:
         metric_shuffled = mean_squared_error(ytest, predictions_shuffled)
 
@@ -142,8 +142,8 @@ def group_only_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
       predictions_shuffled_all_except_g = model.predict(all_shuffled_except_g)
 
       if classification:        
-        metric_shuffled_all = accuracy_score(ytest, predictions_shuffled_all)
-        metric_shuffled_all_except_g = accuracy_score(ytest, predictions_shuffled_all_except_g)
+        metric_shuffled_all = accuracy_score(ytest, np.round(predictions_shuffled_all))
+        metric_shuffled_all_except_g = accuracy_score(ytest, np.round(predictions_shuffled_all_except_g))
         metric_group.append(metric_shuffled_all_except_g - metric_shuffled_all) # calculate decrease accuracy
       else:
         metric_shuffled_all = mean_squared_error(ytest, predictions_shuffled_all)

@@ -23,7 +23,7 @@ def model_evaluation(model, X_test, y_test):
     else:
         assert len(X_test) == len(y_test), 'X_test and y_test are not of equal length'
 
-    predictions = model.predict(X_test)
+
 
     if len(np.unique(y_test)) == 2: # classification setting
 
