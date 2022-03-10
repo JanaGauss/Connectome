@@ -19,6 +19,7 @@ def prepare_data_elastic_net(data: pd.DataFrame,
         A pd.Dataframe with transformed values
     """
 
+    assert isinstance(data, pd.DataFrame), "provided data is no pd.DataFrame"
     assert isinstance(option, str), "invalid option, must be string"
     assert option in ["abs", "squ", "quadr"], "please provide a valid option (abs, squ or quadr)"
     
@@ -38,13 +39,15 @@ def prepare_data_elastic_net(data: pd.DataFrame,
 
     return transf
 
-def model_elastic_net(X_train, y_train, classification: bool = True, 
+def model_elastic_net(X_train, y_train, 
+			    classification: bool = True, 
                       n_alphas_logreg = 10, 
                       n_alphas_linreg = 10,
                       cv_logreg = 5, 
                       cv_linreg = 5, 
-                      l1_ratios_logreg = np.linspace(0,  1, 11).tolist(),
+		      l1_ratios_logreg = np.linspace(0,  1, 11).tolist(),
                       l1_ratios_linreg = np.linspace(0.01,  1, 11).tolist(), 
+		      verbose = 1,
                       **kwargs):
   """
   Function that fits an elastic net model and searches for best parameters via CV. 
@@ -54,17 +57,20 @@ def model_elastic_net(X_train, y_train, classification: bool = True,
         X_train: The training dataset
         y_train: The true labels
         classification: classification task -> logistic regression or regression task -> linear model
-        n_alphas_logreg: number of alphas along the regularization path (logreg)
-        n_alphas_linreg: number of alphas along the regularization path (linreg)
-        cv_logreg: number of folds (logreg)
-        cv_linreg: number of folds (linreg)
+        n_alphas_logreg: number of alphas along the regularization path (logreg), default 10
+        n_alphas_linreg: number of alphas along the regularization path (linreg), default 10
+        cv_logreg: number of folds (logreg), default 5
+        cv_linreg: number of folds (linreg), default 5
         l1_ratios_logreg: (list of) float for l1_ratio, 0 is L2, 1 is L1 (logreg)
-        l1_ratios_linreg: (list of) float for l1_ratio, 0 is L2, 1 is L1 (linreg). Default with 0.01 instead of 0, because for l1_ratio = 0, automatic alpha grid generation is not supported        
+        l1_ratios_linreg: (list of) float for l1_ratio, 0 is L2, 1 is L1 (linreg). Default with 0.01 instead of 0, because for l1_ratio = 0, automatic alpha grid generation is not supported 
+        verbose: amount of verbosity, default = 1 
         
   Returns:
   Returns fitted model
   """
-
+  
+  assert isinstance(X_train, pd.DataFrame), "provided X_train is no pd.DataFrame"
+  assert isinstance(y_train, pd.Series), "provided y_train is no pd.Series"
   assert isinstance(n_alphas_logreg, int), "invalid n_alphas_logreg"
   assert isinstance(n_alphas_linreg, int), "invalid n_alphas_linreg"
   assert isinstance(cv_logreg, int), "invalid cv_logreg"
@@ -80,13 +86,16 @@ def model_elastic_net(X_train, y_train, classification: bool = True,
     model = LogisticRegressionCV(Cs = n_alphas_logreg, penalty = "elasticnet", 
                                  cv = cv_logreg, solver = "saga", 
                                  l1_ratios = l1_ratios_logreg, 
+				 verbose = verbose,
                                  **kwargs)
     
   else:
 
     model = ElasticNetCV(l1_ratio = l1_ratios_linreg, 
                          n_alphas = n_alphas_linreg,
-                         cv = cv_linreg, **kwargs)
+			 cv = cv_linreg, 
+			 verbose = verbose,
+			 **kwargs)
     
 
   fit_model = model.fit(X_train, y_train)

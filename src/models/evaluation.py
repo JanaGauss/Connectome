@@ -10,7 +10,6 @@ def model_evaluation(model, X_test, y_test):
     Classification: Accuracy, Precision, Recall, F1 and AUC
     Regression: MSE, MAE and R2
     checkout https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics for details
-
     Args:
         model: A fitted ML model
         X_test: The test dataset to be evaluated
@@ -24,12 +23,17 @@ def model_evaluation(model, X_test, y_test):
     else:
         assert len(X_test) == len(y_test), 'X_test and y_test are not of equal length'
 
-    predictions = model.predict(X_test)
 
-    if len(np.unique(y_test)) == 2:
-        score = model.predict(X_test)
-        predictions = np.round(score)
-        # classification setting
+
+    if len(np.unique(y_test)) == 2: # classification setting
+
+        if model.__class__.__name__ == 'LogisticRegressionCV':
+          predictions = model.predict(X_test) # class labels
+          score = model.predict_proba(X_test)[:, 1] # probabilities
+        else:
+          score = model.predict(X_test)
+          predictions = np.round(score)
+
         accuracy = accuracy_score(y_test, predictions)
         precision = precision_score(y_test, predictions)
         recall = recall_score(y_test, predictions)

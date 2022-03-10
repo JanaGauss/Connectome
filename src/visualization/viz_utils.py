@@ -129,13 +129,21 @@ def plot_coef_elastic_net(model, title = "Elastic Net coefficients"):
     plot
   
   """
+
+  assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV']
+
   # extract indices of conn variables
   ind_conn_cols = []
   for x in range(len(model.feature_names_in_)):
     if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
       ind_conn_cols.append(x)
 
-  mat = flat_to_mat(model.coef_[0][ind_conn_cols])
+  if model.__class__.__name__ == 'LogisticRegressionCV':
+    coefs = model.coef_[0][ind_conn_cols]
+  else:
+    coefs = model.coef_[ind_conn_cols] # structure of model.coef_ is different for regression and classification
+
+  mat = flat_to_mat(coefs)
 
   # define if aggregated or not depending on shape
   if mat.shape[0] == 246:
@@ -145,7 +153,7 @@ def plot_coef_elastic_net(model, title = "Elastic Net coefficients"):
 
 
   if aggregated:
-    plot_mat = flat_to_mat_aggregation(model.coef_[0][ind_conn_cols])
+    plot_mat = flat_to_mat_aggregation(coefs)
     plot = plot_feature_map(plot_mat, title = title, aggregated_network = True, cmap = 'seismic', center_0 = True)
   else: # reorder by regions
     plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
@@ -160,12 +168,15 @@ def plot_grouped_FI(df_importance, title = "Grouped Permutation Feature Importan
   plot results grouped feature importance
   
   Args:
-    df_importance: pd.DataFrame with results from calculation grouped FI
+    df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
         
   Returns:
     plot
   
   """ 
+
+  assert isinstance(df_importance, pd.DataFrame), "provided df_importance is no pd.DataFrame"
+
   # set values < 0 to 0
   df_importance.iloc[:,1][df_importance.iloc[:,1] < 0] = 0
 
