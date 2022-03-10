@@ -1,9 +1,10 @@
 from typing import Union
 import shap
-import lightgbm as lgb
+from lightgbm import LGBMModel, LGBMClassifier, LGBMRegressor
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification, make_regression
+from src.models.lgb import GB
 
 
 class ShapleyLGB:
@@ -12,20 +13,19 @@ class ShapleyLGB:
     for a given lgb model
     """
     def __init__(self,
-                 model: Union[lgb.sklearn.LGBMClassifier,
-                              lgb.sklearn.LGBMRegressor],
+                 model: Union[LGBMModel, GB],
                  data: pd.DataFrame):
-        self.model = model
+        self.model = model.lgbm if isinstance(model, GB) else model
         self.data = data
         self.feature_names = data.columns
-        if isinstance(model, lgb.sklearn.LGBMClassifier):
+        if isinstance(model, LGBMClassifier):
             self.explainer = shap.TreeExplainer(
-                model,
+                model.lgbm if isinstance(model, GB) else model,
                 data=data,
                 model_output='probability')
         else:
             self.explainer = shap.TreeExplainer(
-                model,
+                model.lgbm if isinstance(model, GB) else model,
                 data=data)
 
         self.shap_values = self.explainer.shap_values(self.data)
@@ -156,8 +156,8 @@ class ShapleyLGB:
 
 if __name__ == "__main__":
     # initialize some models
-    lgb_class = lgb.LGBMClassifier()
-    lgb_regr = lgb.LGBMRegressor()
+    lgb_class = LGBMClassifier()
+    lgb_regr = LGBMRegressor()
 
     # create synthetic data
     X, y = make_classification(n_informative=10)
@@ -170,6 +170,8 @@ if __name__ == "__main__":
         X_regr,
         columns=["feature_" + str(i)
                  for i in range(X_regr.shape[1])])
+
+    o_lgb_class = GB(X, y, classification=True, fit_directly=True)
 
     # fit the models
     lgb_class.fit(X, y)
@@ -188,6 +190,9 @@ if __name__ == "__main__":
     print(regr_imp)
     sh_regr.depend_plot(regr_imp.iloc[0, 2])
 
-
-
-
+    # shapley values for the GB class
+    sh_class = ShapleyLGB(o_lgb_class, X)
+    sh_class.summ_plot(5)
+    class_imp = sh_class.shapley_importance()
+    print(class_imp)
+    sh_class.depend_plot(class_imp.iloc[0, 2])

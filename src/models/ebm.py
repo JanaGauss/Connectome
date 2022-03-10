@@ -7,6 +7,7 @@ from sklearn.datasets import make_classification, make_regression
 from interpret.glassbox import ExplainableBoostingRegressor, \
     ExplainableBoostingClassifier
 from interpret import show
+import sys
 
 
 class EBMmi:
@@ -22,8 +23,11 @@ class EBMmi:
         if isinstance(features, pd.DataFrame):
             self.pddf = True
             self.feature_names = features.columns
-        elif feature_names is None and isinstance(features, np.ndarray):
+        elif isinstance(features, np.ndarray):
             self.pddf = False
+            if feature_names is None:
+                raise ValueError("if using numpy arrays, feature names must "
+                                 "be provided in a list")
             self.feature_names = feature_names
 
         self.features = features
@@ -127,23 +131,23 @@ class EBMmi:
             return self.ebm.predict_and_contrib(inputs)
 
     def get_n_imp_contr(self):
-        pass
+        raise NotImplementedError
 
     def plot_b_imp_contr(self):
-        pass
+        raise NotImplementedError
 
     def save_model(self,
                    t_dir: str,
                    name: str = "ebm"
                    ):
-        pass
+        raise NotImplementedError
 
     def refit(self):
-        pass
+        raise NotImplementedError
 
     def load_model(self,
                    path: str):
-        pass
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
@@ -166,6 +170,9 @@ if __name__ == "__main__":
     # fit the models
     #ebm_class.fit()
     #ebm_regr.fit()
+
+    # check the size
+    print(sys.getsizeof(ebm_class)*1e-6)
 
     # plot functions
     ebm_class.plot_mi(n=5)

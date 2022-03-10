@@ -16,68 +16,60 @@ X_regr = pd.DataFrame(
     columns=["feature_" + str(i)
              for i in range(X_regr.shape[1])])
 
+gb_class_not_dir = GB(X, y, classification=True, fit_directly=False)
+gb_regr_not_dir = GB(X, y, classification=False, fit_directly=False)
+gb_class_dir = GB(X, y, classification=True, fit_directly=True)
+gb_regr_dir = GB(X_regr, y_regr, classification=False, fit_directly=True)
+
 
 class TestGB(unittest.TestCase):
     def test_init(self):
-        gb = GB(X, y, classification=True, fit_directly=False)
-        self.assertIsInstance(gb, GB)
-
-        gb = GB(X_regr, y_regr, classification=False, fit_directly=False)
-        self.assertIsInstance(gb, GB)
+        self.assertIsInstance(gb_class_not_dir, GB)
+        self.assertIsInstance(gb_regr_not_dir, GB)
 
     def test_fit_directly(self):
-        gb = GB(X, y, classification=True, fit_directly=True)
-        self.assertIsInstance(gb, GB)
-
-        gb = GB(X_regr, y_regr, classification=False, fit_directly=True)
-        self.assertIsInstance(gb, GB)
+        self.assertIsInstance(gb_class_dir, GB)
+        self.assertIsInstance(gb_regr_dir, GB)
 
     def test_fit(self):
-        gb = GB(X, y, classification=True, fit_directly=False)
-        gb.fit()
-        self.assertEqual(gb.fitted, True)
+        gb_class_not_dir.fit()
+        self.assertEqual(gb_class_not_dir.fitted, True)
 
-        gb = GB(X_regr, y_regr, classification=False, fit_directly=False)
-        gb.fit()
-        self.assertEqual(gb.fitted, True)
+        gb_regr_not_dir.fit()
+        self.assertEqual(gb_regr_not_dir.fitted, True)
 
     def test_predict(self):
-        gb = GB(X, y, classification=True, fit_directly=True)
-        y_pred = gb.predict(X)
+        y_pred = gb_class_dir.predict(X)
         self.assertIsInstance(y_pred, np.ndarray)
 
-        gb = GB(X_regr, y_regr, classification=False, fit_directly=True)
-        y_pred = gb.predict(X_regr)
+        y_pred = gb_regr_dir.predict(X_regr)
         self.assertIsInstance(y_pred, np.ndarray)
 
     def test_predict_proba(self):
-        gb = GB(X, y, classification=True, fit_directly=True)
-        y_pred = gb.predict_proba(X)
+        y_pred = gb_class_dir.predict_proba(X)
         self.assertIsInstance(y_pred, np.ndarray)
 
-        gb = GB(X_regr, y_regr, classification=False, fit_directly=True)
         with self.assertRaises(ValueError):
-            gb.predict_proba(X_regr)
+            gb_regr_dir.predict_proba(X_regr)
 
     def test_get_feature_importances(self):
-        gb = GB(X, y, classification=True, fit_directly=True)
-        fi = gb.get_feature_importances()
+        fi = gb_class_dir.get_feature_importances()
+        self.assertIsInstance(fi, pd.DataFrame)
+
+        fi = gb_regr_dir.get_feature_importances()
         self.assertIsInstance(fi, pd.DataFrame)
 
     def test_save_model(self):
-        gb = GB(X, y, classification=True, fit_directly=False)
         with self.assertRaises(NotImplementedError):
-            gb.save_model('...')
+            gb_class_not_dir.save_model('...')
 
     def test_refit(self):
-        gb = GB(X, y, classification=True, fit_directly=False)
         with self.assertRaises(NotImplementedError):
-            gb.refit()
+            gb_class_not_dir.refit()
 
     def test_load_model(self):
-        gb = GB(X, y, classification=True, fit_directly=False)
         with self.assertRaises(NotImplementedError):
-            gb.load_model('...')
+            gb_class_not_dir.load_model('...')
 
 
 if __name__ == '__main__':
