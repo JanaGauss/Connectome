@@ -59,14 +59,14 @@ class GB:
                    t_dir: str,
                    name: str = "lgb"
                    ):
-        pass
+        raise NotImplementedError
 
     def refit(self):
-        pass
+        raise NotImplementedError
 
     def load_model(self,
                    path: str):
-        pass
+        raise NotImplementedError
 
     def get_feature_importances(self):
         if not self.fitted:
