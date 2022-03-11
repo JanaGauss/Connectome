@@ -33,7 +33,7 @@ class ShapleyLGB:
 
     def plot_single_prediction(self,
                                ind: int
-                               ) -> shap.plots._force.AdditiveForceArrayVisualizer:
+                               ) -> shap.plots._force.AdditiveForceVisualizer:
         """
         visualises the computed shapley values for a single observation
         Args:
@@ -145,13 +145,13 @@ class ShapleyLGB:
             self.depend_plot(i)
 
     def update_data(self):
-        pass
+        raise NotImplementedError
 
     def update_model(self):
-        pass
+        raise NotImplementedError
 
     def interaction_values(self):
-        pass
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
