@@ -6,8 +6,8 @@ import pickle
 # from src.models.brainnet_cnn import model_brainnet_cnn
 from src.models.ebm import EBMmi
 from src.models.lgb import GB
-
 from src.models.pipeline_elastic_net import model_elastic_net
+from src.models.pipeline_RF import run_random_forest
 
 
 def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained models?
@@ -75,10 +75,12 @@ def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained mode
             rmodel = GB(X_train, y_train, classification=True)
 
         elif model == "rf":
-            pass
+            rmodel = run_random_forest(X_train, None, y_train, None, None)
 
         else:
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)
+
+        # Missing: save model to disk
 
     return rmodel
 

@@ -88,8 +88,11 @@ def preprocess_random_forest(file_path, load_mem_score):
 def run_random_forest(x_train, x_test, y_train, y_test, features):
     # run model
     rf = RandomForestClassifier(n_estimators=500, random_state=42)
-    # rf = RandomForestClassifier(n_estimators = 200, random_state = 42, max_depth = 10, max_features= int(n_features//6))
     rf.fit(x_train, np.ravel(y_train))
+
+    if x_test is None:
+        # skip evaluation and pass trained model
+        return rf
 
     # visualization
     # extract feature importance array
