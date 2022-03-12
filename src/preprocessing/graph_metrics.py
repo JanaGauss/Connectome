@@ -208,7 +208,7 @@ def is_conn_col(x: str):
 
 
 def pd_to_arrays(data: pd.DataFrame,
-                 cols: list) -> list:
+                 cols: list = None) -> list:
 
     if cols is None:
         cols = [col for col in data.columns if is_conn_col(col)]
