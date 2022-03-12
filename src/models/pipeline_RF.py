@@ -20,6 +20,7 @@ from sklearn.pipeline import Pipeline
 
 
 def print_results(accuracy, precision, recall, f1, auc):
+    # print all values
     print(f"Accuracy: {accuracy}")
     print(f"Precision: {precision}")
     print(f"Recall: {recall}")
@@ -28,6 +29,16 @@ def print_results(accuracy, precision, recall, f1, auc):
 
 
 def read_data_file(file_path, load_mem_score=False):
+    """
+    Import train.csv and test.csv files from data path
+
+    Args:
+        file_path (str):        file path
+        load_mem_score (bool):  if true, the mem_score is included
+
+    Returns:
+    train and test data
+    """
     data = pd.read_csv(file_path + '\\train.csv')
     test = pd.read_csv(file_path + '\\test.csv')
 
@@ -86,6 +97,22 @@ def preprocess_random_forest(file_path, load_mem_score):
 
 # run random forest model
 def run_random_forest(x_train, x_test, y_train, y_test, features):
+    """
+    Run Training algorithm of random forest model
+    and evaluate result based on test data
+
+    Args:
+        x_train (np.array):         training input
+        x_test (pd.DataFrame):      test input
+        y_train (pd.Series):        training output
+        y_test (pd.Series):         test output
+        features (pd.DataFrame):    original training input, used for feature names
+
+    Returns:
+        returns rf model if no test data is specified,
+        else returns None
+    """
+
     # run model
     rf = RandomForestClassifier(n_estimators=500, random_state=42)
     rf.fit(x_train, np.ravel(y_train))
