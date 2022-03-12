@@ -1,9 +1,9 @@
 import pandas as pd
-#import keras
-#import tensorflow as tf
-#from keras.models import load_model
+import keras
+import tensorflow as tf
+from keras.models import load_model
 import pickle
-# from src.models.brainnet_cnn import model_brainnet_cnn
+from src.models.brainnet_cnn import model_brainnet_cnn
 from src.models.ebm import EBMmi
 from src.models.lgb import GB
 
@@ -81,4 +81,3 @@ def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained mode
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)
 
     return rmodel
-

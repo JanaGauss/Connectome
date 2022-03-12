@@ -11,3 +11,5 @@ bctpy
 keras
 IPython
 interpret
+tensorflow
+tf_keras_vis

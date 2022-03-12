@@ -1,6 +1,7 @@
 from tf_keras_vis.gradcam import Gradcam
 from tf_keras_vis.saliency import Saliency
 from tf_keras_vis.utils.model_modifiers import ReplaceToLinear
+import tensorflow as tf
 
 
 from src.visualization.viz_utils import plot_feature_map
@@ -11,40 +12,42 @@ def model_modifier_function(cloned_model):
 def score_function(output):
     # The `output` variable refers to the output of the model,
     return [i[0] for i in output]
-    #return (output[0][0], output[1][0], output[2][0] )
 
 
-def nn_feature_visualization(model, X, y, method='saliency', average=False, struc=False):
+def nn_feature_visualization(model, X, y, method='saliency', average=False, ordered=False):
     """
-    Returns plots for different feature attribution methods: Vanilla Saliency, Grad Cam, Grad Cam Plus.
+    Returns plots for different feature attribution methods: Vanilla Saliency and Smooth Saliency.
+    If you want to view e.g. the first 3 visualizations and not the average, but have structural data, the input should
+    follow  the format  X=[X_test[0][0:3],X_test[1][0:3]], y=y_test[0:3]
+
 
     Args:
         model: A fitted neural network model
-        X:
-        y:
-        method: 'saliency', 'saliency_smooth' or 'gradcam'
+        X: A test dataframe to visualize
+        y: labels
+        method: 'saliency' or 'saliency_smooth'
         average: Return the average or individual feature maps
+        ordered: Boolean, whether to reorder the matrices based on the yeo7 network. (True is recommended when training
+            with Brainnetome data. Only applicable to data based on the brainnetome atlas.
 
     Returns:
         Returns a list feature attribution plots for the desired method
     """
-    # Assert that X is valid input for model
-    # if len(X) != len(model.inputs):
-    #     raise ValueError(
-    #         f"The model has {len(model.inputs)} inputs, "
-    #         f"but the number of X-inputs tensors you passed is {len(X)}.")
-
-    # for i, (x, tensor) in enumerate(zip(X, model.inputs)):
-    #     if len(x.shape) != len(tensor.shape):
-    #         raise ValueError(
-    #             f"seed_input's shape is invalid. model-input index: {i},"
-    #             f" model-input shape: {tensor.shape}, seed_input shape: {x.shape}.")
-
     # assert that y and X have the same length
+    if type(X) == list:
+        struc=True
+        if X[0].shape[0] != len(y):
+            raise ValueError(f"The input dimensions of X and y don't match")
+        X = [tf.cast(X[0], dtype=tf.float32), tf.cast(X[1], dtype=tf.float32)]
+    else:
+        if X.shape[0] != len(y):
+            raise ValueError(f"The input dimensions of X and y don't match")
+        X = tf.cast(X, dtype=tf.float32)
 
     assert isinstance(method, str) & (
-                method == "saliency" or method == "gradcam" or method == "saliency_smooth"), "Invalid input method! Choose one of the following: 'saliency', 'gradcam' or 'gradcamplus'"
+                method == "saliency" or  method == "saliency_smooth"), "Invalid input method! Choose one of the following: 'saliency', 'gradcam' or 'gradcamplus'"
     assert isinstance(average, bool), "invalid datatype. Choose boolean"
+
     # cast as float32
 
     # replace last layer with linear layer
@@ -60,7 +63,7 @@ def nn_feature_visualization(model, X, y, method='saliency', average=False, stru
 
     elif method == 'saliency_smooth':
 
-        # Create Gradcam object
+        # Create Saliency object
         cam = Saliency(model,
                        model_modifier=replace2linear,
                        clone=True)
@@ -69,17 +72,6 @@ def nn_feature_visualization(model, X, y, method='saliency', average=False, stru
                           X,
                           smooth_samples=20,  # The number of calculating gradients iterations.
                           smooth_noise=0.20)
-
-    elif method == 'gradcam':
-        # Create Gradcam object
-        cam = Gradcam(model,
-                      model_modifier=replace2linear,
-                      clone=True)
-
-        # Generate heatmap with GradCAM
-        feature_map = cam(score_function,
-                          X,
-                          penultimate_layer=-1)
 
     figs = []
     # create visualization
@@ -102,7 +94,7 @@ def nn_feature_visualization(model, X, y, method='saliency', average=False, stru
             else:
                 aggregated_network = False
 
-            fig = plot_feature_map(heatmap, title, aggregated_network)
+            fig = plot_feature_map(heatmap, title, aggregated_network, ordered=ordered)
 
             figs.append(fig)
 
@@ -120,14 +112,14 @@ def nn_feature_visualization(model, X, y, method='saliency', average=False, stru
                 heatmap = feature_map[0][j]
             else:
                 heatmap = feature_map[j]
-            # matrix size of 8 or 246
 
+            # matrix size of 8 or 246
             if heatmap.shape[0] == 8:
                 aggregated_network = True
             else:
                 aggregated_network = False
 
-            fig = plot_feature_map(heatmap, title, aggregated_network)
+            fig = plot_feature_map(heatmap, title, aggregated_network, ordered=ordered)
 
             figs.append(fig)
 
