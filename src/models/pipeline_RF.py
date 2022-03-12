@@ -19,7 +19,15 @@ from sklearn.pipeline import Pipeline
 # from bayes_opt import BayesianOptimization #!pip install bayesian-optimization
 
 
-def read_data_file(file_path):
+def print_results(accuracy, precision, recall, f1, auc):
+    print(f"Accuracy: {accuracy}")
+    print(f"Precision: {precision}")
+    print(f"Recall: {recall}")
+    print(f"F1 score: {f1}")
+    print(f"ROC AUC: {auc}")
+
+
+def read_data_file(file_path, load_mem_score=False):
     data = pd.read_csv(file_path + '\\train.csv')
     test = pd.read_csv(file_path + '\\test.csv')
 
@@ -30,6 +38,8 @@ def read_data_file(file_path):
     data.loc[no_alzheimer, 'target'] = 0
     data.dropna(subset=['target'], axis=0, inplace=True)
     data.drop(['ConnID', 'Repseudonym', 'visdat', 'siteid', 'IDs', 'prmdiag'], axis=1, inplace=True)
+    if not load_mem_score:
+        data.drop('MEM_score', axis=1, inplace=True)
     features = data.drop('target', axis=1)
     labels = data['target']
     # n_features = features.shape[1]
@@ -41,6 +51,8 @@ def read_data_file(file_path):
     test.loc[no_alzheimer, 'target'] = 0
     test.dropna(subset=['target'], axis=0, inplace=True)
     test.drop(['ConnID', 'Repseudonym', 'visdat', 'siteid', 'IDs', 'prmdiag'], axis=1, inplace=True)
+    if not load_mem_score:
+        test.drop('MEM_score', axis=1, inplace=True)
     x_test = test.drop('target', axis=1)
     y_test = test['target']
 
@@ -52,8 +64,8 @@ def read_data_file(file_path):
 
 
 # create input pipeline / preprocessing
-def preprocess_random_forest(file_path):
-    x_train, x_test, y_train, y_test = read_data_file(file_path)
+def preprocess_random_forest(file_path, load_mem_score):
+    x_train, x_test, y_train, y_test = read_data_file(file_path, load_mem_score)
     features = x_train.copy()
 
     # impute missing values
@@ -93,12 +105,15 @@ def run_random_forest(x_train, x_test, y_train, y_test, features):
     plt.legend()
     plt.show()
 
+    # Evaluation
     predictions = rf.predict(x_test)
     accuracy = accuracy_score(y_test, predictions)
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
     f1 = f1_score(y_test, predictions)
     auc = roc_auc_score(y_test, predictions)
+    # print results
+    print_results(accuracy, precision, recall, f1, auc)
 
     pd.DataFrame({"Accuracy": [accuracy], "Precision": [precision], "Recall": [recall], "F1": [f1], "AUC": [auc]})
     plot_confusion_matrix(rf, x_test, y_test)
@@ -129,6 +144,8 @@ def run_lin_regression(x_train, x_test, y_train, y_test):
     recall = recall_score(y_test, predictions)
     f1 = f1_score(y_test, predictions)
     auc = roc_auc_score(y_test, predictions)
+    # print results
+    print_results(accuracy, precision, recall, f1, auc)
 
     pd.DataFrame({"Accuracy": [accuracy], "Precision": [precision], "Recall": [recall], "F1": [f1], "AUC": [auc]})
 
@@ -137,9 +154,8 @@ def run_lin_regression(x_train, x_test, y_train, y_test):
     return None
 
 
-def pca_pipeline_test(file_path):
-
-    x_train, x_test, y_train, y_test = read_data_file(file_path)
+def pca_pipeline_test(file_path, load_mem_score):
+    x_train, x_test, y_train, y_test = read_data_file(file_path, load_mem_score)
 
     pipeline = Pipeline([
         ('KNN_Impute', KNNImputer(missing_values=np.nan, n_neighbors=7)),
@@ -183,6 +199,9 @@ def pca_pipeline_test(file_path):
     recall.append(recall_score(y_test, rf_pred))
     f1.append(f1_score(y_test, rf_pred))
     auc.append(roc_auc_score(y_test, rf_pred))
+    # print results
+    print(f"Model: {model}")
+    print_results(accuracy, precision, recall, f1, auc)
 
     pd.DataFrame({'Model': model, "Accuracy": accuracy, "Precision": precision, "Recall": recall, "F1": f1, "AUC": auc})
     plot_confusion_matrix(logreg, x_test, y_test)
@@ -190,16 +209,17 @@ def pca_pipeline_test(file_path):
 
 
 if __name__ == '__main__':
-    # parameters
+    # run flags
     binary_classifier_flag = True  # set flag for binary training, else regression
-    run_test_flag = False  # run test files for both algorithms
+    run_test_flag = False   # run test files for both algorithms
+    load_mem_score = False  # load dataset without MEM_score
 
     # file_path = r"C:\Users\likai\Desktop\My Life\Master\3. Semester\Innolabs\Connectome Git\00_Data\Results"
     file_path = r"C:\Users\katha\Downloads\Test"
 
     # start preprocess
     print("Start preprocessing")
-    x_train, x_test, y_train, y_test, features = preprocess_random_forest(file_path)
+    x_train, x_test, y_train, y_test, features = preprocess_random_forest(file_path, load_mem_score)
 
     # check classifier
     if binary_classifier_flag:
@@ -214,6 +234,6 @@ if __name__ == '__main__':
 
     if run_test_flag:
         print("Run PCA test pipeline")
-        pca_pipeline_test(file_path)
+        pca_pipeline_test(file_path, load_mem_score)
 
     print("Finished RF_pipeline")
