@@ -41,17 +41,17 @@ Installation Guide Leo
 <!-- USAGE -->
 ## Usage
 
-Screenshots pipeline...
+This is the beginning to our Connectome Pipeline. 
 
+![image](https://user-images.githubusercontent.com/60140124/158218222-08377392-b718-4c03-8f85-7e911f67f323.png)
 
-Check out our full documentation here: https://likai97.github.io/Conncetome-Documentation/
+For further details check out the demo video or our full documentation here: https://likai97.github.io/Conncetome-Documentation/
 
 ### Demo Video
 
 The following video displays the full pipeline from preprocessing to model outputs:
 
 https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-98ce-d7f9198411d1.mp4
-
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -70,8 +70,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Authors:
 
-* Kai Becker
 * Leo Schaabner
+* Kai Becker
 * Jana Gauß
 * Katharina Brenner
 * Jonas Klingele
