@@ -164,11 +164,11 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
 
     mat = flat_to_mat(coefs)
 
-    # define if aggregated or not depending on shape
-    if mat.shape[0] == 246:
-        aggregated = False
-    else:
+    # define if aggregated based on yeo7 or not depending on shape
+    if mat.shape[0] == 8:
         aggregated = True
+    else:
+        aggregated = False
 
     if aggregated:
         plot_mat = flat_to_mat_aggregation(coefs)
@@ -182,7 +182,7 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
 
 def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance"):
     """
-    plot results grouped feature importance
+    plot results grouped feature importance (groups based on yeo7 network)
 
     Args:
       df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
