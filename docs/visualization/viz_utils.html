@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>src.visualization.viz_utils API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.visualization.viz_utils</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import matplotlib.pyplot as plt
+from matplotlib import colors
+import numpy as np
+from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
+from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
+
+
+def plot_feature_map(heatmap, title, aggregated_network=False, ordered=False, cmap=&#39;gist_heat_r&#39;, center_0=False):
+    &#34;&#34;&#34;
+    Plots a heatmap of the connectivity matrix
+
+
+    Args:
+        heatmap: The image data
+        title: A title for the plot
+        aggregated_network: Boolean, whether the matrices were aggregated based on yeo7
+        ordered: Boolean, whether to reorder the matrices based on the yeo7 network. (True is recommended when training
+            with Brainnetome data. Only applicable to data based on the brainnetome atlas.
+        cmap: Choice of colormap from matplotlib
+        center_0: Boolean, whether to center the cmap around 0
+
+    Returns:
+        Connectivity matrix plot
+    &#34;&#34;&#34;
+    assert isinstance(aggregated_network, bool), &#34;invalid datatype for argument aggregated_network&#34;
+    assert isinstance(ordered, bool), &#34;invalid datatype for argument ordered&#34;
+    assert isinstance(title, str), &#34;invalid option, must be string&#34;
+
+    if aggregated_network:
+        ticklabel = [&#34;0&#34;, &#34;1&#34;, &#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;]
+
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        if center_0:
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
+        else:
+            plt.imshow(heatmap, cmap=cmap)
+
+        plt.colorbar()
+        ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 7])
+        ax.set_yticks([0, 1, 2, 3, 4, 5, 6, 7])
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
+        plt.vlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+    else:
+        # create plot
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        if center_0:
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
+        else:
+            plt.imshow(heatmap, cmap=cmap)
+
+        if ordered:
+            # create borders and labels for plot
+            ordered_roi, ordered_region = ordered_regions()
+            ordered_region = list(map(int, ordered_region))
+
+            hlines = []
+            for i in range(len(ordered_region) - 1):
+                if ordered_region[i] &lt; ordered_region[i + 1]:
+                    hlines.append(i)
+            temp = hlines
+            temp.append(245.5)
+            temp.insert(0, 0)
+            ticks = []
+            for i in range(len(temp) - 1):
+                ticks.append(np.round(np.mean([temp[i], temp[i + 1]])))
+
+            ticklabel = [&#34;0&#34;, &#34;1&#34;, &#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;]
+            ax.set_xticks(ticks)
+            ax.set_yticks(ticks)
+            ax.set_xticklabels(ticklabel)
+            ax.set_yticklabels(ticklabel)
+
+            plt.hlines(hlines, 0, 245, linewidth=2)
+            plt.vlines(hlines, 0, 245, linewidth=2)
+
+        plt.colorbar()
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+
+
+def ordered_regions() -&gt; list:
+    &#34;&#34;&#34;
+    return list of indexes from yeo 7
+    &#34;&#34;&#34;
+    lab_to_yeo7 = {&#39;1&#39;: &#39;6&#39;, &#39;2&#39;: &#39;4&#39;, &#39;3&#39;: &#39;7&#39;, &#39;4&#39;: &#39;6&#39;, &#39;5&#39;: &#39;7&#39;, &#39;6&#39;: &#39;7&#39;, &#39;7&#39;: &#39;3&#39;, &#39;8&#39;: &#39;3&#39;, &#39;9&#39;: &#39;2&#39;, &#39;10&#39;: &#39;2&#39;,
+                   &#39;11&#39;: &#39;7&#39;, &#39;12&#39;: &#39;6&#39;, &#39;13&#39;: &#39;7&#39;, &#39;14&#39;: &#39;7&#39;, &#39;15&#39;: &#39;4&#39;, &#39;16&#39;: &#39;6&#39;, &#39;17&#39;: &#39;6&#39;, &#39;18&#39;: &#39;6&#39;, &#39;19&#39;: &#39;6&#39;,
+                   &#39;20&#39;: &#39;6&#39;, &#39;21&#39;: &#39;6&#39;, &#39;22&#39;: &#39;6&#39;, &#39;23&#39;: &#39;7&#39;, &#39;24&#39;: &#39;6&#39;, &#39;25&#39;: &#39;3&#39;, &#39;26&#39;: &#39;3&#39;, &#39;27&#39;: &#39;5&#39;, &#39;28&#39;: &#39;6&#39;,
+                   &#39;29&#39;: &#39;6&#39;, &#39;30&#39;: &#39;3&#39;, &#39;31&#39;: &#39;6&#39;, &#39;32&#39;: &#39;6&#39;, &#39;33&#39;: &#39;7&#39;, &#39;34&#39;: &#39;7&#39;, &#39;35&#39;: &#39;7&#39;, &#39;36&#39;: &#39;6&#39;, &#39;37&#39;: &#39;4&#39;,
+                   &#39;38&#39;: &#39;4&#39;, &#39;39&#39;: &#39;4&#39;, &#39;40&#39;: &#39;4&#39;, &#39;41&#39;: &#39;7&#39;, &#39;42&#39;: &#39;7&#39;, &#39;43&#39;: &#39;7&#39;, &#39;44&#39;: &#39;7&#39;, &#39;45&#39;: &#39;5&#39;, &#39;46&#39;: &#39;6&#39;,
+                   &#39;47&#39;: &#39;5&#39;, &#39;48&#39;: &#39;5&#39;, &#39;49&#39;: &#39;5&#39;, &#39;50&#39;: &#39;5&#39;, &#39;51&#39;: &#39;7&#39;, &#39;52&#39;: &#39;7&#39;, &#39;53&#39;: &#39;2&#39;, &#39;54&#39;: &#39;2&#39;, &#39;55&#39;: &#39;3&#39;,
+                   &#39;56&#39;: &#39;3&#39;, &#39;57&#39;: &#39;2&#39;, &#39;58&#39;: &#39;2&#39;, &#39;59&#39;: &#39;2&#39;, &#39;60&#39;: &#39;2&#39;, &#39;61&#39;: &#39;4&#39;, &#39;62&#39;: &#39;4&#39;, &#39;63&#39;: &#39;3&#39;, &#39;64&#39;: &#39;3&#39;,
+                   &#39;65&#39;: &#39;4&#39;, &#39;66&#39;: &#39;2&#39;, &#39;67&#39;: &#39;2&#39;, &#39;68&#39;: &#39;2&#39;, &#39;69&#39;: &#39;5&#39;, &#39;70&#39;: &#39;5&#39;, &#39;71&#39;: &#39;2&#39;, &#39;72&#39;: &#39;2&#39;, &#39;73&#39;: &#39;2&#39;,
+                   &#39;74&#39;: &#39;2&#39;, &#39;75&#39;: &#39;2&#39;, &#39;76&#39;: &#39;2&#39;, &#39;77&#39;: &#39;5&#39;, &#39;78&#39;: &#39;5&#39;, &#39;79&#39;: &#39;7&#39;, &#39;80&#39;: &#39;7&#39;, &#39;81&#39;: &#39;7&#39;, &#39;82&#39;: &#39;6&#39;,
+                   &#39;83&#39;: &#39;7&#39;, &#39;84&#39;: &#39;7&#39;, &#39;85&#39;: &#39;3&#39;, &#39;86&#39;: &#39;3&#39;, &#39;87&#39;: &#39;7&#39;, &#39;88&#39;: &#39;7&#39;, &#39;89&#39;: &#39;5&#39;, &#39;90&#39;: &#39;5&#39;, &#39;91&#39;: &#39;3&#39;,
+                   &#39;92&#39;: &#39;3&#39;, &#39;93&#39;: &#39;5&#39;, &#39;94&#39;: &#39;5&#39;, &#39;95&#39;: &#39;7&#39;, &#39;96&#39;: &#39;5&#39;, &#39;97&#39;: &#39;3&#39;, &#39;98&#39;: &#39;3&#39;, &#39;99&#39;: &#39;6&#39;, &#39;100&#39;: &#39;6&#39;,
+                   &#39;101&#39;: &#39;5&#39;, &#39;102&#39;: &#39;5&#39;, &#39;103&#39;: &#39;5&#39;, &#39;104&#39;: &#39;5&#39;, &#39;105&#39;: &#39;1&#39;, &#39;106&#39;: &#39;1&#39;, &#39;107&#39;: &#39;3&#39;, &#39;108&#39;: &#39;1&#39;,
+                   &#39;109&#39;: &#39;5&#39;, &#39;110&#39;: &#39;5&#39;, &#39;111&#39;: &#39;5&#39;, &#39;112&#39;: &#39;1&#39;, &#39;113&#39;: &#39;1&#39;, &#39;114&#39;: &#39;1&#39;, &#39;115&#39;: &#39;5&#39;, &#39;116&#39;: &#39;5&#39;,
+                   &#39;117&#39;: &#39;5&#39;, &#39;118&#39;: &#39;5&#39;, &#39;119&#39;: &#39;1&#39;, &#39;120&#39;: &#39;1&#39;, &#39;121&#39;: &#39;7&#39;, &#39;122&#39;: &#39;7&#39;, &#39;123&#39;: &#39;4&#39;, &#39;124&#39;: &#39;4&#39;,
+                   &#39;125&#39;: &#39;3&#39;, &#39;126&#39;: &#39;3&#39;, &#39;127&#39;: &#39;3&#39;, &#39;128&#39;: &#39;3&#39;, &#39;129&#39;: &#39;3&#39;, &#39;130&#39;: &#39;3&#39;, &#39;131&#39;: &#39;2&#39;, &#39;132&#39;: &#39;2&#39;,
+                   &#39;133&#39;: &#39;3&#39;, &#39;134&#39;: &#39;3&#39;, &#39;135&#39;: &#39;1&#39;, &#39;136&#39;: &#39;1&#39;, &#39;137&#39;: &#39;6&#39;, &#39;138&#39;: &#39;6&#39;, &#39;139&#39;: &#39;3&#39;, &#39;140&#39;: &#39;3&#39;,
+                   &#39;141&#39;: &#39;7&#39;, &#39;142&#39;: &#39;6&#39;, &#39;143&#39;: &#39;3&#39;, &#39;144&#39;: &#39;7&#39;, &#39;145&#39;: &#39;2&#39;, &#39;146&#39;: &#39;2&#39;, &#39;147&#39;: &#39;6&#39;, &#39;148&#39;: &#39;6&#39;,
+                   &#39;149&#39;: &#39;2&#39;, &#39;150&#39;: &#39;3&#39;, &#39;151&#39;: &#39;1&#39;, &#39;152&#39;: &#39;1&#39;, &#39;153&#39;: &#39;7&#39;, &#39;154&#39;: &#39;7&#39;, &#39;155&#39;: &#39;2&#39;, &#39;156&#39;: &#39;2&#39;,
+                   &#39;157&#39;: &#39;2&#39;, &#39;158&#39;: &#39;2&#39;, &#39;159&#39;: &#39;3&#39;, &#39;160&#39;: &#39;2&#39;, &#39;161&#39;: &#39;2&#39;, &#39;162&#39;: &#39;2&#39;, &#39;163&#39;: &#39;2&#39;, &#39;164&#39;: &#39;2&#39;,
+                   &#39;165&#39;: &#39;0&#39;, &#39;166&#39;: &#39;6&#39;, &#39;167&#39;: &#39;4&#39;, &#39;168&#39;: &#39;4&#39;, &#39;169&#39;: &#39;4&#39;, &#39;170&#39;: &#39;4&#39;, &#39;171&#39;: &#39;2&#39;, &#39;172&#39;: &#39;2&#39;,
+                   &#39;173&#39;: &#39;4&#39;, &#39;174&#39;: &#39;4&#39;, &#39;175&#39;: &#39;7&#39;, &#39;176&#39;: &#39;7&#39;, &#39;177&#39;: &#39;0&#39;, &#39;178&#39;: &#39;0&#39;, &#39;179&#39;: &#39;7&#39;, &#39;180&#39;: &#39;4&#39;,
+                   &#39;181&#39;: &#39;7&#39;, &#39;182&#39;: &#39;1&#39;, &#39;183&#39;: &#39;4&#39;, &#39;184&#39;: &#39;4&#39;, &#39;185&#39;: &#39;4&#39;, &#39;186&#39;: &#39;4&#39;, &#39;187&#39;: &#39;7&#39;, &#39;188&#39;: &#39;7&#39;,
+                   &#39;189&#39;: &#39;1&#39;, &#39;190&#39;: &#39;1&#39;, &#39;191&#39;: &#39;1&#39;, &#39;192&#39;: &#39;1&#39;, &#39;193&#39;: &#39;1&#39;, &#39;194&#39;: &#39;1&#39;, &#39;195&#39;: &#39;1&#39;, &#39;196&#39;: &#39;1&#39;,
+                   &#39;197&#39;: &#39;1&#39;, &#39;198&#39;: &#39;1&#39;, &#39;199&#39;: &#39;1&#39;, &#39;200&#39;: &#39;1&#39;, &#39;201&#39;: &#39;3&#39;, &#39;202&#39;: &#39;1&#39;, &#39;203&#39;: &#39;1&#39;, &#39;204&#39;: &#39;1&#39;,
+                   &#39;205&#39;: &#39;1&#39;, &#39;206&#39;: &#39;1&#39;, &#39;207&#39;: &#39;1&#39;, &#39;208&#39;: &#39;1&#39;, &#39;209&#39;: &#39;1&#39;, &#39;210&#39;: &#39;1&#39;, &#39;211&#39;: &#39;0&#39;, &#39;212&#39;: &#39;0&#39;,
+                   &#39;213&#39;: &#39;0&#39;, &#39;214&#39;: &#39;0&#39;, &#39;215&#39;: &#39;0&#39;, &#39;216&#39;: &#39;0&#39;, &#39;217&#39;: &#39;0&#39;, &#39;218&#39;: &#39;0&#39;, &#39;219&#39;: &#39;0&#39;, &#39;220&#39;: &#39;0&#39;,
+                   &#39;221&#39;: &#39;0&#39;, &#39;222&#39;: &#39;0&#39;, &#39;223&#39;: &#39;0&#39;, &#39;224&#39;: &#39;0&#39;, &#39;225&#39;: &#39;0&#39;, &#39;226&#39;: &#39;0&#39;, &#39;227&#39;: &#39;0&#39;, &#39;228&#39;: &#39;0&#39;,
+                   &#39;229&#39;: &#39;0&#39;, &#39;230&#39;: &#39;0&#39;, &#39;231&#39;: &#39;0&#39;, &#39;232&#39;: &#39;0&#39;, &#39;233&#39;: &#39;0&#39;, &#39;234&#39;: &#39;0&#39;, &#39;235&#39;: &#39;0&#39;, &#39;236&#39;: &#39;0&#39;,
+                   &#39;237&#39;: &#39;0&#39;, &#39;238&#39;: &#39;0&#39;, &#39;239&#39;: &#39;0&#39;, &#39;240&#39;: &#39;0&#39;, &#39;241&#39;: &#39;0&#39;, &#39;242&#39;: &#39;0&#39;, &#39;243&#39;: &#39;0&#39;, &#39;244&#39;: &#39;0&#39;,
+                   &#39;245&#39;: &#39;0&#39;, &#39;246&#39;: &#39;0&#39;}
+
+    sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
+    sorted_keys_int = list(map(int, sorted_keys))
+    sorted_keys_list = [x - 1 for x in sorted_keys_int]
+    ordered_region = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
+    ordered_region = list(map(int, ordered_region))
+    return (sorted_keys_list, ordered_region)
+
+
+def plot_coef_elastic_net(model, title=&#34;Elastic Net coefficients&#34;):
+    &#34;&#34;&#34;
+    plot coefficients of elastic net model
+
+    Args:
+      model: fitted elastic net model
+
+    Returns:
+      plot
+
+    &#34;&#34;&#34;
+
+    assert model.__class__.__name__ in [&#39;LogisticRegressionCV&#39;, &#39;ElasticNetCV&#39;]
+
+    # extract indices of conn variables
+    ind_conn_cols = []
+    for x in range(len(model.feature_names_in_)):
+        if len(model.feature_names_in_[x].split(&#34;_&#34;)) &gt; 1 and model.feature_names_in_[x].split(&#34;_&#34;)[0].isdigit() and \
+                model.feature_names_in_[x].split(&#34;_&#34;)[1].isdigit():
+            ind_conn_cols.append(x)
+
+    if model.__class__.__name__ == &#39;LogisticRegressionCV&#39;:
+        coefs = model.coef_[0][ind_conn_cols]
+    else:
+        coefs = model.coef_[ind_conn_cols]  # structure of model.coef_ is different for regression and classification
+
+    mat = flat_to_mat(coefs)
+
+    # define if aggregated or not depending on shape
+    if mat.shape[0] == 246:
+        aggregated = False
+    else:
+        aggregated = True
+
+    if aggregated:
+        plot_mat = flat_to_mat_aggregation(coefs)
+        plot = plot_feature_map(plot_mat, title=title, aggregated_network=True, cmap=&#39;seismic&#39;, center_0=True)
+    else:  # reorder by regions
+        plot_mat = reorder_matrices_regions([mat], network=&#39;yeo7&#39;)[0]
+        plot = plot_feature_map(plot_mat, title=title, ordered=True, aggregated_network=False, cmap=&#39;seismic&#39;, center_0=True)
+
+    return plot
+
+
+def plot_grouped_FI(df_importance, title=&#34;Grouped Permutation Feature Importance&#34;):
+    &#34;&#34;&#34;
+    plot results grouped feature importance
+
+    Args:
+      df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
+
+    Returns:
+      plot
+
+    &#34;&#34;&#34;
+
+    assert isinstance(df_importance, pd.DataFrame), &#34;provided df_importance is no pd.DataFrame&#34;
+
+    # set values &lt; 0 to 0
+    df_importance.iloc[:, 1][df_importance.iloc[:, 1] &lt; 0] = 0
+
+    # reorder results
+    order_regs = [&#39;0_0&#39;, &#39;0_1&#39;, &#39;0_2&#39;, &#39;0_3&#39;,
+                  &#39;0_4&#39;, &#39;0_5&#39;, &#39;0_6&#39;, &#39;0_7&#39;, &#39;1_1&#39;, &#39;1_2&#39;, &#39;1_3&#39;, &#39;1_4&#39;, &#39;1_5&#39;, &#39;1_6&#39;,
+                  &#39;1_7&#39;, &#39;2_2&#39;, &#39;2_3&#39;, &#39;2_4&#39;, &#39;2_5&#39;, &#39;2_6&#39;, &#39;2_7&#39;, &#39;3_3&#39;, &#39;3_4&#39;, &#39;3_5&#39;,
+                  &#39;3_6&#39;, &#39;3_7&#39;, &#39;4_4&#39;, &#39;4_5&#39;, &#39;4_6&#39;, &#39;4_7&#39;, &#39;5_5&#39;, &#39;5_6&#39;, &#39;5_7&#39;, &#39;6_6&#39;,
+                  &#39;6_7&#39;, &#39;7_7&#39;]
+
+    result = []
+    for i in order_regs:
+        res_i = df_importance.loc[df_importance[&#39;region&#39;] == i][df_importance.columns[1]].values[
+            0]  # reorder Feature Importance Values -&gt; ordered like in order_regs
+        result.append(res_i)
+
+    plot_mat = flat_to_mat_aggregation(result)
+    return plot_feature_map(plot_mat, title=title, aggregated_network=True)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.visualization.viz_utils.ordered_regions"><code class="name flex">
+<span>def <span class="ident">ordered_regions</span></span>(<span>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>return list of indexes from yeo 7</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ordered_regions() -&gt; list:
+    &#34;&#34;&#34;
+    return list of indexes from yeo 7
+    &#34;&#34;&#34;
+    lab_to_yeo7 = {&#39;1&#39;: &#39;6&#39;, &#39;2&#39;: &#39;4&#39;, &#39;3&#39;: &#39;7&#39;, &#39;4&#39;: &#39;6&#39;, &#39;5&#39;: &#39;7&#39;, &#39;6&#39;: &#39;7&#39;, &#39;7&#39;: &#39;3&#39;, &#39;8&#39;: &#39;3&#39;, &#39;9&#39;: &#39;2&#39;, &#39;10&#39;: &#39;2&#39;,
+                   &#39;11&#39;: &#39;7&#39;, &#39;12&#39;: &#39;6&#39;, &#39;13&#39;: &#39;7&#39;, &#39;14&#39;: &#39;7&#39;, &#39;15&#39;: &#39;4&#39;, &#39;16&#39;: &#39;6&#39;, &#39;17&#39;: &#39;6&#39;, &#39;18&#39;: &#39;6&#39;, &#39;19&#39;: &#39;6&#39;,
+                   &#39;20&#39;: &#39;6&#39;, &#39;21&#39;: &#39;6&#39;, &#39;22&#39;: &#39;6&#39;, &#39;23&#39;: &#39;7&#39;, &#39;24&#39;: &#39;6&#39;, &#39;25&#39;: &#39;3&#39;, &#39;26&#39;: &#39;3&#39;, &#39;27&#39;: &#39;5&#39;, &#39;28&#39;: &#39;6&#39;,
+                   &#39;29&#39;: &#39;6&#39;, &#39;30&#39;: &#39;3&#39;, &#39;31&#39;: &#39;6&#39;, &#39;32&#39;: &#39;6&#39;, &#39;33&#39;: &#39;7&#39;, &#39;34&#39;: &#39;7&#39;, &#39;35&#39;: &#39;7&#39;, &#39;36&#39;: &#39;6&#39;, &#39;37&#39;: &#39;4&#39;,
+                   &#39;38&#39;: &#39;4&#39;, &#39;39&#39;: &#39;4&#39;, &#39;40&#39;: &#39;4&#39;, &#39;41&#39;: &#39;7&#39;, &#39;42&#39;: &#39;7&#39;, &#39;43&#39;: &#39;7&#39;, &#39;44&#39;: &#39;7&#39;, &#39;45&#39;: &#39;5&#39;, &#39;46&#39;: &#39;6&#39;,
+                   &#39;47&#39;: &#39;5&#39;, &#39;48&#39;: &#39;5&#39;, &#39;49&#39;: &#39;5&#39;, &#39;50&#39;: &#39;5&#39;, &#39;51&#39;: &#39;7&#39;, &#39;52&#39;: &#39;7&#39;, &#39;53&#39;: &#39;2&#39;, &#39;54&#39;: &#39;2&#39;, &#39;55&#39;: &#39;3&#39;,
+                   &#39;56&#39;: &#39;3&#39;, &#39;57&#39;: &#39;2&#39;, &#39;58&#39;: &#39;2&#39;, &#39;59&#39;: &#39;2&#39;, &#39;60&#39;: &#39;2&#39;, &#39;61&#39;: &#39;4&#39;, &#39;62&#39;: &#39;4&#39;, &#39;63&#39;: &#39;3&#39;, &#39;64&#39;: &#39;3&#39;,
+                   &#39;65&#39;: &#39;4&#39;, &#39;66&#39;: &#39;2&#39;, &#39;67&#39;: &#39;2&#39;, &#39;68&#39;: &#39;2&#39;, &#39;69&#39;: &#39;5&#39;, &#39;70&#39;: &#39;5&#39;, &#39;71&#39;: &#39;2&#39;, &#39;72&#39;: &#39;2&#39;, &#39;73&#39;: &#39;2&#39;,
+                   &#39;74&#39;: &#39;2&#39;, &#39;75&#39;: &#39;2&#39;, &#39;76&#39;: &#39;2&#39;, &#39;77&#39;: &#39;5&#39;, &#39;78&#39;: &#39;5&#39;, &#39;79&#39;: &#39;7&#39;, &#39;80&#39;: &#39;7&#39;, &#39;81&#39;: &#39;7&#39;, &#39;82&#39;: &#39;6&#39;,
+                   &#39;83&#39;: &#39;7&#39;, &#39;84&#39;: &#39;7&#39;, &#39;85&#39;: &#39;3&#39;, &#39;86&#39;: &#39;3&#39;, &#39;87&#39;: &#39;7&#39;, &#39;88&#39;: &#39;7&#39;, &#39;89&#39;: &#39;5&#39;, &#39;90&#39;: &#39;5&#39;, &#39;91&#39;: &#39;3&#39;,
+                   &#39;92&#39;: &#39;3&#39;, &#39;93&#39;: &#39;5&#39;, &#39;94&#39;: &#39;5&#39;, &#39;95&#39;: &#39;7&#39;, &#39;96&#39;: &#39;5&#39;, &#39;97&#39;: &#39;3&#39;, &#39;98&#39;: &#39;3&#39;, &#39;99&#39;: &#39;6&#39;, &#39;100&#39;: &#39;6&#39;,
+                   &#39;101&#39;: &#39;5&#39;, &#39;102&#39;: &#39;5&#39;, &#39;103&#39;: &#39;5&#39;, &#39;104&#39;: &#39;5&#39;, &#39;105&#39;: &#39;1&#39;, &#39;106&#39;: &#39;1&#39;, &#39;107&#39;: &#39;3&#39;, &#39;108&#39;: &#39;1&#39;,
+                   &#39;109&#39;: &#39;5&#39;, &#39;110&#39;: &#39;5&#39;, &#39;111&#39;: &#39;5&#39;, &#39;112&#39;: &#39;1&#39;, &#39;113&#39;: &#39;1&#39;, &#39;114&#39;: &#39;1&#39;, &#39;115&#39;: &#39;5&#39;, &#39;116&#39;: &#39;5&#39;,
+                   &#39;117&#39;: &#39;5&#39;, &#39;118&#39;: &#39;5&#39;, &#39;119&#39;: &#39;1&#39;, &#39;120&#39;: &#39;1&#39;, &#39;121&#39;: &#39;7&#39;, &#39;122&#39;: &#39;7&#39;, &#39;123&#39;: &#39;4&#39;, &#39;124&#39;: &#39;4&#39;,
+                   &#39;125&#39;: &#39;3&#39;, &#39;126&#39;: &#39;3&#39;, &#39;127&#39;: &#39;3&#39;, &#39;128&#39;: &#39;3&#39;, &#39;129&#39;: &#39;3&#39;, &#39;130&#39;: &#39;3&#39;, &#39;131&#39;: &#39;2&#39;, &#39;132&#39;: &#39;2&#39;,
+                   &#39;133&#39;: &#39;3&#39;, &#39;134&#39;: &#39;3&#39;, &#39;135&#39;: &#39;1&#39;, &#39;136&#39;: &#39;1&#39;, &#39;137&#39;: &#39;6&#39;, &#39;138&#39;: &#39;6&#39;, &#39;139&#39;: &#39;3&#39;, &#39;140&#39;: &#39;3&#39;,
+                   &#39;141&#39;: &#39;7&#39;, &#39;142&#39;: &#39;6&#39;, &#39;143&#39;: &#39;3&#39;, &#39;144&#39;: &#39;7&#39;, &#39;145&#39;: &#39;2&#39;, &#39;146&#39;: &#39;2&#39;, &#39;147&#39;: &#39;6&#39;, &#39;148&#39;: &#39;6&#39;,
+                   &#39;149&#39;: &#39;2&#39;, &#39;150&#39;: &#39;3&#39;, &#39;151&#39;: &#39;1&#39;, &#39;152&#39;: &#39;1&#39;, &#39;153&#39;: &#39;7&#39;, &#39;154&#39;: &#39;7&#39;, &#39;155&#39;: &#39;2&#39;, &#39;156&#39;: &#39;2&#39;,
+                   &#39;157&#39;: &#39;2&#39;, &#39;158&#39;: &#39;2&#39;, &#39;159&#39;: &#39;3&#39;, &#39;160&#39;: &#39;2&#39;, &#39;161&#39;: &#39;2&#39;, &#39;162&#39;: &#39;2&#39;, &#39;163&#39;: &#39;2&#39;, &#39;164&#39;: &#39;2&#39;,
+                   &#39;165&#39;: &#39;0&#39;, &#39;166&#39;: &#39;6&#39;, &#39;167&#39;: &#39;4&#39;, &#39;168&#39;: &#39;4&#39;, &#39;169&#39;: &#39;4&#39;, &#39;170&#39;: &#39;4&#39;, &#39;171&#39;: &#39;2&#39;, &#39;172&#39;: &#39;2&#39;,
+                   &#39;173&#39;: &#39;4&#39;, &#39;174&#39;: &#39;4&#39;, &#39;175&#39;: &#39;7&#39;, &#39;176&#39;: &#39;7&#39;, &#39;177&#39;: &#39;0&#39;, &#39;178&#39;: &#39;0&#39;, &#39;179&#39;: &#39;7&#39;, &#39;180&#39;: &#39;4&#39;,
+                   &#39;181&#39;: &#39;7&#39;, &#39;182&#39;: &#39;1&#39;, &#39;183&#39;: &#39;4&#39;, &#39;184&#39;: &#39;4&#39;, &#39;185&#39;: &#39;4&#39;, &#39;186&#39;: &#39;4&#39;, &#39;187&#39;: &#39;7&#39;, &#39;188&#39;: &#39;7&#39;,
+                   &#39;189&#39;: &#39;1&#39;, &#39;190&#39;: &#39;1&#39;, &#39;191&#39;: &#39;1&#39;, &#39;192&#39;: &#39;1&#39;, &#39;193&#39;: &#39;1&#39;, &#39;194&#39;: &#39;1&#39;, &#39;195&#39;: &#39;1&#39;, &#39;196&#39;: &#39;1&#39;,
+                   &#39;197&#39;: &#39;1&#39;, &#39;198&#39;: &#39;1&#39;, &#39;199&#39;: &#39;1&#39;, &#39;200&#39;: &#39;1&#39;, &#39;201&#39;: &#39;3&#39;, &#39;202&#39;: &#39;1&#39;, &#39;203&#39;: &#39;1&#39;, &#39;204&#39;: &#39;1&#39;,
+                   &#39;205&#39;: &#39;1&#39;, &#39;206&#39;: &#39;1&#39;, &#39;207&#39;: &#39;1&#39;, &#39;208&#39;: &#39;1&#39;, &#39;209&#39;: &#39;1&#39;, &#39;210&#39;: &#39;1&#39;, &#39;211&#39;: &#39;0&#39;, &#39;212&#39;: &#39;0&#39;,
+                   &#39;213&#39;: &#39;0&#39;, &#39;214&#39;: &#39;0&#39;, &#39;215&#39;: &#39;0&#39;, &#39;216&#39;: &#39;0&#39;, &#39;217&#39;: &#39;0&#39;, &#39;218&#39;: &#39;0&#39;, &#39;219&#39;: &#39;0&#39;, &#39;220&#39;: &#39;0&#39;,
+                   &#39;221&#39;: &#39;0&#39;, &#39;222&#39;: &#39;0&#39;, &#39;223&#39;: &#39;0&#39;, &#39;224&#39;: &#39;0&#39;, &#39;225&#39;: &#39;0&#39;, &#39;226&#39;: &#39;0&#39;, &#39;227&#39;: &#39;0&#39;, &#39;228&#39;: &#39;0&#39;,
+                   &#39;229&#39;: &#39;0&#39;, &#39;230&#39;: &#39;0&#39;, &#39;231&#39;: &#39;0&#39;, &#39;232&#39;: &#39;0&#39;, &#39;233&#39;: &#39;0&#39;, &#39;234&#39;: &#39;0&#39;, &#39;235&#39;: &#39;0&#39;, &#39;236&#39;: &#39;0&#39;,
+                   &#39;237&#39;: &#39;0&#39;, &#39;238&#39;: &#39;0&#39;, &#39;239&#39;: &#39;0&#39;, &#39;240&#39;: &#39;0&#39;, &#39;241&#39;: &#39;0&#39;, &#39;242&#39;: &#39;0&#39;, &#39;243&#39;: &#39;0&#39;, &#39;244&#39;: &#39;0&#39;,
+                   &#39;245&#39;: &#39;0&#39;, &#39;246&#39;: &#39;0&#39;}
+
+    sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
+    sorted_keys_int = list(map(int, sorted_keys))
+    sorted_keys_list = [x - 1 for x in sorted_keys_int]
+    ordered_region = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
+    ordered_region = list(map(int, ordered_region))
+    return (sorted_keys_list, ordered_region)</code></pre>
+</details>
+</dd>
+<dt id="src.visualization.viz_utils.plot_coef_elastic_net"><code class="name flex">
+<span>def <span class="ident">plot_coef_elastic_net</span></span>(<span>model, title='Elastic Net coefficients')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>plot coefficients of elastic net model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model</code></strong></dt>
+<dd>fitted elastic net model</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>plot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_coef_elastic_net(model, title=&#34;Elastic Net coefficients&#34;):
+    &#34;&#34;&#34;
+    plot coefficients of elastic net model
+
+    Args:
+      model: fitted elastic net model
+
+    Returns:
+      plot
+
+    &#34;&#34;&#34;
+
+    assert model.__class__.__name__ in [&#39;LogisticRegressionCV&#39;, &#39;ElasticNetCV&#39;]
+
+    # extract indices of conn variables
+    ind_conn_cols = []
+    for x in range(len(model.feature_names_in_)):
+        if len(model.feature_names_in_[x].split(&#34;_&#34;)) &gt; 1 and model.feature_names_in_[x].split(&#34;_&#34;)[0].isdigit() and \
+                model.feature_names_in_[x].split(&#34;_&#34;)[1].isdigit():
+            ind_conn_cols.append(x)
+
+    if model.__class__.__name__ == &#39;LogisticRegressionCV&#39;:
+        coefs = model.coef_[0][ind_conn_cols]
+    else:
+        coefs = model.coef_[ind_conn_cols]  # structure of model.coef_ is different for regression and classification
+
+    mat = flat_to_mat(coefs)
+
+    # define if aggregated or not depending on shape
+    if mat.shape[0] == 246:
+        aggregated = False
+    else:
+        aggregated = True
+
+    if aggregated:
+        plot_mat = flat_to_mat_aggregation(coefs)
+        plot = plot_feature_map(plot_mat, title=title, aggregated_network=True, cmap=&#39;seismic&#39;, center_0=True)
+    else:  # reorder by regions
+        plot_mat = reorder_matrices_regions([mat], network=&#39;yeo7&#39;)[0]
+        plot = plot_feature_map(plot_mat, title=title, ordered=True, aggregated_network=False, cmap=&#39;seismic&#39;, center_0=True)
+
+    return plot</code></pre>
+</details>
+</dd>
+<dt id="src.visualization.viz_utils.plot_feature_map"><code class="name flex">
+<span>def <span class="ident">plot_feature_map</span></span>(<span>heatmap, title, aggregated_network=False, ordered=False, cmap='gist_heat_r', center_0=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots a heatmap of the connectivity matrix</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>heatmap</code></strong></dt>
+<dd>The image data</dd>
+<dt><strong><code>title</code></strong></dt>
+<dd>A title for the plot</dd>
+<dt><strong><code>aggregated_network</code></strong></dt>
+<dd>Boolean, whether the matrices were aggregated based on yeo7</dd>
+<dt><strong><code>ordered</code></strong></dt>
+<dd>Boolean, whether to reorder the matrices based on the yeo7 network. (True is recommended when training
+with Brainnetome data. Only applicable to data based on the brainnetome atlas.</dd>
+<dt><strong><code>cmap</code></strong></dt>
+<dd>Choice of colormap from matplotlib</dd>
+<dt><strong><code>center_0</code></strong></dt>
+<dd>Boolean, whether to center the cmap around 0</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Connectivity matrix plot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_feature_map(heatmap, title, aggregated_network=False, ordered=False, cmap=&#39;gist_heat_r&#39;, center_0=False):
+    &#34;&#34;&#34;
+    Plots a heatmap of the connectivity matrix
+
+
+    Args:
+        heatmap: The image data
+        title: A title for the plot
+        aggregated_network: Boolean, whether the matrices were aggregated based on yeo7
+        ordered: Boolean, whether to reorder the matrices based on the yeo7 network. (True is recommended when training
+            with Brainnetome data. Only applicable to data based on the brainnetome atlas.
+        cmap: Choice of colormap from matplotlib
+        center_0: Boolean, whether to center the cmap around 0
+
+    Returns:
+        Connectivity matrix plot
+    &#34;&#34;&#34;
+    assert isinstance(aggregated_network, bool), &#34;invalid datatype for argument aggregated_network&#34;
+    assert isinstance(ordered, bool), &#34;invalid datatype for argument ordered&#34;
+    assert isinstance(title, str), &#34;invalid option, must be string&#34;
+
+    if aggregated_network:
+        ticklabel = [&#34;0&#34;, &#34;1&#34;, &#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;]
+
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        if center_0:
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
+        else:
+            plt.imshow(heatmap, cmap=cmap)
+
+        plt.colorbar()
+        ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 7])
+        ax.set_yticks([0, 1, 2, 3, 4, 5, 6, 7])
+        ax.set_xticklabels(ticklabel)
+        ax.set_yticklabels(ticklabel)
+
+        plt.hlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
+        plt.vlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig
+    else:
+        # create plot
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        if center_0:
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
+        else:
+            plt.imshow(heatmap, cmap=cmap)
+
+        if ordered:
+            # create borders and labels for plot
+            ordered_roi, ordered_region = ordered_regions()
+            ordered_region = list(map(int, ordered_region))
+
+            hlines = []
+            for i in range(len(ordered_region) - 1):
+                if ordered_region[i] &lt; ordered_region[i + 1]:
+                    hlines.append(i)
+            temp = hlines
+            temp.append(245.5)
+            temp.insert(0, 0)
+            ticks = []
+            for i in range(len(temp) - 1):
+                ticks.append(np.round(np.mean([temp[i], temp[i + 1]])))
+
+            ticklabel = [&#34;0&#34;, &#34;1&#34;, &#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;]
+            ax.set_xticks(ticks)
+            ax.set_yticks(ticks)
+            ax.set_xticklabels(ticklabel)
+            ax.set_yticklabels(ticklabel)
+
+            plt.hlines(hlines, 0, 245, linewidth=2)
+            plt.vlines(hlines, 0, 245, linewidth=2)
+
+        plt.colorbar()
+        plt.title(title)
+        plt.tight_layout()
+        plt.close()
+
+        return fig</code></pre>
+</details>
+</dd>
+<dt id="src.visualization.viz_utils.plot_grouped_FI"><code class="name flex">
+<span>def <span class="ident">plot_grouped_FI</span></span>(<span>df_importance, title='Grouped Permutation Feature Importance')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>plot results grouped feature importance</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df_importance</code></strong></dt>
+<dd>pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>plot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_grouped_FI(df_importance, title=&#34;Grouped Permutation Feature Importance&#34;):
+    &#34;&#34;&#34;
+    plot results grouped feature importance
+
+    Args:
+      df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
+
+    Returns:
+      plot
+
+    &#34;&#34;&#34;
+
+    assert isinstance(df_importance, pd.DataFrame), &#34;provided df_importance is no pd.DataFrame&#34;
+
+    # set values &lt; 0 to 0
+    df_importance.iloc[:, 1][df_importance.iloc[:, 1] &lt; 0] = 0
+
+    # reorder results
+    order_regs = [&#39;0_0&#39;, &#39;0_1&#39;, &#39;0_2&#39;, &#39;0_3&#39;,
+                  &#39;0_4&#39;, &#39;0_5&#39;, &#39;0_6&#39;, &#39;0_7&#39;, &#39;1_1&#39;, &#39;1_2&#39;, &#39;1_3&#39;, &#39;1_4&#39;, &#39;1_5&#39;, &#39;1_6&#39;,
+                  &#39;1_7&#39;, &#39;2_2&#39;, &#39;2_3&#39;, &#39;2_4&#39;, &#39;2_5&#39;, &#39;2_6&#39;, &#39;2_7&#39;, &#39;3_3&#39;, &#39;3_4&#39;, &#39;3_5&#39;,
+                  &#39;3_6&#39;, &#39;3_7&#39;, &#39;4_4&#39;, &#39;4_5&#39;, &#39;4_6&#39;, &#39;4_7&#39;, &#39;5_5&#39;, &#39;5_6&#39;, &#39;5_7&#39;, &#39;6_6&#39;,
+                  &#39;6_7&#39;, &#39;7_7&#39;]
+
+    result = []
+    for i in order_regs:
+        res_i = df_importance.loc[df_importance[&#39;region&#39;] == i][df_importance.columns[1]].values[
+            0]  # reorder Feature Importance Values -&gt; ordered like in order_regs
+        result.append(res_i)
+
+    plot_mat = flat_to_mat_aggregation(result)
+    return plot_feature_map(plot_mat, title=title, aggregated_network=True)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.visualization" href="index.html">src.visualization</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.visualization.viz_utils.ordered_regions" href="#src.visualization.viz_utils.ordered_regions">ordered_regions</a></code></li>
+<li><code><a title="src.visualization.viz_utils.plot_coef_elastic_net" href="#src.visualization.viz_utils.plot_coef_elastic_net">plot_coef_elastic_net</a></code></li>
+<li><code><a title="src.visualization.viz_utils.plot_feature_map" href="#src.visualization.viz_utils.plot_feature_map">plot_feature_map</a></code></li>
+<li><code><a title="src.visualization.viz_utils.plot_grouped_FI" href="#src.visualization.viz_utils.plot_grouped_FI">plot_grouped_FI</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
