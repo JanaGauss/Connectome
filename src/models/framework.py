@@ -23,6 +23,22 @@ def model_framework(X_train, y_train,
                     **kwargs):
     """
     Function that lets the user decide what type of model he wants to use for his data and which parameters to use
+
+    Examples:
+    >>> # Different optimizer and loss function
+    >>> from tf.keras.optimizers import Nadam
+    >>> from tf.keras.losses import Hinge()
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "cnn",
+                                pretrained = False,
+                                model_path = None,
+                                epochs = 500,
+                                patience = 10,
+                                optimizer= NAdam(),
+                                loss= Hinge())
+
+
     Args:
         X_train: The training dataset
         y_train: The true labels
@@ -83,7 +99,7 @@ def model_framework(X_train, y_train,
             rmodel = GB(X_train, y_train, classification=True)
 
         elif model == "rf":
-            rmodel = run_random_forest(X_train, None, y_train, None, None)
+            rmodel = run_random_forest(X_train, y_train, classification, **kwargs)
 
         else:
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)

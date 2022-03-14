@@ -1,3 +1,6 @@
+"""
+Visualization for convolutional neural networks
+"""
 from tf_keras_vis.gradcam import Gradcam
 from tf_keras_vis.saliency import Saliency
 from tf_keras_vis.utils.model_modifiers import ReplaceToLinear

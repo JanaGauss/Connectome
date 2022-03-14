@@ -1,3 +1,6 @@
+"""
+Helper functions for visualization
+"""
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
