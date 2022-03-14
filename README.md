@@ -22,13 +22,14 @@ Follow the following steps to start the pipeline locally.
 
 Installation Guide Leo
 
-* npm
+* Windows/Linux
   ```sh
   git clone https://github.com/JanaGauss/Connectome.git
   cd Connectome
   pip install .
   ```
 
+  ```
 ### Installation
 
 Installation Guide Leo
