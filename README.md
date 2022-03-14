@@ -44,6 +44,8 @@ Installation Guide Leo
 Screenshots pipeline...
 
 
+Check out our full documentation here: https://likai97.github.io/Conncetome-Documentation/
+
 ### Demo Video
 
 The following video displays the full pipeline from preprocessing to model outputs:
