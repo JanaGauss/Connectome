@@ -20,7 +20,11 @@ Follow the following steps to start the pipeline locally.
 
 ### Prerequisites
 
-Installation Guide Leo
+* python and pip installed 
+* recommended: create a virtual environment before installing the package
+
+
+### Installation
 
 * Windows/Linux
   ```sh
@@ -28,11 +32,6 @@ Installation Guide Leo
   cd Connectome
   pip install .
   ```
-
-  ```
-### Installation
-
-Installation Guide Leo
 
 
 
