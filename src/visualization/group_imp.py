@@ -89,7 +89,7 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
 
 def group_only_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
   """
-  grouped permutation feature importance, see paper: Au, Quay, et al. "Grouped feature importance and combined features effect plot." arXiv preprint arXiv:2104.11688 (2021), section 2.2.2. 
+  group only permutation feature importance, see paper: Au, Quay, et al. "Grouped feature importance and combined features effect plot." arXiv preprint arXiv:2104.11688 (2021), section 2.2.2. 
   Compare the metric after permuting all features jointly with
   the metric after permuting all features except the considered group
   
