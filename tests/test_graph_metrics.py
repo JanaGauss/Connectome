@@ -1,7 +1,7 @@
 import unittest
-from src.preprocessing.graph_metrics import get_graph_metrics, \
+from connectome.preprocessing.graph_metrics import get_graph_metrics, \
     get_gms_from_pd, pd_to_arrays, is_conn_col
-from src.preprocessing.data_loader import flat_to_mat
+from connectome.preprocessing.data_loader import flat_to_mat
 import numpy as np
 import pandas as pd
 from typing import List

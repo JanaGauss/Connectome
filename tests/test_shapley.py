@@ -3,8 +3,8 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification, make_regression
-from src.models.lgb import GB
-from src.visualization.lgb_shapley import ShapleyLGB
+from connectome.models.lgb import GB
+from connectome.visualization.lgb_shapley import ShapleyLGB
 from shap.plots._force import AdditiveForceVisualizer
 
 # initialize some models

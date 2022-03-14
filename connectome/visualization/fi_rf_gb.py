@@ -5,7 +5,7 @@ from typing import Union
 from sklearn.datasets import make_classification, make_regression
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
-from src.models.lgb import GB
+from connectome.models.lgb import GB
 
 
 def get_fi(model: Union[lgb.LGBMClassifier,

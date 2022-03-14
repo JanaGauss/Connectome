@@ -1,5 +1,5 @@
 import unittest
-from src.models.lgb import GB
+from connectome.models.lgb import GB
 import numpy as np
 import pandas as pd
 from sklearn.datasets import make_classification, make_regression

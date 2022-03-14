@@ -3,11 +3,11 @@ Framework function for vizualisation
 """
 import numpy as np
 import pandas as pd
-from src.visualization.viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
-from src.visualization.viz_nn import nn_feature_visualization
-from src.visualization.group_imp import grouped_permutation_FI, group_only_permutation_FI
-from src.preprocessing.colnames_to_yeo7 import get_colnames_df
-from src.visualization.lgb_shapley import ShapleyLGB
+from connectome.visualization.viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
+from connectome.visualization.viz_nn import nn_feature_visualization
+from connectome.visualization.group_imp import grouped_permutation_FI, group_only_permutation_FI
+from connectome.preprocessing.colnames_to_yeo7 import get_colnames_df
+from connectome.visualization.lgb_shapley import ShapleyLGB
 
 
 def visualization_framework(model,

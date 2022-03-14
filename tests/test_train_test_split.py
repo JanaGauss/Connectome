@@ -3,7 +3,7 @@ import unittest
 import logging
 import numpy as np
 import pandas as pd
-from src.preprocessing.preprocessing_matlab_files import create_train_test_split
+from connectome.preprocessing.preprocessing_matlab_files import create_train_test_split
 
 class TestCreateTrainTestSplit(unittest.TestCase):
     """

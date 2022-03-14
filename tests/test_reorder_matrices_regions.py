@@ -2,7 +2,7 @@
 # note: you have to run this command in your terminal from the Connectome folder
 import unittest
 import numpy as np
-import src.preprocessing.reorder_matrices_regions as rmr
+import connectome.preprocessing.reorder_matrices_regions as rmr
 
 
 class TestGroupedConnMat(unittest.TestCase):

@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import h5py
 from sklearn.model_selection import train_test_split
-from src.preprocessing.network_aggregation import grouped_conn_mat
-from src.preprocessing.graph_metrics import is_conn_col, pd_to_arrays
+from connectome.preprocessing.network_aggregation import grouped_conn_mat
+from connectome.preprocessing.graph_metrics import is_conn_col, pd_to_arrays
 from typing import Union
 
 

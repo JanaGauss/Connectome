@@ -1,12 +1,12 @@
 import unittest
-from src.visualization.fi_rf_gb import get_pfi, get_fi
+from connectome.visualization.fi_rf_gb import get_pfi, get_fi
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
 from typing import Union
 from sklearn.datasets import make_classification, make_regression
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from src.models.lgb import GB
+from connectome.models.lgb import GB
 
 
 # initialize some models

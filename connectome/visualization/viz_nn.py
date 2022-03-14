@@ -7,7 +7,7 @@ from tf_keras_vis.utils.model_modifiers import ReplaceToLinear
 import tensorflow as tf
 
 
-from src.visualization.viz_utils import plot_feature_map
+from connectome.visualization.viz_utils import plot_feature_map
 
 def model_modifier_function(cloned_model):
     cloned_model.layers[-1].activation = tf.keras.activations.linear

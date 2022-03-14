@@ -1,5 +1,5 @@
 import unittest
-from src.models.ebm import EBMmi
+from connectome.models.ebm import EBMmi
 import numpy as np
 import pandas as pd
 from typing import Union

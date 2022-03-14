@@ -3,7 +3,7 @@
 import unittest
 import numpy as np
 import logging
-import src.preprocessing.preprocessing_matlab_files as mth
+import connectome.preprocessing.preprocessing_matlab_files as mth
 import os
 import pandas as pd
 

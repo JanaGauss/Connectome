@@ -4,7 +4,7 @@ from lightgbm import LGBMModel, LGBMClassifier, LGBMRegressor
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification, make_regression
-from src.models.lgb import GB
+from connectome.models.lgb import GB
 
 
 class ShapleyLGB:

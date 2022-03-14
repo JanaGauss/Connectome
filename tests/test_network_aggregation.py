@@ -2,7 +2,7 @@
 # note: you have to run this command in your terminal from the Connectome folder
 import unittest
 import numpy as np
-import src.preprocessing.network_aggregation as aggregation
+import connectome.preprocessing.network_aggregation as aggregation
 
 
 class TestGroupedConnMat(unittest.TestCase):

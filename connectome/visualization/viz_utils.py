@@ -4,8 +4,8 @@ Helper functions for visualization
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
-from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
-from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
+from connectome.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
+from connectome.preprocessing.reorder_matrices_regions import reorder_matrices_regions
 
 
 def plot_feature_map(heatmap, title, aggregated_network=False, ordered=False, cmap='gist_heat_r', center_0=False):

@@ -1,7 +1,7 @@
 import numpy as np
 import bct
 import pandas as pd
-from src.preprocessing.data_loader import flat_to_mat
+from connectome.preprocessing.data_loader import flat_to_mat
 from IPython.display import clear_output
 
 # How to use:

@@ -16,10 +16,10 @@ from tensorflow.keras.optimizers import Adam, Nadam
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.callbacks import EarlyStopping
 
-import src.preprocessing.data_loader as dtl
-from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
-from src.preprocessing.data_loader import flat_to_mat_aggregation
-from src.models.E2E_conv import E2E_conv
+import connectome.preprocessing.data_loader as dtl
+from connectome.preprocessing.reorder_matrices_regions import reorder_matrices_regions
+from connectome.preprocessing.data_loader import flat_to_mat_aggregation
+from connectome.models.E2E_conv import E2E_conv
 
 
 def model_brainnet_cnn(X, y, aggregation=False, reorder=False, augmentation=False, scale=.04, augm_fact=5,
