@@ -21,7 +21,7 @@ Follow the following steps to start the pipeline locally.
 ### Prerequisites
 
 * python and pip installed 
-* recommended: create a virtual environment before installing the package
+* **recommended**: create a virtual environment before installing the package
 
 
 ### Installation
