@@ -21,7 +21,7 @@ def run_random_forest(X_train, y_train,
         verbose: amount of verbosity, default = 1 
         
   Returns:
-  Returns fitted model
+  	Returns fitted model
     """
 
     assert isinstance(X_train, pd.DataFrame), "provided X_train is no pd.DataFrame"
