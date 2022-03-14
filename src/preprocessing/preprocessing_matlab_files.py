@@ -1,3 +1,6 @@
+"""
+This module is used as a framework to prepare raw connectivity matrices for analysis
+"""
 import os
 import numpy as np
 import pandas as pd
@@ -21,6 +24,18 @@ def preprocess_mat_files(matlab_dir: str = None,
     """
     Final function which combines all the other functions to read in
     and transform the data.
+
+    Examples:
+    >>> # Preprocess Connectivity Matrices to aggregated matrices
+    >>> matlab_dir = r"./Data/MatLab" # Enter the directory for the matlab files
+    >>> excel_path = r"./Data/DELCODE_dataset_910.xlsx" # Enter the directory for the corresponding excel sheet
+    >>> preprocessing_type = 'aggregation'
+    >>> write_dir = r"./path_to_save" # ...
+    >>> export_file = True # rename to export file
+    >>> statistic = 'greater_zero'
+    >>> preprocess_mat_files(matlab_dir = matlab_dir, excel_path = excel_path, preprocessing_type = preprocessing_type,
+                          write_dir = write_dir, export_file = export_file, statistic = statistic)
+
 
     Args:
         matlab_dir: path to matlab files

@@ -13,6 +13,12 @@ def model_evaluation(model, X_test, y_test):
     Classification: Accuracy, Precision, Recall, F1 and AUC
     Regression: MSE, MAE and R2
     checkout https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics for details
+    For CNN make sure that the test_dataset was also transformed
+
+    Examples:
+    >>> # Evaluate any model.
+    >>> model_evaluation(model, X_test, y_test)
+
     Args:
         model: A fitted ML model
         X_test: The test dataset to be evaluated

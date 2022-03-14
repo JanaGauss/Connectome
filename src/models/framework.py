@@ -23,6 +23,22 @@ def model_framework(X_train, y_train,
                     **kwargs):
     """
     Function that lets the user decide what type of model he wants to use for his data and which parameters to use
+
+    Examples:
+    >>> # Different optimizer and loss function
+    >>> from tf.keras.optimizers import Nadam
+    >>> from tf.keras.losses import Hinge()
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "cnn",
+                                pretrained = False,
+                                model_path = None,
+                                epochs = 500,
+                                patience = 10,
+                                optimizer= NAdam(),
+                                loss= Hinge())
+
+
     Args:
         X_train: The training dataset
         y_train: The true labels

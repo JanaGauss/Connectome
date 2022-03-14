@@ -18,6 +18,16 @@ def visualization_framework(model,
     """
     Returns feature importance and other visualization techniques
 
+    Examples:
+    >>> # Visualize Saliency Maps for neural networks
+    >>> visualization_framework(model = model,
+                                X = X_test,
+                                y= y_test,
+                                viz_method = 'feature_attribution,
+                                method='saliency',
+                                average=True,
+                                ordered = True)
+
     Args:
         model: a trained ML Model
         X: A  dataframe
