@@ -1,4 +1,5 @@
 <div id="top"></div>
+
 # Connectome
 
 Created as part of an university project "Innovationlab Big Data Science" at LMU Munich.
@@ -52,6 +53,8 @@ https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+
 <!-- LICENSE -->
 ## License
 
