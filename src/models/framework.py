@@ -1,7 +1,11 @@
+"""This module is used as a framework to open up saved models, train new models and save newly trained models
+"""
+
 import pandas as pd
 import keras
 import tensorflow as tf
 from keras.models import load_model
+from keras.models import save
 import pickle
 from src.models.brainnet_cnn import model_brainnet_cnn
 from src.models.ebm import EBMmi
@@ -10,13 +14,15 @@ from src.models.pipeline_elastic_net import model_elastic_net
 from src.models.pipeline_RF import run_random_forest
 
 
-def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained models?
+def model_framework(X_train, y_train,
                     model: str,
                     pretrained: bool = True,
                     model_path: str = None,
+                    save: bool = False,
+                    t_direct: str = None,
                     **kwargs):
     """
-    Function that lets the user decide what type of model he wants to use for his data and which parameters to use.
+    Function that lets the user decide what type of model he wants to use for his data and which parameters to use
     Args:
         X_train: The training dataset
         y_train: The true labels
@@ -26,27 +32,29 @@ def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained mode
                                                      "rf" = random forest, "cnn" = convolutional neural network,
                                                      "ebm" = explainable boosting machine)
         model_path: Full path to the folder where the selected pretrained model is stored
+        save: If the newly trained model should be saved
+        t_direct: Target directory to save the model in
         **kwargs: Additional parameters and options depending on the selected model
     Returns:
         A fitted model
-
     Raises:
         FileNotFoundError
         IOError
     """
-    # to do: gboost, rf, pretrained models aufrufen? assert pd.dataframe?
     assert isinstance(model, str), "invalid option, must be string"
-    assert model in ["elnet", "gboost", "rf", "cnn"], "please provide a valid model (elnet, gboost, rf or cnn)"
+    assert model in ["elnet", "gboost", "rf", "cnn",
+                     "ebm"], "please provide a valid model (elnet, gboost, ebm, rf or cnn)"
     assert isinstance(pretrained, bool), "invalid pretrained, must be True/False"
     if pretrained:
         pass
     else:
         assert len(X_train) == len(y_train), "X_train and y_train must be the same length"
 
+    classification = False
     if len(set(y_train)) == 2:  # Checking whether classification or regression is needed
-        classification = True  # machen wir das so, Problem mit fällen wo 2 Label ls negativ gewerted werden oder so
+        classification = True
 
-    # loading pretrained models
+        # loading pretrained models
     if pretrained:
         if not os.path.exists("model_path"):
             raise FileNotFoundError("File not found, please specify exact name and make sure the location is correct")
@@ -80,6 +88,26 @@ def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained mode
         else:
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)
 
-        # Missing: save model to disk
+    # saving model
+
+    if save:
+        if not os.path.exists(t_direct):
+            raise FileNotFoundError("Invalid path (write to dir)")
+        if model == "elnet":
+            filename = os.path.join(t_direct, "trained_elnet")
+            pickle.dump(model, open(filename, 'wb'))
+        elif model == "ebm":
+            filename = os.path.join(t_direct, "trained_ebm")
+            pickle.dump(model, open(filename, 'wb'))
+        elif model == "gboost":
+            filename = os.path.join(t_direct, "trained_gboost")
+            pickle.dump(model, open(filename, 'wb'))
+        elif model == "rf":
+            filename = os.path.join(t_direct, "trained_randomforest")
+            pickle.dump(model, open(filename, 'wb'))
+
+        else:
+            filename = os.path.join(t_direct, "trained_cnn")
+            rmodel.save(filename)
 
     return rmodel

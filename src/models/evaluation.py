@@ -1,3 +1,6 @@
+"""
+Evaluation of fitted model on test data
+"""
 from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score, mean_squared_error, \
     mean_absolute_error, r2_score
 import numpy as np
@@ -27,7 +30,7 @@ def model_evaluation(model, X_test, y_test):
 
     if len(np.unique(y_test)) == 2: # classification setting
 
-        if model.__class__.__name__ == 'LogisticRegressionCV':
+        if model.__class__.__name__ in ['LogisticRegressionCV', 'RandomForestClassifier']:
           predictions = model.predict(X_test) # class labels
           score = model.predict_proba(X_test)[:, 1] # probabilities
         else:

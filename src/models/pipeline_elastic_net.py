@@ -1,8 +1,11 @@
+"""
+Prepare data for elastic net (e.g. calculate squared or absolute values or interactions) and run elastic net model
+
+"""
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.linear_model import ElasticNetCV
-from sklearn.preprocessing import StandardScaler
 
 
 
