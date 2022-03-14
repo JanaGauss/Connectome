@@ -73,6 +73,6 @@ The typical workflow to develop code is the following:
 
 The following video displays the full pipeline from preprocessing to model outputs:
 
-https://user-images.githubusercontent.com/51715552/158158445-ffa7c7ab-fe4f-494a-a8af-b483156ebd1d.mp4
+https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-98ce-d7f9198411d1.mp4
 
 
