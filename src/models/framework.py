@@ -83,7 +83,7 @@ def model_framework(X_train, y_train,
             rmodel = GB(X_train, y_train, classification=True)
 
         elif model == "rf":
-            rmodel = run_random_forest(X_train, None, y_train, None, None)
+            rmodel = run_random_forest(X_train, y_train, classification, **kwargs)
 
         else:
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)
