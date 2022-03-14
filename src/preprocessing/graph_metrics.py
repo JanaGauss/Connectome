@@ -185,8 +185,19 @@ def get_graph_metrics(conns: list,
     dfs = []
 
     for key in res.keys():
-        if key != "Adjacency Matrices":
-            print(key)
+        if key == "Component Vectors":
+            # transforming component vectors into dummie variables
+            # --> region x belongs to community y
+            dummies = []
+            df = pd.DataFrame(res[key], columns=colnames[key], index=range(n))
+            for col in df.columns:
+                d = pd.get_dummies(df[col])
+                d.columns = [col + "_" + str(i) for i in d.columns]
+                dummies.append(d)
+            component_vectors_df = pd.concat(dummies, axis=1)
+            dfs.append(component_vectors_df)
+
+        if key != "Adjacency Matrices" and key != "Component Vectors":
             dfs.append(pd.DataFrame(res[key], columns=colnames[key], index=range(n)))
 
     return pd.concat(dfs, axis=1), failed
@@ -229,7 +240,7 @@ def get_gms_from_pd(data: pd.DataFrame,
         **kwargs: anything that´s passed to "get_grap_metrics"
 
     Returns:
-        DataFram containing the computed graph metrics
+        DataFrame containing the computed graph metrics
 
     """
 
@@ -292,5 +303,7 @@ if __name__ == "__main__":
             columns=[str(i) + "_" + str(j)
                      for i in range(k)
                      for j in range(i+1, k)])
+    conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
     print(conn)
     print(get_gms_from_pd(conn, conn.columns))
+    print(get_graph_metrics(conn_data_list))

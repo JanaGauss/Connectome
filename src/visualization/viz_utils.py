@@ -5,73 +5,93 @@ from src.preprocessing.data_loader import flat_to_mat, flat_to_mat_aggregation
 from src.preprocessing.reorder_matrices_regions import reorder_matrices_regions
 
 
-def plot_feature_map(heatmap, title, aggregated_network = False, cmap = 'gist_heat_r', center_0 = False):
+def plot_feature_map(heatmap, title, aggregated_network=False, ordered=False, cmap='gist_heat_r', center_0=False):
+    """
+    Plots a heatmap of the connectivity matrix
+
+
+    Args:
+        heatmap: The image data
+        title: A title for the plot
+        aggregated_network: Boolean, whether the matrices were aggregated based on yeo7
+        ordered: Boolean, whether to reorder the matrices based on the yeo7 network. (True is recommended when training
+            with Brainnetome data. Only applicable to data based on the brainnetome atlas.
+        cmap: Choice of colormap from matplotlib
+        center_0: Boolean, whether to center the cmap around 0
+
+    Returns:
+        Connectivity matrix plot
+    """
+    assert isinstance(aggregated_network, bool), "invalid datatype for argument aggregated_network"
+    assert isinstance(ordered, bool), "invalid datatype for argument ordered"
+    assert isinstance(title, str), "invalid option, must be string"
+
     if aggregated_network:
-        ticklabel = ["0","1","2","3","4","5","6","7"]
+        ticklabel = ["0", "1", "2", "3", "4", "5", "6", "7"]
 
         fig, ax = plt.subplots(figsize=(10, 10))
 
         if center_0:
-          divnorm=colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
-          plt.imshow(heatmap, cmap=cmap, norm = divnorm)
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
         else:
-          plt.imshow(heatmap, cmap=cmap)        
+            plt.imshow(heatmap, cmap=cmap)
 
-        
         plt.colorbar()
-        ax.set_xticks([0,1,2,3,4,5,6,7])
-        ax.set_yticks([0,1,2,3,4,5,6,7])
+        ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 7])
+        ax.set_yticks([0, 1, 2, 3, 4, 5, 6, 7])
         ax.set_xticklabels(ticklabel)
         ax.set_yticklabels(ticklabel)
 
-        plt.hlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
-        plt.vlines([0.5,1.5,2.5,3.5,4.5,5.5,6.5],-0.5,7.5,linewidth = 2)
+        plt.hlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
+        plt.vlines([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], -0.5, 7.5, linewidth=2)
         plt.title(title)
         plt.tight_layout()
         plt.close()
 
         return fig
     else:
-        #create borders and labels for plot
-        ordered_roi, ordered_region = ordered_regions()
-        ordered_region = list(map(int, ordered_region))
-
-        hlines = []
-        for i in range(len(ordered_region)-1):
-            if ordered_region[i] < ordered_region[i+1]:
-              hlines.append(i)
-        temp = hlines
-        temp.append(245.5)
-        temp.insert(0,0)
-        ticks = []
-        for i in range(len(temp)-1):
-            ticks.append(np.round(np.mean([temp[i], temp[i+1]])))
-        
-        ticklabel = ["0","1","2","3","4","5","6","7"]
-
-        #create plot
+        # create plot
         fig, ax = plt.subplots(figsize=(10, 10))
 
         if center_0:
-          divnorm=colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
-          plt.imshow(heatmap, cmap=cmap, norm = divnorm)
+            divnorm = colors.TwoSlopeNorm(vmin=heatmap.min(), vcenter=0., vmax=heatmap.max())
+            plt.imshow(heatmap, cmap=cmap, norm=divnorm)
         else:
-          plt.imshow(heatmap, cmap=cmap)
-          
-          
-        plt.colorbar()
-        ax.set_xticks(ticks)
-        ax.set_yticks(ticks)
-        ax.set_xticklabels(ticklabel)
-        ax.set_yticklabels(ticklabel)
+            plt.imshow(heatmap, cmap=cmap)
 
-        plt.hlines(hlines,0,245,linewidth = 2)
-        plt.vlines(hlines,0,245,linewidth = 2)
+        if ordered:
+            # create borders and labels for plot
+            ordered_roi, ordered_region = ordered_regions()
+            ordered_region = list(map(int, ordered_region))
+
+            hlines = []
+            for i in range(len(ordered_region) - 1):
+                if ordered_region[i] < ordered_region[i + 1]:
+                    hlines.append(i)
+            temp = hlines
+            temp.append(245.5)
+            temp.insert(0, 0)
+            ticks = []
+            for i in range(len(temp) - 1):
+                ticks.append(np.round(np.mean([temp[i], temp[i + 1]])))
+
+            ticklabel = ["0", "1", "2", "3", "4", "5", "6", "7"]
+            ax.set_xticks(ticks)
+            ax.set_yticks(ticks)
+            ax.set_xticklabels(ticklabel)
+            ax.set_yticklabels(ticklabel)
+
+            plt.hlines(hlines, 0, 245, linewidth=2)
+            plt.vlines(hlines, 0, 245, linewidth=2)
+
+        plt.colorbar()
         plt.title(title)
         plt.tight_layout()
         plt.close()
 
         return fig
+
 
 def ordered_regions() -> list:
     """
@@ -106,92 +126,89 @@ def ordered_regions() -> list:
                    '221': '0', '222': '0', '223': '0', '224': '0', '225': '0', '226': '0', '227': '0', '228': '0',
                    '229': '0', '230': '0', '231': '0', '232': '0', '233': '0', '234': '0', '235': '0', '236': '0',
                    '237': '0', '238': '0', '239': '0', '240': '0', '241': '0', '242': '0', '243': '0', '244': '0',
-                   '245': '0', '246': '0'}   
+                   '245': '0', '246': '0'}
 
     sorted_keys = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).keys())
     sorted_keys_int = list(map(int, sorted_keys))
     sorted_keys_list = [x - 1 for x in sorted_keys_int]
-    ordered_region =  list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
+    ordered_region = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
     ordered_region = list(map(int, ordered_region))
     return (sorted_keys_list, ordered_region)
 
 
+def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
+    """
+    plot coefficients of elastic net model
+
+    Args:
+      model: fitted elastic net model
+
+    Returns:
+      plot
+
+    """
+
+    assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV']
+
+    # extract indices of conn variables
+    ind_conn_cols = []
+    for x in range(len(model.feature_names_in_)):
+        if len(model.feature_names_in_[x].split("_")) > 1 and model.feature_names_in_[x].split("_")[0].isdigit() and \
+                model.feature_names_in_[x].split("_")[1].isdigit():
+            ind_conn_cols.append(x)
+
+    if model.__class__.__name__ == 'LogisticRegressionCV':
+        coefs = model.coef_[0][ind_conn_cols]
+    else:
+        coefs = model.coef_[ind_conn_cols]  # structure of model.coef_ is different for regression and classification
+
+    mat = flat_to_mat(coefs)
+
+    # define if aggregated or not depending on shape
+    if mat.shape[0] == 246:
+        aggregated = False
+    else:
+        aggregated = True
+
+    if aggregated:
+        plot_mat = flat_to_mat_aggregation(coefs)
+        plot = plot_feature_map(plot_mat, title=title, aggregated_network=True, cmap='seismic', center_0=True)
+    else:  # reorder by regions
+        plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
+        plot = plot_feature_map(plot_mat, title=title, ordered=True, aggregated_network=False, cmap='seismic', center_0=True)
+
+    return plot
 
 
-def plot_coef_elastic_net(model, title = "Elastic Net coefficients"):
-  """
-  plot coefficients of elastic net model
-  
-  Args:
-    model: fitted elastic net model
-        
-  Returns:
-    plot
-  
-  """
+def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance"):
+    """
+    plot results grouped feature importance
 
-  assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV']
+    Args:
+      df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
 
-  # extract indices of conn variables
-  ind_conn_cols = []
-  for x in range(len(model.feature_names_in_)):
-    if len(model.feature_names_in_[x].split("_"))>1 and model.feature_names_in_[x].split("_")[0].isdigit() and model.feature_names_in_[x].split("_")[1].isdigit():
-      ind_conn_cols.append(x)
+    Returns:
+      plot
 
-  if model.__class__.__name__ == 'LogisticRegressionCV':
-    coefs = model.coef_[0][ind_conn_cols]
-  else:
-    coefs = model.coef_[ind_conn_cols] # structure of model.coef_ is different for regression and classification
+    """
 
-  mat = flat_to_mat(coefs)
+    assert isinstance(df_importance, pd.DataFrame), "provided df_importance is no pd.DataFrame"
 
-  # define if aggregated or not depending on shape
-  if mat.shape[0] == 246:
-    aggregated = False
-  else: 
-    aggregated = True
+    # set values < 0 to 0
+    df_importance.iloc[:, 1][df_importance.iloc[:, 1] < 0] = 0
 
+    # reorder results
+    order_regs = ['0_0', '0_1', '0_2', '0_3',
+                  '0_4', '0_5', '0_6', '0_7', '1_1', '1_2', '1_3', '1_4', '1_5', '1_6',
+                  '1_7', '2_2', '2_3', '2_4', '2_5', '2_6', '2_7', '3_3', '3_4', '3_5',
+                  '3_6', '3_7', '4_4', '4_5', '4_6', '4_7', '5_5', '5_6', '5_7', '6_6',
+                  '6_7', '7_7']
 
-  if aggregated:
-    plot_mat = flat_to_mat_aggregation(coefs)
-    plot = plot_feature_map(plot_mat, title = title, aggregated_network = True, cmap = 'seismic', center_0 = True)
-  else: # reorder by regions
-    plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
-    plot = plot_feature_map(plot_mat, title = title, aggregated_network = False, cmap = 'seismic', center_0 = True)
-  
+    result = []
+    for i in order_regs:
+        res_i = df_importance.loc[df_importance['region'] == i][df_importance.columns[1]].values[
+            0]  # reorder Feature Importance Values -> ordered like in order_regs
+        result.append(res_i)
 
-  return plot
-
-
-def plot_grouped_FI(df_importance, title = "Grouped Permutation Feature Importance"):
-  """
-  plot results grouped feature importance
-  
-  Args:
-    df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
-        
-  Returns:
-    plot
-  
-  """ 
-
-  assert isinstance(df_importance, pd.DataFrame), "provided df_importance is no pd.DataFrame"
-
-  # set values < 0 to 0
-  df_importance.iloc[:,1][df_importance.iloc[:,1] < 0] = 0
-
-  # reorder results 
-  order_regs = ['0_0', '0_1', '0_2', '0_3',
-       '0_4', '0_5', '0_6', '0_7', '1_1', '1_2', '1_3', '1_4', '1_5', '1_6',
-       '1_7', '2_2', '2_3', '2_4', '2_5', '2_6', '2_7', '3_3', '3_4', '3_5',
-       '3_6', '3_7', '4_4', '4_5', '4_6', '4_7', '5_5', '5_6', '5_7', '6_6',
-       '6_7', '7_7']
-
-  result = []
-  for i in order_regs:
-    res_i = df_importance.loc[df_importance['region'] == i][df_importance.columns[1]].values[0] # reorder Feature Importance Values -> ordered like in order_regs
-    result.append(res_i)
-
-  plot_mat = flat_to_mat_aggregation(result)
-  return plot_feature_map(plot_mat, title = title, aggregated_network = True)
-  
+    plot_mat = flat_to_mat_aggregation(result)
+    return plot_feature_map(plot_mat, title=title, aggregated_network=True)

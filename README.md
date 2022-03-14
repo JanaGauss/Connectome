@@ -4,7 +4,7 @@ Created as part of an university project "Innovationlab Big Data Science" at LMU
 
 
 # Code setup
-Folder structure based on Cookiecutter for Data science https://github.com/drivendata/cookiecutter-data-science
+Folder structure based on Cookiecutter for Data science https://github.com/drivendata/cookiecutter-data-science.
 
 Directory structure:
 
@@ -67,3 +67,12 @@ The typical workflow to develop code is the following:
 - Move the function into the src folder
 - Import the function in the jupyter notebook 
 - Test the function is working
+
+
+# Demo Video
+
+The following video displays the full pipeline from preprocessing to model outputs:
+
+https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-98ce-d7f9198411d1.mp4
+
+

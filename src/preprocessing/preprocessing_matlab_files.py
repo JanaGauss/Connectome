@@ -16,8 +16,6 @@ def preprocess_mat_files(matlab_dir: str = None,
                          network: str = 'yeo7',
                          upper: bool = True,
                          statistic: str = 'mean',
-                         split_size: float = .8,
-                         seed: int = 42,
                          file_format: str = "csv") -> pd.DataFrame:
 
     """
@@ -36,8 +34,6 @@ def preprocess_mat_files(matlab_dir: str = None,
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
-        split_size: the size of the train dataset (default .8)
-        seed: pass an int for reproducibility purposes (default 42)
         file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
 
     Returns:
@@ -61,9 +57,6 @@ def preprocess_mat_files(matlab_dir: str = None,
            (preprocessing_type == "conn" or
             preprocessing_type == "aggregation"), "invalid preprocessing type"
     assert isinstance(upper, bool), "invalid datatype for argument flatten"
-    assert isinstance(split_size, float) & (split_size >= 0.0) & \
-           (split_size <= 1.0), "invalid path provided"
-    assert isinstance(seed, int), "provided seed is no integer"
     assert isinstance(file_format, str) & \
            (file_format == "csv" or file_format == "h5"), "invalid file format selected"
 

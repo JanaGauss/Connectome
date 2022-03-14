@@ -5,12 +5,14 @@ from typing import Union
 from sklearn.datasets import make_classification, make_regression
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
+from src.models.lgb import GB
 
 
 def get_fi(model: Union[lgb.LGBMClassifier,
                         lgb.LGBMRegressor,
                         RandomForestClassifier,
-                        RandomForestRegressor],
+                        RandomForestRegressor,
+                        GB],
            data: pd.DataFrame,
            feature_names: list = None,
            n: int = 10
@@ -28,6 +30,8 @@ def get_fi(model: Union[lgb.LGBMClassifier,
         a pandas DataFrame containing the feature importances and names
 
     """
+    if isinstance(model, GB):
+        model = model.lgbm
 
     return pd.DataFrame({
         "importances": model.feature_importances_,
@@ -65,6 +69,9 @@ def get_pfi(model: Union[lgb.LGBMClassifier,
         a pandas DataFrame containing the PFIs and feature names
 
     """
+    if isinstance(model, GB):
+        model = model.lgbm
+
     r = permutation_importance(
         model, x_val, y_val,
         n_repeats=repeats,
@@ -101,6 +108,10 @@ if __name__ == "__main__":
         columns=["feature_" + str(i)
                  for i in range(X_regr.shape[1])])
 
+    gb_regr = GB(X_regr, y_regr, classification=False, fit_directly=True)
+    gb_class = GB(X, y, classification=True, fit_directly=True)
+
+
     # fit the models
     lgb_class.fit(X, y)
     lgb_regr.fit(X_regr, y_regr)
@@ -109,7 +120,7 @@ if __name__ == "__main__":
 
     # obtain FIs
     plot_fis = False
-    for i, mod in enumerate([lgb_class, lgb_regr, rf, rf_regr]):
+    for i, mod in enumerate([lgb_class, lgb_regr, rf, rf_regr, gb_class, gb_regr]):
         if plot_fis:
             get_fi(mod, X_regr if i % 2 != 0 else X).plot.bar(
                 x='features', y='importances')
@@ -118,7 +129,7 @@ if __name__ == "__main__":
 
     # obtain PFIs
     plot_pfis = False
-    for i, model in enumerate([lgb_class, lgb_regr, rf, rf_regr]):
+    for i, model in enumerate([lgb_class, lgb_regr, rf, rf_regr, gb_class, gb_regr]):
         if plot_fis:
             get_pfi(model, X_regr if i % 2 != 0 else X, y_regr
                     if i % 2 != 0 else y, repeats=2).plot.bar(

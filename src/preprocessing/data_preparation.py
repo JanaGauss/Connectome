@@ -21,7 +21,7 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
         seed: seed for reproducibility of train/test split
         split: should a train/test split be performed or not?
     Returns:
-        ytrain, Xtrain, ytest, Xtest
+        Xtrain, ytrain, Xtest, ytest
     """
 
     # check input types
