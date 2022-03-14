@@ -1,3 +1,6 @@
+"""
+Framework function for modelling
+"""
 import pandas as pd
 import keras
 import tensorflow as tf
@@ -75,7 +78,7 @@ def model_framework(X_train, y_train,  # Brauchen wir die 2 für pretrained mode
             rmodel = GB(X_train, y_train, classification=True)
 
         elif model == "rf":
-            rmodel = run_random_forest(X_train, None, y_train, None, None)
+            rmodel = run_random_forest(X_train, y_train, classification, **kwargs)
 
         else:
             rmodel = model_brainnet_cnn(X_train, y_train, **kwargs)

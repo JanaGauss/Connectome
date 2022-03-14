@@ -1,3 +1,6 @@
+"""
+Framework function for vizualisation
+"""
 import numpy as np
 import pandas as pd
 from src.visualization.viz_utils import plot_feature_map, plot_coef_elastic_net, plot_grouped_FI
