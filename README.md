@@ -24,7 +24,9 @@ Installation Guide Leo
 
 * npm
   ```sh
-  npm install npm@latest -g
+  git clone https://github.com/JanaGauss/Connectome.git
+  cd Connectome
+  pip install .
   ```
 
 ### Installation
