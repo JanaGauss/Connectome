@@ -20,8 +20,26 @@ Follow the following steps to start the pipeline locally.
 
 ### Prerequisites
 
-* python and pip installed 
-* **recommended**: create a virtual environment before installing the package
+* Install python 3.8.x or above 
+* From either:
+* https://www.python.org/downloads/ 
+* or: https://www.anaconda.com/
+
+**recommended**: Create a virtual environment before installing the package. If you choose not to, you can skip to the Installation
+1. Open the command prompt
+2. Navigate to the project directory or create a new one:
+```
+mkdir path/to/python/project
+```
+3. Create a virtual environment within the project folder
+```
+python3 -m venv connectome
+```
+4. Activate virtual environment
+```
+source connectome/bin/activate
+```
+5. Go to installation
 
 
 ### Installation
