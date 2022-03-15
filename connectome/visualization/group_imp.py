@@ -57,28 +57,28 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
         subset_group = Xtest[conn_names_region] # extract variables belonging to region g
 
         for i in range(m):
-      	subset_group_shuffled = subset_group.sample(frac = 1) # return rows in random order
-
-      	Xtest_shuffle = Xtest.copy().reset_index(drop = True)
-      	Xtest_shuffle[conn_names_region] = subset_group_shuffled.reset_index(drop = True) # replace variables belonging to g by randomly shuffled observations
-
-        predictions_shuffled = model.predict(Xtest_shuffle)
-
-        if classification:        
-        	metric_shuffled = accuracy_score(ytest, np.round(predictions_shuffled))
-        else:
-        	metric_shuffled = mean_squared_error(ytest, predictions_shuffled)
-
-        metric_group.append(metric_shuffled)
-
+            subset_group_shuffled = subset_group.sample(frac = 1) # return rows in random order
+            
+            Xtest_shuffle = Xtest.copy().reset_index(drop = True)
+            test_shuffle[conn_names_region] = subset_group_shuffled.reset_index(drop = True) # replace variables belonging to g by randomly shuffled observations
+            
+            predictions_shuffled = model.predict(Xtest_shuffle)
+            
+            if classification:
+                metric_shuffled = accuracy_score(ytest, np.round(predictions_shuffled))
+            else:
+                metric_shuffled = mean_squared_error(ytest, predictions_shuffled)
+                
+            metric_group.append(metric_shuffled)
+            
         # calculate mean change in metric for group g over m repetitions
         if classification:
-      	mean_decr_metric = metric_test - sum(metric_group)/len(metric_group) # calculate mean decrease accuracy
-      	result.append([g, mean_decr_metric]) 
+            mean_decr_metric = metric_test - sum(metric_group)/len(metric_group) # calculate mean decrease accuracy
+            result.append([g, mean_decr_metric]) 
     
         else: 
-      	mean_incr_metric = sum(metric_group)/len(metric_group) - metric_test # calculate mean increase MSE
-      	result.append([g, mean_incr_metric])
+            mean_incr_metric = sum(metric_group)/len(metric_group) - metric_test # calculate mean increase MSE
+            result.append([g, mean_incr_metric])
     
 
     if classification:
