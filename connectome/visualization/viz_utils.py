@@ -168,7 +168,7 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
     mat = flat_to_mat(coefs)
 
     # define if aggregated based on yeo7 or not depending on shape and colnames
-    if mat.shape[0] == 8 & '1_1' in model.feature_names_in_:
+    if (mat.shape[0] == 8) & ('1_1' in model.feature_names_in_):
         aggregated = True
     else:
         aggregated = False
