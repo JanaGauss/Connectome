@@ -60,7 +60,7 @@ def grouped_permutation_FI(model, Xtest, ytest, groups_df, m = 10):
             subset_group_shuffled = subset_group.sample(frac = 1) # return rows in random order
             
             Xtest_shuffle = Xtest.copy().reset_index(drop = True)
-            test_shuffle[conn_names_region] = subset_group_shuffled.reset_index(drop = True) # replace variables belonging to g by randomly shuffled observations
+            Xtest_shuffle[conn_names_region] = subset_group_shuffled.reset_index(drop = True) # replace variables belonging to g by randomly shuffled observations
             
             predictions_shuffled = model.predict(Xtest_shuffle)
             
