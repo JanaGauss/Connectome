@@ -18,7 +18,6 @@ def preprocess_mat_files(matlab_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
                          upper: bool = True,
-                         mat_key: str = "Z",
                          statistic: str = 'mean',
                          mat_key: str = 'Z',
                          file_format: str = "csv") -> pd.DataFrame:
@@ -47,11 +46,11 @@ def preprocess_mat_files(matlab_dir: str = None,
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix
         network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
-        mat_key: the key under which the connectivity data is saved in the matlab files
         statistic: Summary statistic to be applied
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
+        mat_key: the key under which the connectivity data is saved in the matlab files
         file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
 
     Returns:
