@@ -51,8 +51,13 @@ mkdir path/to/python/project
 python3 -m venv connectome
 ```
 4. Activate virtual environment
+Linux:
 ```
 source connectome/bin/activate
+```
+Windows:
+```
+connectome\Scripts\activate
 ```
 5. Go to installation
 
