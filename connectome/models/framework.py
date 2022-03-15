@@ -1,4 +1,5 @@
-"""This module is used as a framework to open up saved models, train new models and save newly trained models
+"""
+This module is used as a framework to open up saved models, train new models and save newly trained models
 """
 
 import pandas as pd
@@ -22,9 +23,11 @@ def model_framework(X_train, y_train,
                     t_direct: str = None,
                     **kwargs):
     """
-    Function that lets the user decide what type of model he wants to use for his data and which parameters to use
+    Function that lets the user decide what type of model he wants to use for his data and which parameters to use. 
+    See the documentation of the modelling functions for more information on further parameters that can be specified.
 
     Examples:
+    >>> # CNN:
     >>> # Different optimizer and loss function
     >>> from tf.keras.optimizers import Nadam
     >>> from tf.keras.losses import Hinge()
@@ -35,8 +38,39 @@ def model_framework(X_train, y_train,
                                 model_path = None,
                                 epochs = 500,
                                 patience = 10,
-                                optimizer= NAdam(),
+                                optimizer= Nadam(),
                                 loss= Hinge())
+    >>> 
+    >>> # Elastic Net:
+    >>> # classification task:
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "elnet",
+                                pretrained = False,
+                                n_alphas_logreg = 5, 
+                                cv_logreg = 3, 
+                                l1_ratios_logreg = [0.0, 0.1])
+    >>> # you can transform the values before modelling, e.g. take the absolute values (remember to also transform X_test for evaluation):
+    >>> X_train = prepare_data_elastic_net(data = X_train,
+							 option = "abs")
+    >>> X_test = prepare_data_elastic_net(data = X_test,
+							 option = "abs")
+    >>> # regression task:
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "elnet",
+                                pretrained = False,
+                                n_alphas_linreg = 20,
+                                cv_linreg = 5, 
+                                l1_ratios_linreg = [0.01, 0.1])
+    >>> # you don't have to specifiy n_alphas_logreg/linreg, cv_logreg/linreg or l1_ratios_logreg/linreg and take the default values instead (see documentation of elastic net function)
+    >>> 
+    >>> # Random Forest:
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "rf",
+                                pretrained = False,
+                                n_estimators = 100)  
 
 
     Args:

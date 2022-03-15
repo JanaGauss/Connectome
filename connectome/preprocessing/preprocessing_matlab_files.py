@@ -18,6 +18,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
                          upper: bool = True,
+                         mat_key: str = "Z",
                          statistic: str = 'mean',
                          mat_key: str = 'Z',
                          file_format: str = "csv") -> pd.DataFrame:
@@ -46,6 +47,7 @@ def preprocess_mat_files(matlab_dir: str = None,
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix
         network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
+        mat_key: the key under which the connectivity data is saved in the matlab files
         statistic: Summary statistic to be applied
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
@@ -115,12 +117,14 @@ def preprocess_mat_files(matlab_dir: str = None,
     return final_df
 
 
-def load_matlab_files(directory: str, mat_key: str = "Z") -> tuple:
+def load_matlab_files(directory: str,
+                      mat_key: str = "Z") -> tuple:
     """
     imports all matlab files from specified directory
 
     Args:
         directory: Path to Matlab Files
+        mat_key: the key under which the connectivity data is saved in the matlab files
 
     Returns:
         A list where the first argument is the collection of connectivity matrix
@@ -294,9 +298,12 @@ def get_subject_ids(file_names: list) -> np.ndarray:
     Returns:
         A np.ndarray in a readable format
     """
-    assert isinstance(file_names, list), "no list of file names provided"
+    if not all(["Subject" in i for i in file_names]):
+        raise ValueError("some filenames do not correspond to the Conn format\n"
+                         "example for the Conn format: "
+                         "resultsROI_Subject006_Condition001.mat")
 
-    return np.array([int(i.split("Subject", 1)[1][0:3]) for i in file_names])
+    return np.array([int(i.split("Subject", 1)[1].split("_")[0]) for i in file_names])
 
 
 def create_train_test_split(data: pd.DataFrame,

@@ -16,17 +16,33 @@ def visualization_framework(model,
                             viz_method: str = 'GFI',
                             **kwargs):
     """
-    Returns feature importance and other visualization techniques
+    Returns feature importance and other visualization techniques. Methods: "GFI" and "GFI_only" work for elastic net, .. (TODO: add models) if an aggregation by yeo7 is possible. 
+    "FI" and "FI_only" work for elastic net, .. (TODO: add models).
+    "elastic_net" works for elastic net models.
+    "shapley" works for .. (TODO: add models).
+    "feature_attribution" works for .. (TODO: add models).
+    For more details on the methods, see the documentations of the respective functions.
 
     Examples:
     >>> # Visualize Saliency Maps for neural networks
     >>> visualization_framework(model = model,
                                 X = X_test,
                                 y= y_test,
-                                viz_method = 'feature_attribution,
+                                viz_method = 'feature_attribution',
                                 method='saliency',
                                 average=True,
                                 ordered = True)
+    >>> # Calculate and visualize the Grouped Permutation Feature Importance, e.g. for an elastic net model. Works similar for 'GFI_only', 'FI' and 'FI_only'.
+    >>> visualization_framework(model = model,
+                                X = X_test,
+                                y= y_test,
+                                viz_method = 'GFI',
+                                m = 20) # the higher m (number of permutations) the more accurate the result, but the longer the runtime
+    >>> # Plot coefficients of an elastic net model
+    >>> visualization_framework(model = model,
+                                X = X_test,
+                                y= y_test,
+                                viz_method = 'elastic_net')
 
     Args:
         model: a trained ML Model

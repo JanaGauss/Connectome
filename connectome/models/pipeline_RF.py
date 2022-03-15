@@ -11,16 +11,20 @@ def run_random_forest(X_train, y_train,
 			    classification: bool = True, verbose = 1,
 			    **kwargs):
     """
-  Function that fits a random forest model. 
-  See also https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html and https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+    Function that fits a random forest model. 
+    See also https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html and https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html for further arguments that can be specified.
   
-  Args:
+    Examples:
+    >>> model = run_random_forest(X_train = X_train,
+                                  y_train = y_train,
+                                  classification = True)   
+    Args:
         X_train: The training dataset
         y_train: The true labels
         classification: classification task -> logistic regression or regression task -> linear model
         verbose: amount of verbosity, default = 1 
         
-  Returns:
+    Returns:
   	Returns fitted model
     """
 
