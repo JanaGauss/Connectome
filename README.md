@@ -16,11 +16,11 @@ Alzheimer's disease (AD) is a progressive neurologic disorder that causes the br
 
 
 
-[1] Mayoclinic.org (N.A.). Alzheimer's disease. Retrieved from: https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/symptoms-causes/syc-20350447#:~:text=Alzheimer's%20disease%20is%20a%20progressive,person's%20ability%20to%20function%20independently. (01.03.22)
-[2] Smith, M.A., 1998. Alzheimer disease. International review of neurobiology, 42, pp.1-54.
-[3] Alzheimer Europe.org (2019). Dementia in Europe Yearbook 2019. Retrieved from: https://www.alzheimer-europe.org/sites/default/files/alzheimer_europe_dementia_in_europe_yearbook_2019.pdf (20.02.22)
-[4] Alzheimer Association´s  (2020). Costs of Alzheimer's to Medicare and Medicaid. Retrieved from: https://act.alz.org/site/DocServer/2012_Costs_Fact_Sheet_version_2.pdf?docID=7161 (22.02.22)
-[5] Fan, L., Li, H., Zhuo, J., Zhang, Y., Wang, J., Chen, L., Yang, Z., Chu, C., Xie, S., Laird, A.R. and Fox, P.T., 2016. The human brainnetome atlas: a new brain atlas based on connectional architecture. Cerebral cortex, 26(8), pp.3508-3526.
+*[1] Mayoclinic.org (N.A.). Alzheimer's disease. Retrieved from: https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/symptoms-causes/syc-20350447#:~:text=Alzheimer's%20disease%20is%20a%20progressive,person's%20ability%20to%20function%20independently. (01.03.22)
+*[2] Smith, M.A., 1998. Alzheimer disease. International review of neurobiology, 42, pp.1-54.
+*[3] Alzheimer Europe.org (2019). Dementia in Europe Yearbook 2019. Retrieved from: https://www.alzheimer-europe.org/sites/default/files/alzheimer_europe_dementia_in_europe_yearbook_2019.pdf (20.02.22)
+*[4] Alzheimer Association´s  (2020). Costs of Alzheimer's to Medicare and Medicaid. Retrieved from: https://act.alz.org/site/DocServer/2012_Costs_Fact_Sheet_version_2.pdf?docID=7161 (22.02.22)
+*[5] Fan, L., Li, H., Zhuo, J., Zhang, Y., Wang, J., Chen, L., Yang, Z., Chu, C., Xie, S., Laird, A.R. and Fox, P.T., 2016. The human brainnetome atlas: a new brain atlas based on connectional architecture. Cerebral cortex, 26(8), pp.3508-3526.
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
