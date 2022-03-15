@@ -18,6 +18,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
                          upper: bool = True,
+                         mat_key: str = "Z",
                          statistic: str = 'mean',
                          file_format: str = "csv") -> pd.DataFrame:
 
@@ -45,6 +46,7 @@ def preprocess_mat_files(matlab_dir: str = None,
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix
         network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
+        mat_key: the key under which the connectivity data is saved in the matlab files
         statistic: Summary statistic to be applied
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
@@ -77,7 +79,7 @@ def preprocess_mat_files(matlab_dir: str = None,
 
     print('loading files')
     # load matlab files and excel
-    res = load_matlab_files(matlab_dir)
+    res = load_matlab_files(matlab_dir, mat_key)
     
     if not os.path.exists(excel_path):
         raise FileNotFoundError("invalid directory (excel file)")
@@ -114,12 +116,14 @@ def preprocess_mat_files(matlab_dir: str = None,
     return final_df
 
 
-def load_matlab_files(directory: str) -> tuple:
+def load_matlab_files(directory: str,
+                      mat_key: str = "Z") -> tuple:
     """
     imports all matlab files from specified directory
 
     Args:
         directory: Path to Matlab Files
+        mat_key: the key under which the connectivity data is saved in the matlab files
 
     Returns:
         A list where the first argument is the collection of connectivity matrix
@@ -139,7 +143,7 @@ def load_matlab_files(directory: str) -> tuple:
 
     for i in mat_files_names:
         with h5py.File(i, 'r') as f:
-            conn_matrices.append(np.array(f.get("Z")))
+            conn_matrices.append(np.array(f.get(mat_key)))
             worked.append(i)
 
     return conn_matrices, worked
