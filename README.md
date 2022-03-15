@@ -46,14 +46,19 @@ Follow the following steps to start the pipeline locally.
 ```
 mkdir path/to/python/project
 ```
-3. Create a virtual environment within the project folder
+3. Create a virtual environment within the project folder<br />
+Linux:
 ```
-python3 -m venv connectome
+python3 -m venv connectome_env
+```
+Windows:
+```
+python -m venv connectome_env
 ```
 4. Activate virtual environment <br />
 Linux:
 ```
-source connectome/bin/activate
+source connectome_env/bin/activate
 ```
 Windows:
 ```
