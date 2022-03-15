@@ -102,18 +102,6 @@ class TestShapleyGB(unittest.TestCase):
         imp = sh_regr_GB.shapley_importance()
         self.assertIsInstance(imp, pd.DataFrame)
 
-    def test_update_data(self):
-        with self.assertRaises(NotImplementedError):
-            sh_class.update_data()
-
-    def test_update_model(self):
-        with self.assertRaises(NotImplementedError):
-            sh_class.update_model()
-
-    def test_interaction_values(self):
-        with self.assertRaises(NotImplementedError):
-            sh_class.interaction_values()
-
 
 if __name__ == '__main__':
     unittest.main()

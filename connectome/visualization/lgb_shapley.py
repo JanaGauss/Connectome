@@ -1,3 +1,8 @@
+"""
+this module contains a wrapper to compute and visualize the SHAP values for the given
+model at hand - implemented for gradient boosting models (lightgbm) so far
+"""
+
 from typing import Union
 import shap
 from lightgbm import LGBMModel, LGBMClassifier, LGBMRegressor
@@ -9,8 +14,31 @@ from connectome.models.lgb import GB
 
 class ShapleyLGB:
     """
-    class to efficiently use/compute and visualise shapley values
+    wrapper to use/compute and visualise shapley values
     for a given lgb model
+
+    Examples:
+    >>>from connectome.visualization.lgb_shapley import ShapleyLGB
+    >>>from sklearn.datasets import make_classification
+    >>>import pandas as pd
+    >>>from lightgbm import LGBMClassifier
+    >>>
+    >>># initialize model
+    >>>lgb_class = LGBMClassifier()
+    >>>
+    >>># create synthetic data
+    >>>X, y = make_classification(n_informative=10)
+    >>>X = pd.DataFrame(X, columns=["feature_" + str(i) for i in range(X.shape[1])])
+    >>>
+    >>># fit the model
+    >>>lgb_class.fit(X, y)
+    >>>
+    >>># shapley values and analysis for the classification case
+    >>>sh_class = ShapleyLGB(lgb_class, X)
+    >>>sh_class.summ_plot(5)
+    >>>class_imp = sh_class.shapley_importance()
+    >>>print(class_imp)
+    >>>sh_class.depend_plot(class_imp.iloc[0, 2])
     """
     def __init__(self,
                  model: Union[LGBMModel, GB],
@@ -49,9 +77,21 @@ class ShapleyLGB:
                                self.data.iloc[ind, :])
 
     def get_shapley_values(self) -> np.ndarray:
+        """
+        returns the computed shapley values as a numpy array
+        Returns:
+            numpy array containing the shapley values
+
+        """
         return self.shap_values
 
     def get_shapley_values_df(self) -> pd.DataFrame:
+        """
+        returns the computed shapley values as a DataFrame
+        Returns:
+            DataFrame containing the shapley values
+
+        """
         return pd.DataFrame(self.shap_values,
                             columns=self.feature_names)
 
@@ -90,9 +130,10 @@ class ShapleyLGB:
     def summ_plot(self,
                   max_features: int = 25) -> None:
         """
-
+        visualises the shapley values depending on the values of the
+        respective features
         Args:
-            max_features: number of fatures to display
+            max_features: number of features to display
 
         Returns:
             None
@@ -105,9 +146,8 @@ class ShapleyLGB:
     def shapley_importance(self,
                            n: int = 10):
         """
-        returns the n most important features based on the absolute
-        value of the shap values
-
+        returns the n most important features based on the sum of the absolute
+        value of the shapley values
         Args:
             n: the n most important features to return
 
@@ -132,7 +172,6 @@ class ShapleyLGB:
         """
         plots the dependence plots for the n most important features
         (based on the sum of the absolute shapley values)
-
         Args:
             n: the n most important features to return
 
@@ -143,15 +182,6 @@ class ShapleyLGB:
 
         for i in self.n_import["feature_index"]:
             self.depend_plot(i)
-
-    def update_data(self):
-        raise NotImplementedError
-
-    def update_model(self):
-        raise NotImplementedError
-
-    def interaction_values(self):
-        raise NotImplementedError
 
 
 if __name__ == "__main__":

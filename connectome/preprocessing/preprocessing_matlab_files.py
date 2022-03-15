@@ -18,8 +18,8 @@ def preprocess_mat_files(matlab_dir: str = None,
                          preprocessing_type: str = 'conn',
                          network: str = 'yeo7',
                          upper: bool = True,
-                         mat_key: str = "Z",
                          statistic: str = 'mean',
+                         mat_key: str = 'Z',
                          file_format: str = "csv") -> pd.DataFrame:
 
     """
@@ -34,8 +34,8 @@ def preprocess_mat_files(matlab_dir: str = None,
     >>> write_dir = r"./path_to_save" # ...
     >>> export_file = True # rename to export file
     >>> statistic = 'greater_zero'
-    >>> preprocess_mat_files(matlab_dir = matlab_dir, excel_path = excel_path, preprocessing_type = preprocessing_type,
-                          write_dir = write_dir, export_file = export_file, statistic = statistic)
+    >>> preprocess_mat_files(matlab_dir=matlab_dir, excel_path=excel_path, preprocessing_type=preprocessing_type,
+    >>>                      write_dir=write_dir, export_file=export_file, statistic=statistic)
 
 
     Args:
@@ -46,11 +46,11 @@ def preprocess_mat_files(matlab_dir: str = None,
         preprocessing_type: conn for connectivity matrix,
             "aggregation" for aggregated conn matrix
         network: yeo7 or yeo17 network (only applicable if preprocessing_type = aggregation)
-        mat_key: the key under which the connectivity data is saved in the matlab files
         statistic: Summary statistic to be applied
             - only applicable if preprocessing_type = aggregation
             - one of (mean, max, min and greater_zero)
         upper: boolean whether only upper diagonal elements of connecivity matrices should be used
+        mat_key: the key under which the connectivity data is saved in the matlab files
         file_format: str. Pass "h5" for further modelling in python or "csv" for R (default "csv")
 
     Returns:
@@ -62,7 +62,7 @@ def preprocess_mat_files(matlab_dir: str = None,
     if excel_path is None:
         excel_path = input(r'Input your path where the excel '
                            r'file is stored (with name + ".xlsx"): ')
-    if write_dir is None:
+    if write_dir is None and export_file:
         write_dir = input(r'Input your path where '
                           r'to write the final file: ')
 
@@ -278,8 +278,9 @@ def create_final_df(file_names: list,
     ids_added_df = pd.DataFrame(ids_added) # create df, first column contains IDs
 
     # final_columns = col_names_final_df(data_from_excel = data_from_excel)
-    final_df_0 = data_from_excel.merge(ids_added_df, left_on = 'ConnID', right_on = 0) # merge two data frames by connID column/first column of ids_added_df
-    final_df = pd.DataFrame(np.array(final_df_0), columns=final_columns) # rename columns
+    final_df_0 = data_from_excel.merge(
+        ids_added_df, left_on='ConnID', right_on=0)  # merge two data frames by connID column/first column of ids_added_df
+    final_df = pd.DataFrame(np.array(final_df_0), columns=final_columns)  # rename columns
 
     return final_df
 
@@ -396,7 +397,7 @@ def grouped_conn_df(data: pd.DataFrame,
 
     arrays = pd_to_arrays(data, cols)
     grouped_conn = grouped_conn_mat(conn_matrices=arrays,
-                                   **kwargs)
+                                    **kwargs)
     if return_arrays:
         return grouped_conn
 
@@ -456,4 +457,3 @@ def test_grouped_conn_df():
 
 if __name__ == "__main__":
     test_grouped_conn_df()
-

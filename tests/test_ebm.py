@@ -59,18 +59,6 @@ class TestEBMwi(unittest.TestCase):
         with self.assertRaises(ValueError):
             ebm_regr_dir.predict_proba(X_regr)
 
-    def test_save_model(self):
-        with self.assertRaises(NotImplementedError):
-            ebm_class_not_dir.save_model('...')
-
-    def test_refit(self):
-        with self.assertRaises(NotImplementedError):
-            ebm_class_not_dir.refit()
-
-    def test_load_model(self):
-        with self.assertRaises(NotImplementedError):
-            ebm_class_not_dir.load_model('...')
-
 
 if __name__ == '__main__':
     unittest.main()
