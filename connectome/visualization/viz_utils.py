@@ -167,8 +167,8 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
 
     mat = flat_to_mat(coefs)
 
-    # define if aggregated based on yeo7 or not depending on shape
-    if mat.shape[0] == 8:
+    # define if aggregated based on yeo7 or not depending on shape and colnames
+    if mat.shape[0] == 8 & '1_1' in model.feature_names_in_:
         aggregated = True
     else:
         aggregated = False
@@ -176,9 +176,15 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
     if aggregated:
         plot_mat = flat_to_mat_aggregation(coefs)
         plot = plot_feature_map(plot_mat, title=title, aggregated_network=True, cmap='seismic', center_0=True)
-    else:  # reorder by regions
-        plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
-        plot = plot_feature_map(plot_mat, title=title, ordered=True, aggregated_network=False, cmap='seismic', center_0=True)
+    else:
+        if mat.shape[0] == 246: # for 246x246 matrices, reorder by yeo7:
+          ordered = True
+          plot_mat = reorder_matrices_regions([mat], network='yeo7')[0]
+        else: # don't reorder
+          ordered = False
+          plot_mat = mat
+
+        plot = plot_feature_map(plot_mat, title=title, ordered=ordered, aggregated_network=False, cmap='seismic', center_0=True)
 
     return plot
 
@@ -200,12 +206,8 @@ def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance
     # set values < 0 to 0
     df_importance.iloc[:, 1][df_importance.iloc[:, 1] < 0] = 0
 
-    # reorder results
-    order_regs = ['0_0', '0_1', '0_2', '0_3',
-                  '0_4', '0_5', '0_6', '0_7', '1_1', '1_2', '1_3', '1_4', '1_5', '1_6',
-                  '1_7', '2_2', '2_3', '2_4', '2_5', '2_6', '2_7', '3_3', '3_4', '3_5',
-                  '3_6', '3_7', '4_4', '4_5', '4_6', '4_7', '5_5', '5_6', '5_7', '6_6',
-                  '6_7', '7_7']
+    # reorder results so that they are in the right order for flat_to_mat
+    order_regs = sorted(df_importance['region'])
 
     result = []
     for i in order_regs:
@@ -213,5 +215,8 @@ def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance
             0]  # reorder Feature Importance Values -> ordered like in order_regs
         result.append(res_i)
 
-    plot_mat = flat_to_mat_aggregation(result)
+    if '1_1' in df_importance['region'].values:
+        plot_mat = flat_to_mat_aggregation(result)
+    else: 
+        plot_mat = flat_to_mat(result)
     return plot_feature_map(plot_mat, title=title, aggregated_network=True)
