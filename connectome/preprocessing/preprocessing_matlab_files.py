@@ -296,9 +296,12 @@ def get_subject_ids(file_names: list) -> np.ndarray:
     Returns:
         A np.ndarray in a readable format
     """
-    assert isinstance(file_names, list), "no list of file names provided"
+    if not all(["Subject" in i for i in file_names]):
+        raise ValueError("some filenames do not correspond to the Conn format\n"
+                         "example for the Conn format: "
+                         "resultsROI_Subject006_Condition001.mat")
 
-    return np.array([int(i.split("Subject", 1)[1][0:3]) for i in file_names])
+    return np.array([int(i.split("Subject", 1)[1].split("_")[0]) for i in file_names])
 
 
 def create_train_test_split(data: pd.DataFrame,
