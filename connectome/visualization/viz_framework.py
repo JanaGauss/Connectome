@@ -37,7 +37,7 @@ def visualization_framework(model,
                                 X = X_test,
                                 y= y_test,
                                 viz_method = 'GFI',
-                                m = 20)
+                                m = 20) # the higher m (number of permutations) the more accurate the result, but the longer the runtime
     >>> # Plot coefficients of an elastic net model
     >>> visualization_framework(model = model,
                                 X = X_test,
