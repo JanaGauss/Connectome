@@ -50,7 +50,7 @@ mkdir path/to/python/project
 ```
 python3 -m venv connectome
 ```
-4. Activate virtual environment
+4. Activate virtual environment <br />
 Linux:
 ```
 source connectome/bin/activate
