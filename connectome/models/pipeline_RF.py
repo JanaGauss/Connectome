@@ -12,7 +12,8 @@ def run_random_forest(X_train, y_train,
 			    **kwargs):
     """
   Function that fits a random forest model. 
-  See also https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html and https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+  See also https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html and https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html for further arguments that can be specified.
+  
   
   Args:
         X_train: The training dataset
