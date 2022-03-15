@@ -50,10 +50,10 @@ class TestMatlabToHdf(unittest.TestCase):
     def test_write_to_dir(self):
 
         with self.assertRaises(FileNotFoundError):
-            mth.write_to_dir(self.__class__.excel_data, t_direct = "no valid directory",file_format = "csv")
+            mth.write_to_dir(self.__class__.excel_data, t_direct="no valid directory", file_format="csv")
 
         with self.assertRaises(AssertionError):
-            mth.write_to_dir(self.__class__.excel_data, t_direct = os.getcwd(),file_format = "excel")
+            mth.write_to_dir(self.__class__.excel_data, t_direct=os.getcwd(), file_format="excel")
 
     def test_get_subject_ids(self):
 
@@ -67,13 +67,6 @@ class TestMatlabToHdf(unittest.TestCase):
             test = ["abc", "123", "avt"]
             mth.get_subject_ids(test)
 
-#    def test_create_final_df(self):
-#        result_df = mth.create_final_df(self.__class__.file_list,
-#                                        self.__class__.target_colnames,
-#                                        self.__class__.stacked_matrices,
-#                                        self.__class__.excel_data)
-#        df_eq = np.all(result_df == self.__class__.target_df)
-#        self.assertEqual(df_eq, True)
 
     def test_col_names_conn_matrix(self):
         target_colnames = np.array(self.__class__.conn_matr_colnames)
@@ -104,15 +97,6 @@ class TestMatlabToHdf(unittest.TestCase):
         res_test = mth.stack_matrices(test_list)
         stack_eq = np.all(res_test == self.__class__.stack_res)
         self.assertEqual(stack_eq, True)
-
-#    def test_load_matlab_files(self):
-#        pass
-
-#    def test_create_train_test_split(self):
-#        pass
-
-#    def test_transform_mat_write_to_hdf(self):
-#        pass
 
 
 if __name__ == '__main__':

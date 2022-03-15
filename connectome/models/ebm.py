@@ -1,3 +1,7 @@
+"""
+wrapper for the explainable boosting machine with integrated feature selection based
+on the mutual information
+"""
 import pandas as pd
 import numpy as np
 from sklearn.feature_selection import mutual_info_regression,\
@@ -11,6 +15,39 @@ import sys
 
 
 class EBMmi:
+    """
+    Class that wraps the explainable boosting machine and performs feature selection
+    before fitting the model based on the mutual information scores of the features
+    with the target variable. The integrated feature selection step is necessary
+    as the explainable boosting machine is computationally very costly especially
+    in the case of high number of features.
+
+    Examples:
+    >>>import numpy as np
+    >>>import pandas as pd
+    >>># create synthetic data
+    >>>X, y = make_classification(n_informative=15)
+    >>>X = pd.DataFrame(
+    >>>    X,
+    >>>    columns=["feature_" + str(i)
+    >>>             for i in range(X.shape[1])])
+    >>>X_regr, y_regr = make_regression(n_features=20, n_informative=15)
+    >>>X_regr = pd.DataFrame(
+    >>>    X_regr,
+    >>>    columns=["feature_" + str(i)
+    >>>             for i in range(X_regr.shape[1])])
+    >>>
+    >>># initialize some models
+    >>>ebm_class = EBMmi(X, y, classification=True)
+    >>>ebm_regr = EBMmi(X_regr, y_regr, classification=False)
+    >>>
+    >>># check the size
+    >>>print(sys.getsizeof(ebm_class)*1e-6)
+    >>>
+    >>># plot functions
+    >>>ebm_class.plot_mi(n=5)
+    >>>ebm_regr.plot_mi(n=5)
+    """
     def __init__(self,
                  features: Union[np.ndarray, pd.DataFrame],
                  target: np.ndarray,
@@ -122,32 +159,13 @@ class EBMmi:
     def get_contributions(self,
                           inputs: Union[np.ndarray,
                                         pd.DataFrame]
-                          ) -> np.ndarray:
+                          ) -> Union[np.ndarray, tuple]:
 
         if self.classification:
             res = self.ebm.predict_and_contrib(inputs)
             return res[0][:, 1], res[1]
         else:
             return self.ebm.predict_and_contrib(inputs)
-
-    def get_n_imp_contr(self):
-        raise NotImplementedError
-
-    def plot_b_imp_contr(self):
-        raise NotImplementedError
-
-    def save_model(self,
-                   t_dir: str,
-                   name: str = "ebm"
-                   ):
-        raise NotImplementedError
-
-    def refit(self):
-        raise NotImplementedError
-
-    def load_model(self,
-                   path: str):
-        raise NotImplementedError
 
 
 if __name__ == "__main__":

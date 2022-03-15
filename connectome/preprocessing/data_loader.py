@@ -1,3 +1,6 @@
+"""
+several preprocessing and data transformation helpers
+"""
 import numpy as np
 import pandas as pd
 
@@ -31,8 +34,6 @@ def create_target(dataset: pd.DataFrame) -> None:
     Returns:
         None
 
-    Raises:
-        KeyError: ...
     """
     assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
 
@@ -49,16 +50,15 @@ def drop_cases(dataset: pd.DataFrame) -> pd.DataFrame:
     Returns:
         None
 
-    Raises:
-        KeyError: ...
     """
     assert isinstance(dataset, pd.DataFrame), "supplied input [dataset] is no DataFrame"
 
     return dataset.drop(dataset[(dataset["prmdiag"] == 1) | (dataset["prmdiag"] == 4)].index)
 
 
-def drop_cols(dataset: pd.DataFrame, cols: tuple = ('ConnID', 'Repseudonym',
-                                                  'siteid', 'visdat', 'IDs', "prmdiag")) -> pd.DataFrame:
+def drop_cols(dataset: pd.DataFrame,
+              cols: tuple = ('ConnID', 'Repseudonym',
+                             'siteid', 'visdat', 'IDs', "prmdiag")) -> pd.DataFrame:
     """
     Drops the columns which are not needed for further modelling
 
@@ -100,6 +100,14 @@ def flat_to_mat(x: np.ndarray) -> np.ndarray:
       the values of the array into a symmetric matrix
     - excluding diagonal
 
+    Examples:
+    >>>import numpy as np
+    >>>from connectome.preprocessing.data_loader import flat_to_mat
+    >>>k = 50 #
+    >>>m = int((k*k)/2 - k/2)
+    >>>x = np.random.standard_normal(size=m)
+    >>>mat = flat_to_mat(x)
+    >>>print(mat)
     Args:
          x: 1D array which should be turned into symmetric matrix
 
@@ -120,8 +128,15 @@ def flat_to_mat_aggregation(x: np.ndarray) -> np.ndarray:
     """
     - converts a flat np.array into a matrix by turning
       the values of the array into a symmetric matrix
-    - excluding diagonal
 
+    Examples:
+    >>>import numpy as np
+    >>>from connectome.preprocessing.data_loader import flat_to_mat_aggregation
+    >>>k = 8 #
+    >>>m = int((k*k)/2 + k/2)
+    >>>x = np.random.standard_normal(size=m)
+    >>>mat = flat_to_mat_aggregation(x)
+    >>>print(mat)
     Args:
          x: 1D array which should be turned into symmetric matrix
 
@@ -137,3 +152,10 @@ def flat_to_mat_aggregation(x: np.ndarray) -> np.ndarray:
     A[ind] = x
     mat = A.T + A
     return mat - .5 * np.diag(mat) * np.identity(8)
+
+if __name__ == "__main__":
+    k = 50 #
+    m = int((k*k)/2 - k/2)
+    x = np.random.standard_normal(size=m)
+    mat = flat_to_mat(x)
+    print(mat)

@@ -1,3 +1,7 @@
+"""
+wrapper for gradient boosting classification and regression models
+"""
+
 import pandas as pd
 import numpy as np
 from typing import Union
@@ -6,6 +10,34 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 
 
 class GB:
+    """
+    wrapper/class for gradient boosting models
+
+    Examples:
+    >>>from connectome.models.lgb import GB
+    >>>import pandas as pd
+    >>>import numpy as np
+    >>>
+    >>># create synthetic data
+    >>>X, y = make_classification(n_informative=15)
+    >>>X = pd.DataFrame(
+    >>>    X,
+    >>>    columns=["feature_" + str(i)
+    >>>             for i in range(X.shape[1])])
+    >>>X_regr, y_regr = make_regression(n_features=20, n_informative=15)
+    >>>X_regr = pd.DataFrame(
+    >>>    X_regr,
+    >>>    columns=["feature_" + str(i)
+    >>>             for i in range(X_regr.shape[1])])
+    >>>
+    >>># initialize some models
+    >>>gb_class = GB(X, y, classification=True)
+    >>>gb_regr = GB(X_regr, y_regr, classification=False)
+    >>>
+    >>># get_fis
+    >>>print(gb_class.get_feature_importances())
+    >>>print(gb_regr.get_feature_importances())
+    """
     def __init__(self,
                  features: Union[np.ndarray, pd.DataFrame],
                  target: np.ndarray,
@@ -19,7 +51,7 @@ class GB:
         if isinstance(features, pd.DataFrame):
             self.pddf = True
             self.feature_names = features.columns
-        elif feature_names is None and isinstance(features, np.ndarray):
+        else:
             self.pddf = False
             self.feature_names = feature_names
 
@@ -55,20 +87,12 @@ class GB:
         else:
             raise ValueError("predict_proba not available for regression")
 
-    def save_model(self,
-                   t_dir: str,
-                   name: str = "lgb"
-                   ):
-        raise NotImplementedError
-
-    def refit(self):
-        raise NotImplementedError
-
-    def load_model(self,
-                   path: str):
-        raise NotImplementedError
-
     def get_feature_importances(self):
+        """
+        method to get the ordered feature importances in the form of a DataFrame
+        Returns:
+
+        """
         if not self.fitted:
             raise Exception("Model has not been fitted yet")
         else:
@@ -94,12 +118,8 @@ if __name__ == "__main__":
                  for i in range(X_regr.shape[1])])
 
     # initialize some models
-    gb_class = GB(X, y, classification=True, fit_directly=True)
-    gb_regr = GB(X_regr, y_regr, classification=False, fit_directly=True)
-
-    # fit the models
-    #ebm_class.fit()
-    #ebm_regr.fit()
+    gb_class = GB(X, y, classification=True)
+    gb_regr = GB(X_regr, y_regr, classification=False)
 
     # get_fis
     print(gb_class.get_feature_importances())

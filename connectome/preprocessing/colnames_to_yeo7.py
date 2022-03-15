@@ -1,3 +1,8 @@
+"""
+simple helper functions to create mappings for the column names of different
+brain atlases and regions
+"""
+
 import pandas as pd
 from typing import Union
 
@@ -6,6 +11,9 @@ def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	"""
 	takes a list of colnames in the brainnetome format/naming and converts them to yeo_7 regions
 
+	Examples:
+	>>>print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"]))
+	>>>print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"], order=False))
 	Args:
 		colnames: list of the brainnetome colnames
 		order: whether the resulting colnames should be ordered
@@ -52,7 +60,20 @@ def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	return [str(i[0]) + "_" + str(i[1]) for i in new_names]
 
 
-def get_colnames_df(df: bool = True) -> pd.DataFrame:
+def get_colnames_df(df: bool = True) -> Union[pd.DataFrame, dict]:
+	"""
+	generates a DataFrame or Dictionary which maps from the brainnetome (246x246)
+	connectivity column names to the yeo_7 network column names
+
+	Examples:
+	>>>print(get_colnames_df())
+	>>>print(get_colnames_df(False))
+	Args:
+		df: whether to return the column name mappings as a DataFrame
+
+	Returns:
+		a DataFrame or dictionary containing the column name mappings
+	"""
 	conn_names = [str(i) + "_" + str(j) for i in range(1, 247) for j in range(1, 247)]
 
 	return (pd.DataFrame({

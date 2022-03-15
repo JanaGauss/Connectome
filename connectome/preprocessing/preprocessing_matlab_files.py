@@ -19,6 +19,7 @@ def preprocess_mat_files(matlab_dir: str = None,
                          network: str = 'yeo7',
                          upper: bool = True,
                          statistic: str = 'mean',
+                         mat_key: str = 'Z',
                          file_format: str = "csv") -> pd.DataFrame:
 
     """
@@ -33,8 +34,8 @@ def preprocess_mat_files(matlab_dir: str = None,
     >>> write_dir = r"./path_to_save" # ...
     >>> export_file = True # rename to export file
     >>> statistic = 'greater_zero'
-    >>> preprocess_mat_files(matlab_dir = matlab_dir, excel_path = excel_path, preprocessing_type = preprocessing_type,
-                          write_dir = write_dir, export_file = export_file, statistic = statistic)
+    >>> preprocess_mat_files(matlab_dir=matlab_dir, excel_path=excel_path, preprocessing_type=preprocessing_type,
+    >>>                      write_dir=write_dir, export_file=export_file, statistic=statistic)
 
 
     Args:
@@ -60,7 +61,7 @@ def preprocess_mat_files(matlab_dir: str = None,
     if excel_path is None:
         excel_path = input(r'Input your path where the excel '
                            r'file is stored (with name + ".xlsx"): ')
-    if write_dir is None:
+    if write_dir is None and export_file:
         write_dir = input(r'Input your path where '
                           r'to write the final file: ')
 
@@ -77,7 +78,7 @@ def preprocess_mat_files(matlab_dir: str = None,
 
     print('loading files')
     # load matlab files and excel
-    res = load_matlab_files(matlab_dir)
+    res = load_matlab_files(matlab_dir, mat_key)
     
     if not os.path.exists(excel_path):
         raise FileNotFoundError("invalid directory (excel file)")
@@ -114,7 +115,7 @@ def preprocess_mat_files(matlab_dir: str = None,
     return final_df
 
 
-def load_matlab_files(directory: str) -> tuple:
+def load_matlab_files(directory: str, mat_key: str = "Z") -> tuple:
     """
     imports all matlab files from specified directory
 
@@ -139,7 +140,7 @@ def load_matlab_files(directory: str) -> tuple:
 
     for i in mat_files_names:
         with h5py.File(i, 'r') as f:
-            conn_matrices.append(np.array(f.get("Z")))
+            conn_matrices.append(np.array(f.get(mat_key)))
             worked.append(i)
 
     return conn_matrices, worked
@@ -274,8 +275,9 @@ def create_final_df(file_names: list,
     ids_added_df = pd.DataFrame(ids_added) # create df, first column contains IDs
 
     # final_columns = col_names_final_df(data_from_excel = data_from_excel)
-    final_df_0 = data_from_excel.merge(ids_added_df, left_on = 'ConnID', right_on = 0) # merge two data frames by connID column/first column of ids_added_df
-    final_df = pd.DataFrame(np.array(final_df_0), columns=final_columns) # rename columns
+    final_df_0 = data_from_excel.merge(
+        ids_added_df, left_on='ConnID', right_on=0)  # merge two data frames by connID column/first column of ids_added_df
+    final_df = pd.DataFrame(np.array(final_df_0), columns=final_columns)  # rename columns
 
     return final_df
 
@@ -389,7 +391,7 @@ def grouped_conn_df(data: pd.DataFrame,
 
     arrays = pd_to_arrays(data, cols)
     grouped_conn = grouped_conn_mat(conn_matrices=arrays,
-                                   **kwargs)
+                                    **kwargs)
     if return_arrays:
         return grouped_conn
 
@@ -449,4 +451,3 @@ def test_grouped_conn_df():
 
 if __name__ == "__main__":
     test_grouped_conn_df()
-

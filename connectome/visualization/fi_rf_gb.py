@@ -1,3 +1,9 @@
+"""
+contains functions to compute / obtain the basic feature importances and permutation
+feature importances from gradient boosting and random forest models
+"""
+
+
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
@@ -20,6 +26,24 @@ def get_fi(model: Union[lgb.LGBMClassifier,
     """
     obtains the feature importances from an lgb or RF model
 
+    Examples:
+    >>>from connectome.visualization.fi_rf_gb import get_fi
+    >>>from sklearn.datasets import make_classification
+    >>>import pandas as pd
+    >>>from lightgbm import LGBMClassifier
+    >>>
+    >>># initialize the model
+    >>>lgb_class = lgb.LGBMClassifier()
+    >>>
+    >>># create synthetic data
+    >>>X, y = make_classification(n_informative=10)
+    >>>X = pd.DataFrame(X, columns=["feature_" + str(i) for i in range(X.shape[1])])
+    >>># fit the model
+    >>>lgb_class.fit(X, y)
+    >>>
+    >>># obtain FIs
+    >>>fis = get_fi(mod, X)
+    >>>fis.plot.bar(x='features', y='importances')
     Args:
         model: lgb or RF model of which the feature importances should be obtained
         data: DataFrame to get the column / feature names
@@ -57,6 +81,24 @@ def get_pfi(model: Union[lgb.LGBMClassifier,
     """
     obtains the permutation feature importances from an lgb or RF model
 
+    Examples:
+    >>>from connectome.visualization.fi_rf_gb import get_pfi
+    >>>from sklearn.datasets import make_classification
+    >>>import pandas as pd
+    >>>from lightgbm import LGBMClassifier
+    >>>
+    >>># initialize the model
+    >>>lgb_class = lgb.LGBMClassifier()
+    >>>
+    >>># create synthetic data
+    >>>X, y = make_classification(n_informative=10)
+    >>>X = pd.DataFrame(X, columns=["feature_" + str(i) for i in range(X.shape[1])])
+    >>># fit the model
+    >>>lgb_class.fit(X, y)
+    >>>
+    >>># obtain FIs
+    >>>pfis = get_pfi(mod, X, y, repeats=2)
+    >>>pfis.plot.bar(x='features', y='importances_mean')
     Args:
         model: lgb or RF model of which the PFIs should be obtained
         x_val: DataFrame or array containing features of held out data

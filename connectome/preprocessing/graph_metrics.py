@@ -1,16 +1,13 @@
+"""
+functions to compute graph metrics for a given brain connectivity dataset based
+on the bct(py) package
+"""
+
 import numpy as np
 import bct
 import pandas as pd
 from connectome.preprocessing.data_loader import flat_to_mat
 from IPython.display import clear_output
-
-# How to use:
-# given a list of connectivity matrices just call the
-# "get_graph_metrics" function on this list
-# To get some explanations about the implemented
-# graph metrics just call "explain_graph_metrics"
-# without specifying any arguments
-#
 
 
 def get_graph_metrics(conns: list,
@@ -31,6 +28,24 @@ def get_graph_metrics(conns: list,
     - retransforms the connectivity matrices to pearson correlation before
       computing the adjacency matrices
 
+        Examples:
+    >>>import numpy as np
+    >>>import pandas as pd
+    >>>from connectome.preprocessing.graph_metrics import get_graph_metrics
+    >>>
+    >>># checking the get_gms_from_pd function
+    >>>k = 8  # dim of the conn matrix
+    >>>obs = 10  # observations
+    >>>conn = pd.DataFrame(
+    >>>    np.random.normal(
+    >>>       loc=0.1,
+    >>>        scale=1.2,
+    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>        columns=[str(i) + "_" + str(j)
+    >>>                 for i in range(k)
+    >>>                 for j in range(i+1, k)])
+    >>>conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
+    >>>print(get_graph_metrics(conn_data_list))
     Args:
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
@@ -203,7 +218,21 @@ def get_graph_metrics(conns: list,
     return pd.concat(dfs, axis=1), failed
 
 
-def is_conn_col(x: str):
+def is_conn_col(x: str) -> bool:
+    """
+    checks whether the given column name corresponds to the format of the
+    connectivity data columns, i.e. "1_245", which refers to the connectivity
+    between region 1 and region 245
+
+    Examples:
+    >>>test_names = ["1_2", "asf", "as_asd"]
+    >>>print([is_conn_col(x) for x in test_names])
+    Args:
+        x: the provided column name
+
+    Returns:
+        True if the column corresponds to the connectivity data format
+    """
     spl = x.split("_")
     if len(spl) < 2:
         return False
@@ -220,6 +249,17 @@ def is_conn_col(x: str):
 
 def pd_to_arrays(data: pd.DataFrame,
                  cols: list = None) -> list:
+    """
+    extracts the connectivity data from a DataFrame and converts those into
+    matrices / numpy arrays
+    Args:
+        data: the DataFrame from which the connectivity data should be extracted
+        cols: the columns of the DataFrame which contain the data of interest
+
+    Returns:
+        list of the connectivity matrices / numpy arrays
+
+    """
 
     if cols is None:
         cols = [col for col in data.columns if is_conn_col(col)]
@@ -232,7 +272,27 @@ def get_gms_from_pd(data: pd.DataFrame,
                     cols: list = None,
                     **kwargs) -> pd.DataFrame:
     """
+    computes the graph metrics for connectivity data supplied in the form
+    of a DataFrame
 
+    Examples:
+    >>>import numpy as np
+    >>>import pandas as pd
+    >>>from connectome.preprocessing.graph_metrics import get_gms_from_pd
+    >>>
+    >>># checking the get_gms_from_pd function
+    >>>k = 8  # dim of the conn matrix
+    >>>obs = 10  # observations
+    >>>conn = pd.DataFrame(
+    >>>    np.random.normal(
+    >>>        loc=0.1,
+    >>>        scale=1.2,
+    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>        columns=[str(i) + "_" + str(j)
+    >>>                 for i in range(k)
+    >>>                 for j in range(i+1, k)])
+    >>>conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
+    >>>print(get_gms_from_pd(conn, list(conn.columns)))
     Args:
         data: dataFrame containing the conn data
         regions: list of names of the regions of the conn matrix
@@ -252,9 +312,7 @@ def get_gms_from_pd(data: pd.DataFrame,
 
 def explain_graph_metrics() -> None:
     """
-    computes graph metrics for the given connectivity data
-    Must work for list of np.arrays or pd.DataFrames
-    naming of columns is important afterwards!!
+    function to explain the different implemented grap metrics
     """
 
     docs = {
@@ -305,5 +363,5 @@ if __name__ == "__main__":
                      for j in range(i+1, k)])
     conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
     print(conn)
-    print(get_gms_from_pd(conn, conn.columns))
+    print(get_gms_from_pd(conn, list(conn.columns)))
     print(get_graph_metrics(conn_data_list))

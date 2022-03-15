@@ -59,18 +59,6 @@ class TestGB(unittest.TestCase):
         fi = gb_regr_dir.get_feature_importances()
         self.assertIsInstance(fi, pd.DataFrame)
 
-    def test_save_model(self):
-        with self.assertRaises(NotImplementedError):
-            gb_class_not_dir.save_model('...')
-
-    def test_refit(self):
-        with self.assertRaises(NotImplementedError):
-            gb_class_not_dir.refit()
-
-    def test_load_model(self):
-        with self.assertRaises(NotImplementedError):
-            gb_class_not_dir.load_model('...')
-
 
 if __name__ == '__main__':
     unittest.main()
