@@ -37,7 +37,7 @@ def model_framework(X_train, y_train,
                                 model_path = None,
                                 epochs = 500,
                                 patience = 10,
-                                optimizer= NAdam(),
+                                optimizer= Nadam(),
                                 loss= Hinge())
     >>> 
     >>> # Elastic Net:
