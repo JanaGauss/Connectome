@@ -62,7 +62,14 @@ def model_framework(X_train, y_train,
                                 n_alphas_linreg = 20,
                                 cv_linreg = 5, 
                                 l1_ratios_linreg = [0.01, 0.1])
-    >>> # you don't have to specifiy n_alphas_logreg/linreg, cv_logreg/linreg or l1_ratios_logreg/linreg and take the default values instead (see documentation of elastic net function).
+    >>> # you don't have to specifiy n_alphas_logreg/linreg, cv_logreg/linreg or l1_ratios_logreg/linreg and take the default values instead (see documentation of elastic net function)
+    >>> 
+    >>> # Random Forest:
+    >>> model = model_framework(X_train = X_train,
+                                y_train = y_train,
+                                model = "rf",
+                                pretrained = False,
+                                n_estimators = 100)  
 
 
     Args:

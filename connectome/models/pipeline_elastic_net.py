@@ -67,10 +67,6 @@ def model_elastic_net(X_train, y_train,
     Running this function with the default values on the Connectome dataset (not aggregated) may take a while, especially for classification.
   
     Examples:
-    >>> # CNN:
-    >>> # Different optimizer and loss function
-    >>> from tf.keras.optimizers import Nadam
-    >>> from tf.keras.losses import Hinge()
     >>> model = model_elastic_net(X_train = X_train,
                                   y_train = y_train,
                                   classification = True) 
