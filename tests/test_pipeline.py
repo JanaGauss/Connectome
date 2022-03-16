@@ -86,8 +86,8 @@ def gen_files(dims: tuple = (10, 25, 50, 90, 246),
             dict_data = {'Z': arr}
             n = 3 - len(str(i))
             x = ["0" for i in range(n)] + [str(i)]
-            id = "".join(x)
-            file_name = "Subject" + id + "_Condition001.mat"
+            ident = "".join(x)
+            file_name = "Subject" + ident + "_Condition001.mat"
             hdf5storage.write(dict_data, '.', file_name,
                               matlab_compatible=True)
             path = os.path.join(path, file_name)
