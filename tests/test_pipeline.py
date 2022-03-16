@@ -5,6 +5,7 @@ from connectome.preprocessing.data_preparation import prepare_data
 from connectome.models.framework import model_framework
 from connectome.models.evaluation import model_evaluation
 from connectome.visualization.viz_framework import visualization_framework
+from connectome.models.brainnet_cnn import preprocess_test_data_for_cnn
 
 
 DIMS = (10, 25, 50)
@@ -54,6 +55,78 @@ class TestPipeline(unittest.TestCase):
 
             viz = visualization_framework(model=model, X=X_test,
                                           y=y_test, viz_method="elastic_net")
+
+    def test_pipeline_ebm(self):
+
+        for value in path_dict.values():
+            df = preprocess_mat_files(
+                matlab_dir=value["matlab_dir"],
+                excel_path=value["excel_path"]
+            )
+
+            classification = True
+            columns_drop = ["ConnID", "Apoe", "subject_id"]
+            target = "target"
+            y_0 = [0]
+            y_1 = [1]
+            train_size = 0.8
+            seed = 1855
+            split = True
+
+            X_train, y_train, X_test, y_test = prepare_data(data=df,
+                                                            classification=classification,
+                                                            columns_drop=columns_drop,
+                                                            target=target, y_0=y_0,
+                                                            y_1=y_1,
+                                                            train_size=train_size,
+                                                            seed=seed, split=split)
+            model = model_framework(X_train=X_train,
+                                    y_train=y_train,
+                                    model="ebm",
+                                    pretrained=False,
+                                    model_path=None)
+            print(model_evaluation(model, X_test, y_test))
+
+            #viz = visualization_framework(model=model, X=X_test,
+            #                              y=y_test, viz_method="FI")
+
+    def test_pipeline_gb(self):
+
+        for value in path_dict.values():
+            df = preprocess_mat_files(
+                matlab_dir=value["matlab_dir"],
+                excel_path=value["excel_path"]
+            )
+
+            classification = True
+            columns_drop = ["ConnID", "Apoe", "subject_id"]
+            target = "target"
+            y_0 = [0]
+            y_1 = [1]
+            train_size = 0.8
+            seed = 1855
+            split = True
+
+            # to avoid the weird JSON error
+            import re
+            df = df.rename(columns=lambda x: re.sub('[^A-Za-z0-9_]+', '', x))
+
+            X_train, y_train, X_test, y_test = prepare_data(data=df,
+                                                            classification=classification,
+                                                            columns_drop=columns_drop,
+                                                            target=target, y_0=y_0,
+                                                            y_1=y_1,
+                                                            train_size=train_size,
+                                                            seed=seed, split=split)
+            model = model_framework(X_train=X_train,
+                                    y_train=y_train,
+                                    model="gboost",
+                                    pretrained=False,
+                                    model_path=None)
+            print(model_evaluation(model, X_test, y_test))
+
+            #viz = visualization_framework(model=model, X=X_test,
+            #                              y=y_test, viz_method="GFI")
 
 
 if __name__ == '__main__':
