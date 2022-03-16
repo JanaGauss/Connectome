@@ -40,7 +40,7 @@ Follow the following steps to start the pipeline locally.
 * https://www.python.org/downloads/ 
 * or: https://www.anaconda.com/
 
-**recommended**: Create a virtual environment before installing the package. If you choose not to, you can skip to the Installation
+**Recommended**: Create a virtual environment before installing the package. If you choose not to, you can skip to the Installation
 1. Open the command prompt
 2. Navigate to the project directory or create a new one:
 ```
@@ -51,6 +51,7 @@ Linux:
 ```
 python3 -m venv connectome_env
 ```
+<br />
 Windows:
 ```
 python -m venv connectome_env
@@ -60,6 +61,7 @@ Linux:
 ```
 source connectome_env/bin/activate
 ```
+<br />
 Windows:
 ```
 connectome\Scripts\activate
