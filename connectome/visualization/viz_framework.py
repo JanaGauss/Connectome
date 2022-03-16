@@ -19,8 +19,8 @@ def visualization_framework(model,
     Returns feature importance and other visualization techniques. Methods: "GFI" and "GFI_only" work for elastic net and random forest, if an aggregation by yeo7 is possible. 
     "FI" and "FI_only" work for elastic net and random forest.
     "elastic_net" works for elastic net models.
-    "shapley" works for random forest and gradient boosting
-    "feature_attribution" works for .. (TODO: add models).
+    "shapley" works for random forest and gradient boosting.
+    "feature_attribution" works for CNN.
     For more details on the methods, see the documentations of the respective functions.
 
     Examples:
