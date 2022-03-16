@@ -1,5 +1,0 @@
-def main():
-    main_folder_path = "C:/Users/leosc/OneDrive/Desktop/WiSe 21-22/Innolab/"
-    matlab_dir = main_folder_path + "Test/SBC_01/"
-    excel_path = main_folder_path + "Test/DELCODE_dataset.xlsx"
-    write_dir = main_folder_path + "Test/"

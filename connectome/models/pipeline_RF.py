@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 
 def run_random_forest(X_train, y_train, 
-			    classification: bool = True, verbose = 1,
+			    classification: bool = True, verbose = 0,
 			    **kwargs):
     """
     Function that fits a random forest model. 
@@ -22,7 +22,7 @@ def run_random_forest(X_train, y_train,
         X_train: The training dataset
         y_train: The true labels
         classification: classification task -> logistic regression or regression task -> linear model
-        verbose: amount of verbosity, default = 1 
+        verbose: amount of verbosity, default = 0 
         
     Returns:
   	Returns fitted model

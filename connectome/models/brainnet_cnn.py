@@ -114,7 +114,7 @@ def model_brainnet_cnn(X, y, aggregation=False, reorder=False, augmentation=Fals
     input_img_dim = (X_train.shape[1], X_train.shape[2], 1)
     input_struc_dim = (X_train_struc.shape[1])
 
-    print('Strating to train Model')
+    print('Starting to train Model')
     # Initialize neural network model
     brainnetcnn = brain_net_cnn(input_dim_img=input_img_dim, input_dim_struc=input_struc_dim, output_dim=1,
                                 E2E_filter=E2E_filter, E2N_filter=E2N_filter, N2G_tiler=N2G_tiler,
@@ -212,7 +212,7 @@ def preprocess_for_cnn(X, y, aggregation=False, reorder=False, augmentation=Fals
     # reshape data for the convolutional neural network
     X_img = stacked.reshape(stacked.shape[0], stacked.shape[1], stacked.shape[2], 1)
     if X_struc.shape[1] != 0:
-        X_struc = X_struc.to_numpy().reshape(stacked.shape[0], 3)
+        X_struc = X_struc.to_numpy().reshape(stacked.shape[0], X_struc.shape[1])
     else:
         X_struc = X_struc.to_numpy()
 

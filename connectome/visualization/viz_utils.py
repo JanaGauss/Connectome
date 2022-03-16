@@ -217,7 +217,7 @@ def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance
             0]  # reorder Feature Importance Values -> ordered like in order_regs
         result.append(res_i)
 
-    if '1_1' in df_importance['region'].values and mat.shape[0] == 8:
+    if '1_1' in df_importance['region'].values and flat_to_mat(result).shape[0] == 8:
         plot_mat = flat_to_mat_aggregation(result)
         aggregated_network = True
     else: 

@@ -12,9 +12,10 @@ Created as part of an university project "Innovationlab Big Data Science" at LMU
 
 
 Alzheimer's disease (AD) is a progressive neurologic disorder that causes the brain to shrink (atrophy) and brain cells to die - resulting in reductions of synaptical relations between brain areas (connectivity loss) [1][2]. With over 10 million people estimated to have dementia in Europe with costs ranging up to 175000 US$ per patient [3][4], research in Alzheimer disease will play an distinct role in modern healthcare systems. The aim of this project was therefore two-fold: 
-    (i) Prediction and 
-    (ii) Explanation 
-of Alzheimer Diagnosis based on connectivity matrices utlizing the Brainnetome Atlas [5]. The results of the presented endeavours include a pipeline for processing connectivity matrices in order to predict and explain a patients AD status. This pipeline enables the user to automate the training, evaluation and interpretation for several models as well as for several dataset options, e.g. aggregated connectivity matrices, connectivity matrices and graph metrics applied to human brain connectivity data. The applicable models in the pipeline include Elastic Net, Random Forest, Gradient Boosting as well as 2D Convoutional Neural Networks. For Evaluation of the results, the Accuracy, AUC, Precision, Recall and F1 values were compared with the following effects of the Elastic Net (Conn data) as an example: (i) Accuracy: 0.8 (ii) AUC: 0.86 (iii) Precision: 0.88 (iv) F1: 0.82. These results suggest, that the models perform well on the preprocessed connectivity matrices. In a last step, the following brain subregions were identified from the connectivity matrices for their key importance for AD: Caudal Temporal Thalamus, TE1.0 and TE1.2, Dorsal Agranular Insular, Caudal Hippocampus, Rostral Area 7, Posterior Parietal Thalamus, Posterior Parahippocampal Gyrus.
+1. Prediction and 
+2. Explanation <br />
+
+of Alzheimer Diagnosis based on connectivity matrices utilizing the Brainnetome Atlas [5]. The results of the presented endeavours include a pipeline for processing connectivity matrices in order to predict and explain a patients AD status. This pipeline enables the user to automate the training, evaluation and interpretation for several models as well as for several dataset options, e.g. aggregated connectivity matrices, connectivity matrices and graph metrics applied to human brain connectivity data. The applicable models in the pipeline include Elastic Net, Random Forest, Gradient Boosting as well as 2D Convoutional Neural Networks. For Evaluation of the results, the Accuracy, AUC, Precision, Recall and F1 values were compared with the following effects of the Elastic Net (Conn data) as an example: (i) Accuracy: 0.8 (ii) AUC: 0.86 (iii) Precision: 0.88 (iv) F1: 0.82. These results suggest, that the models perform well on the preprocessed connectivity matrices. In a last step, the following brain subregions were identified from the connectivity matrices for their key importance for AD: Caudal Temporal Thalamus, TE1.0 and TE1.2, Dorsal Agranular Insular, Caudal Hippocampus, Rostral Area 7, Posterior Parietal Thalamus, Posterior Parahippocampal Gyrus.
 
 
 
@@ -35,12 +36,12 @@ Follow the following steps to start the pipeline locally.
 
 ### Prerequisites
 
-* Install python 3.8.x or above 
+* Install python 3.9.x or above 
 * From either:
 * https://www.python.org/downloads/ 
 * or: https://www.anaconda.com/
 
-**recommended**: Create a virtual environment before installing the package. If you choose not to, you can skip to the Installation
+**Recommended**: Create a virtual environment before installing the package. If you choose not to, you can skip to the Installation
 1. Open the command prompt
 2. Navigate to the project directory or create a new one:
 ```
@@ -55,11 +56,12 @@ Windows:
 ```
 python -m venv connectome_env
 ```
-4. Activate virtual environment <br />
+4. Activate virtual environment<br />
 Linux:
 ```
 source connectome_env/bin/activate
 ```
+
 Windows:
 ```
 connectome\Scripts\activate
@@ -86,11 +88,20 @@ connectome\Scripts\activate
 <!-- USAGE -->
 ## Usage
 
-This is the beginning to our Connectome Pipeline. 
+This is the beginning to our Connectome Pipeline. To use our pipeline just open [Connectome Pipeline](https://github.com/JanaGauss/Connectome/blob/e9fa13e33a58fb1470c92e59d77b69730b31bc67/Connectome%20Pipeline.ipynb)
+
 
 ![image](https://user-images.githubusercontent.com/60140124/158218222-08377392-b718-4c03-8f85-7e911f67f323.png)
 
-For further details check out the demo video or our full documentation here: https://likai97.github.io/Conncetome-Documentation/
+
+To start preprocessing the data for analysis, you need a folder with matlab files of connectivity matrices and an excel sheet with subject information. Afterwards, just specify the folder path and your good to go:
+
+```
+matlab_dir = r"./path/to/matlab/files" # Enter the directory for the matlab files
+excel_path = r"./path/to/excel/sheet.xlsx" # Enter the directory for the corresponding excel sheet with xlsx at the end
+```
+
+For further the further steps check out the demo video or read our full documentation here: https://likai97.github.io/Conncetome-Documentation/
 
 ### Demo Video
 

@@ -16,8 +16,8 @@ def visualization_framework(model,
                             viz_method: str = 'GFI',
                             **kwargs):
     """
-    Returns feature importance and other visualization techniques. Methods: "GFI" and "GFI_only" work for elastic net, .. (TODO: add models) if an aggregation by yeo7 is possible. 
-    "FI" and "FI_only" work for elastic net, .. (TODO: add models).
+    Returns feature importance and other visualization techniques. Methods: "GFI" and "GFI_only" work for elastic net and random forest, if an aggregation by yeo7 is possible. 
+    "FI" and "FI_only" work for elastic net and random forest.
     "elastic_net" works for elastic net models.
     "shapley" works for .. (TODO: add models).
     "feature_attribution" works for .. (TODO: add models).
