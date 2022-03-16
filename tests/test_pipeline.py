@@ -6,8 +6,8 @@ from connectome.models.framework import model_framework
 from connectome.models.evaluation import model_evaluation
 from connectome.visualization.viz_framework import visualization_framework
 from connectome.models.brainnet_cnn import preprocess_test_data_for_cnn
-from tf.keras.optimizers import Nadam
-from tf.keras.losses import Hinge
+from tensorflow.keras.optimizers import Nadam
+from tensorflow.keras.losses import Hinge
 
 DIMS = (10, 25, 50)
 OBS = 50
