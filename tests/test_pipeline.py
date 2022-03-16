@@ -6,7 +6,6 @@ import hdf5storage
 from connectome.preprocessing.graph_metrics import pd_to_arrays
 import os
 import pandas as pd
-import tempfile
 from connectome.preprocessing.preprocessing_matlab_files import preprocess_mat_files
 from connectome.preprocessing.data_preparation import prepare_data
 from connectome.models.framework import model_framework
