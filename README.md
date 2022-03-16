@@ -36,7 +36,7 @@ Follow the following steps to start the pipeline locally.
 
 ### Prerequisites
 
-* Install python 3.8.x or above 
+* Install python 3.9.x or above 
 * From either:
 * https://www.python.org/downloads/ 
 * or: https://www.anaconda.com/
