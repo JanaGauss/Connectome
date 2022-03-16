@@ -9,7 +9,6 @@ from connectome.models.brainnet_cnn import preprocess_test_data_for_cnn
 from tf.keras.optimizers import Nadam
 from tf.keras.losses import Hinge
 
-
 DIMS = (10, 25, 50)
 OBS = 50
 path_dict = {}
@@ -127,11 +126,10 @@ class TestPipeline(unittest.TestCase):
                                     model_path=None)
             print(model_evaluation(model, X_test, y_test))
 
-            viz = visualization_framework(model=model, X=X_test,
-                                          y=y_test, viz_method="FI")
+            viz = visualization_framework(model=model, X=X_test, y=y_test, viz_method="FI")
 
-   def test_pipeline_cnn(self):
 
+    def test_pipeline_cnn(self):
         for value in path_dict.values():
             df = preprocess_mat_files(
                 matlab_dir=value["matlab_dir"],
@@ -168,9 +166,9 @@ class TestPipeline(unittest.TestCase):
             viz = visualization_framework(model=model, X=X_test, y=y_test,
                                           viz_method="feature_attribution", method='saliency', average=True,
                                           ordered=False)
-            
-    def test_pipeline_cnn_opt(self):
 
+
+    def test_pipeline_cnn_opt(self):
         for value in path_dict.values():
             df = preprocess_mat_files(
                 matlab_dir=value["matlab_dir"],
@@ -209,6 +207,7 @@ class TestPipeline(unittest.TestCase):
             viz = visualization_framework(model=model, X=X_test, y=y_test,
                                           viz_method="feature_attribution", method='saliency', average=True,
                                           ordered=False)
-            
+
+
 if __name__ == '__main__':
     unittest.main()
