@@ -12,7 +12,7 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
 
 
     Examples:
-    >>> prepare data for classification task (e. g. classification of diagnosis)
+    >>> # prepare data for classification task (e. g. classification of diagnosis)
     >>> classification = True
     >>> columns_drop = ["ConnID", "Repseudonym", "siteid", "visdat", "MEM_score", "Apoe", "IDs"]
     >>> target = "prmdiag"
@@ -22,12 +22,12 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
     >>> seed = 1855
     >>> split = True
     >>> X_train, y_train, X_test, y_test = prepare_data(data = df, 
-									  classification = classification,
-                                                	  columns_drop = columns_drop, 
-									  target = target, y_0 = y_0, y_1 = y_1,
+                                                        classification = classification,
+                                                	columns_drop = columns_drop, 
+					                target = target, y_0 = y_0, y_1 = y_1,
                                                         train_size = train_size, seed = seed, split = split)
     >>>
-    >>> prepare data for regression task (e. g. regression with MEM_score as target)
+    >>> # prepare data for regression task (e. g. regression with MEM_score as target)
     >>> classification = False
     >>> columns_drop = ["ConnID", "Repseudonym", "siteid", "visdat", "prmdiag", "Apoe", "IDs"]
     >>> target = "MEM_score"
@@ -35,9 +35,9 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
     >>> seed = 1855
     >>> split = True
     >>> X_train, y_train, X_test, y_test = prepare_data(data = df, 
-									  classification = classification,
-                                                	  columns_drop = columns_drop, 
-									  target = target, 
+					                classification = classification,
+                                                	columns_drop = columns_drop, 
+						        target = target, 
                                                         train_size = train_size, seed = seed, split = split)
     
     Args:
