@@ -81,7 +81,7 @@ def model_elastic_net(X_train, y_train,
         cv_linreg: number of folds (linreg), default 5
         l1_ratios_logreg: (list of) float for l1_ratio, 0 is L2, 1 is L1 (logreg)
         l1_ratios_linreg: (list of) float for l1_ratio, 0 is L2, 1 is L1 (linreg). Default with 0.01 instead of 0, because for l1_ratio = 0, automatic alpha grid generation is not supported 
-        verbose: amount of verbosity, default = 1 
+        verbose: amount of verbosity, default = 0 
         
     Returns:
         Returns fitted model
