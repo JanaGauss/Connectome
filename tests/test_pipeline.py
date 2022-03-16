@@ -90,10 +90,11 @@ def gen_files(dims: tuple = (10, 25, 50, 90, 246),
             file_name = "Subject" + ident + "_Condition001.mat"
             hdf5storage.write(dict_data, '.', file_name,
                               matlab_compatible=True)
-            path = os.path.join(path, file_name)
-            generated_files.append(path)
-            curr_res["conn_files"].append(path)
+            path_file = os.path.join(path, file_name)
+            generated_files.append(path_file)
+            curr_res["conn_files"].append(path_file)
         res[dim] = curr_res
+        os.chdir(base_path)
     return generated_files, res
 
 
@@ -124,7 +125,6 @@ class TestPipeline(unittest.TestCase):
         files, res = gen_files(dims=dims, obs=obs)
 
         for dim in res.values():
-            # begin pipeline test
             df = preprocess_mat_files(
                 matlab_dir=dim["conn_directory"],
                 excel_path=dim["excel_file"])
@@ -155,6 +155,7 @@ class TestPipeline(unittest.TestCase):
 
             viz = visualization_framework(model=model, X=X_test,
                                           y=y_test, viz_method="elastic_net")
+        clear_gen_files(files)
 
 
 if __name__ == '__main__':
