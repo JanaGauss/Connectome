@@ -1,5 +1,5 @@
 """
-This module is used as a framework to open up saved models, train new models and save newly trained models
+Framework to open up saved models as well as train and save new models
 """
 
 import pandas as pd
