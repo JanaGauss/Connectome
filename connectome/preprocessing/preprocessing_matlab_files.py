@@ -1,5 +1,6 @@
 """
 This module is used as a framework to prepare raw connectivity matrices for analysis
+**Important**: In your excel sheet with subject information, name the id column: "ConnID". This column will be used to merge the matlab files. 
 """
 import os
 import numpy as np
