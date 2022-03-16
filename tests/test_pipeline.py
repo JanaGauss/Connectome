@@ -88,9 +88,6 @@ class TestPipeline(unittest.TestCase):
                                     model_path=None)
             print(model_evaluation(model, X_test, y_test))
 
-            viz = visualization_framework(model=model, X=X_test,
-                                          y=y_test, viz_method="FI_only")
-
     def test_pipeline_gb(self):
 
         for value in path_dict.values():
@@ -125,9 +122,6 @@ class TestPipeline(unittest.TestCase):
                                     pretrained=False,
                                     model_path=None)
             print(model_evaluation(model, X_test, y_test))
-
-            viz = visualization_framework(model=model, X=X_test, y=y_test, viz_method="FI")
-
 
     def test_pipeline_cnn(self):
         for value in path_dict.values():
