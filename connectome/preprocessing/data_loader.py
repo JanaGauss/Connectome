@@ -101,13 +101,13 @@ def flat_to_mat(x: np.ndarray) -> np.ndarray:
     - excluding diagonal
 
     Examples:
-    >>>import numpy as np
-    >>>from connectome.preprocessing.data_loader import flat_to_mat
-    >>>k = 50 #
-    >>>m = int((k*k)/2 - k/2)
-    >>>x = np.random.standard_normal(size=m)
-    >>>mat = flat_to_mat(x)
-    >>>print(mat)
+    >>> import numpy as np
+    >>> from connectome.preprocessing.data_loader import flat_to_mat
+    >>> k = 50 #
+    >>> m = int((k*k)/2 - k/2)
+    >>> x = np.random.standard_normal(size=m)
+    >>> mat = flat_to_mat(x)
+    >>> print(mat)
     Args:
          x: 1D array which should be turned into symmetric matrix
 
@@ -130,13 +130,13 @@ def flat_to_mat_aggregation(x: np.ndarray) -> np.ndarray:
       the values of the array into a symmetric matrix
 
     Examples:
-    >>>import numpy as np
-    >>>from connectome.preprocessing.data_loader import flat_to_mat_aggregation
-    >>>k = 8 #
-    >>>m = int((k*k)/2 + k/2)
-    >>>x = np.random.standard_normal(size=m)
-    >>>mat = flat_to_mat_aggregation(x)
-    >>>print(mat)
+    >>> import numpy as np
+    >>> from connectome.preprocessing.data_loader import flat_to_mat_aggregation
+    >>> k = 8 #
+    >>> m = int((k*k)/2 + k/2)
+    >>> x = np.random.standard_normal(size=m)
+    >>> mat = flat_to_mat_aggregation(x)
+    >>> print(mat)
     Args:
          x: 1D array which should be turned into symmetric matrix
 

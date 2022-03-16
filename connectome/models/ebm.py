@@ -12,6 +12,7 @@ from interpret.glassbox import ExplainableBoostingRegressor, \
     ExplainableBoostingClassifier
 from interpret import show
 import sys
+import pickle
 
 
 class EBMmi:
@@ -23,30 +24,30 @@ class EBMmi:
     in the case of high number of features.
 
     Examples:
-    >>>import numpy as np
-    >>>import pandas as pd
-    >>># create synthetic data
-    >>>X, y = make_classification(n_informative=15)
-    >>>X = pd.DataFrame(
-    >>>    X,
-    >>>    columns=["feature_" + str(i)
-    >>>             for i in range(X.shape[1])])
-    >>>X_regr, y_regr = make_regression(n_features=20, n_informative=15)
-    >>>X_regr = pd.DataFrame(
-    >>>    X_regr,
-    >>>    columns=["feature_" + str(i)
-    >>>             for i in range(X_regr.shape[1])])
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> # create synthetic data
+    >>> X, y = make_classification(n_informative=15)
+    >>> X = pd.DataFrame(
+    >>>     X,
+    >>>     columns=["feature_" + str(i)
+    >>>              for i in range(X.shape[1])])
+    >>> X_regr, y_regr = make_regression(n_features=20, n_informative=15)
+    >>> X_regr = pd.DataFrame(
+    >>>     X_regr,
+    >>>     columns=["feature_" + str(i)
+    >>>              for i in range(X_regr.shape[1])])
     >>>
-    >>># initialize some models
-    >>>ebm_class = EBMmi(X, y, classification=True)
-    >>>ebm_regr = EBMmi(X_regr, y_regr, classification=False)
+    >>> # initialize some models
+    >>> ebm_class = EBMmi(X, y, classification=True)
+    >>> ebm_regr = EBMmi(X_regr, y_regr, classification=False)
     >>>
-    >>># check the size
-    >>>print(sys.getsizeof(ebm_class)*1e-6)
+    >>> # check the size
+    >>> print(sys.getsizeof(ebm_class)*1e-6)
     >>>
-    >>># plot functions
-    >>>ebm_class.plot_mi(n=5)
-    >>>ebm_regr.plot_mi(n=5)
+    >>> # plot functions
+    >>> ebm_class.plot_mi(n=5)
+    >>> ebm_regr.plot_mi(n=5)
     """
     def __init__(self,
                  features: Union[np.ndarray, pd.DataFrame],
@@ -122,10 +123,16 @@ class EBMmi:
         return self.mi_features
 
     def predict(self,
-                inputs: Union[np.ndarray,
-                              pd.DataFrame]
+                inputs: pd.DataFrame
                 ) -> np.ndarray:
-        return self.ebm.predict(inputs)
+
+        if not isinstance(inputs, pd.DataFrame):
+            raise ValueError("EBM needs a DataFrame as input")
+
+        sel_cols = [col for col in self.feature_names if col in self.sel_features]
+        input_data = inputs.loc[:, sel_cols].copy()
+
+        return self.ebm.predict(input_data)
 
     def predict_proba(self,
                       inputs) -> np.ndarray:
@@ -167,6 +174,10 @@ class EBMmi:
         else:
             return self.ebm.predict_and_contrib(inputs)
 
+    def save_model(self, name: str = "ebm_trained"):
+        with open(name, "wb") as f:
+            pickle.dump(self, f)
+
 
 if __name__ == "__main__":
     # create synthetic data
@@ -196,10 +207,25 @@ if __name__ == "__main__":
     ebm_class.plot_mi(n=5)
     ebm_regr.plot_mi(n=5)
 
+    # predict functions
+    pred_class = ebm_class.predict(X)
+    print(pred_class)
+    pred_regr = ebm_regr.predict(X_regr)
+    print(pred_regr)
+
     # explain functions
     #ebm_class.explain_global()
     #ebm_regr.explain_global()
 
+    ebm_class.save_model("ebm")
     # local explanations
     #ebm_class.explain_local(X, y)
     #ebm_regr.explain_local(X_regr, y_regr)
+    with open("ebm", "rb") as input_file:
+        ebm_class_2 = pickle.load(input_file)
+
+    pred_class = ebm_class_2.predict(X)
+    print(pred_class)
+
+    os.remove("ebm")
+

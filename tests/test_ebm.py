@@ -2,6 +2,8 @@ import unittest
 from connectome.models.ebm import EBMmi
 import numpy as np
 import pandas as pd
+import pickle
+import os
 from typing import Union
 from sklearn.datasets import make_classification, make_regression
 
@@ -47,9 +49,11 @@ class TestEBMwi(unittest.TestCase):
 
     def test_predict(self):
         y_pred = ebm_class_dir.predict(X)
+        self.assertEqual(y_pred.shape[0], X.shape[0])
         self.assertIsInstance(y_pred, np.ndarray)
 
         y_pred = ebm_regr_dir.predict(X_regr)
+        self.assertEqual(y_pred.shape[0], X_regr.shape[0])
         self.assertIsInstance(y_pred, np.ndarray)
 
     def test_predict_proba(self):
@@ -58,6 +62,18 @@ class TestEBMwi(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             ebm_regr_dir.predict_proba(X_regr)
+
+    def test_save_model(self):
+        ebm_class_dir.save_model("ebm")
+
+        with open("ebm", "rb") as input_file:
+            ebm_class_2 = pickle.load(input_file)
+
+        y_pred = ebm_class_2.predict(X)
+        self.assertEqual(y_pred.shape[0], X.shape[0])
+        self.assertIsInstance(y_pred, np.ndarray)
+
+        os.remove("ebm")
 
 
 if __name__ == '__main__':

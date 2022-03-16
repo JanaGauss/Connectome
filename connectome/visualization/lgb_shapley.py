@@ -18,27 +18,27 @@ class ShapleyLGB:
     for a given lgb model
 
     Examples:
-    >>>from connectome.visualization.lgb_shapley import ShapleyLGB
-    >>>from sklearn.datasets import make_classification
-    >>>import pandas as pd
-    >>>from lightgbm import LGBMClassifier
+    >>> from connectome.visualization.lgb_shapley import ShapleyLGB
+    >>> from sklearn.datasets import make_classification
+    >>> import pandas as pd
+    >>> from lightgbm import LGBMClassifier
     >>>
-    >>># initialize model
-    >>>lgb_class = LGBMClassifier()
+    >>> # initialize model
+    >>> lgb_class = LGBMClassifier()
     >>>
-    >>># create synthetic data
-    >>>X, y = make_classification(n_informative=10)
-    >>>X = pd.DataFrame(X, columns=["feature_" + str(i) for i in range(X.shape[1])])
+    >>> # create synthetic data
+    >>> X, y = make_classification(n_informative=10)
+    >>> X = pd.DataFrame(X, columns=["feature_" + str(i) for i in range(X.shape[1])])
     >>>
-    >>># fit the model
-    >>>lgb_class.fit(X, y)
+    >>> # fit the model
+    >>> lgb_class.fit(X, y)
     >>>
-    >>># shapley values and analysis for the classification case
-    >>>sh_class = ShapleyLGB(lgb_class, X)
-    >>>sh_class.summ_plot(5)
-    >>>class_imp = sh_class.shapley_importance()
-    >>>print(class_imp)
-    >>>sh_class.depend_plot(class_imp.iloc[0, 2])
+    >>> # shapley values and analysis for the classification case
+    >>> sh_class = ShapleyLGB(lgb_class, X)
+    >>> sh_class.summ_plot(5)
+    >>> class_imp = sh_class.shapley_importance()
+    >>> print(class_imp)
+    >>> sh_class.depend_plot(class_imp.iloc[0, 2])
     """
     def __init__(self,
                  model: Union[LGBMModel, GB],

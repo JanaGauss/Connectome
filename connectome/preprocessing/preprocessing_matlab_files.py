@@ -65,11 +65,11 @@ def preprocess_mat_files(matlab_dir: str = None,
     if write_dir is None and export_file:
         write_dir = input(r'Input your path where '
                           r'to write the final file: ')
+        assert isinstance(write_dir, str), "invalid path (write_dir) provided"
 
     assert isinstance(matlab_dir, str), "invalid path (matlab files) provided"
     assert isinstance(excel_path, str), "invalid path (excel file) provided"
     assert isinstance(export_file, bool), "invalid datatype for argument export_file"
-    assert isinstance(write_dir, str), "invalid path (write_dir) provided"
     assert isinstance(preprocessing_type, str) & \
            (preprocessing_type == "conn" or
             preprocessing_type == "aggregation"), "invalid preprocessing type"

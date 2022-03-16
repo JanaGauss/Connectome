@@ -98,7 +98,7 @@ def plot_feature_map(heatmap, title, aggregated_network=False, ordered=False, cm
         return fig
 
 
-def ordered_regions() -> list:
+def ordered_regions() -> tuple:
     """
     return list of indexes from yeo 7
     """
@@ -138,7 +138,7 @@ def ordered_regions() -> list:
     sorted_keys_list = [x - 1 for x in sorted_keys_int]
     ordered_region = list(dict(sorted(lab_to_yeo7.items(), key=lambda item: item[1])).values())
     ordered_region = list(map(int, ordered_region))
-    return (sorted_keys_list, ordered_region)
+    return sorted_keys_list, ordered_region
 
 
 def plot_coef_elastic_net(model, title="Elastic Net coefficients"):

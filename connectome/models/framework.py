@@ -5,6 +5,7 @@ This module is used as a framework to open up saved models, train new models and
 import pandas as pd
 import keras
 import tensorflow as tf
+import os
 from keras.models import load_model
 from keras.models import save
 import pickle
@@ -29,8 +30,9 @@ def model_framework(X_train, y_train,
     Examples:
     >>> # CNN:
     >>> # Different optimizer and loss function
+    >>> import tensorflow as tf
     >>> from tf.keras.optimizers import Nadam
-    >>> from tf.keras.losses import Hinge()
+    >>> from tf.keras.losses import Hinge
     >>> model = model_framework(X_train = X_train,
                                 y_train = y_train,
                                 model = "cnn",
