@@ -57,7 +57,7 @@ def model_elastic_net(X_train, y_train,
                       cv_linreg = 5, 
 		          l1_ratios_logreg = np.linspace(0,  1, 11).tolist(),
                       l1_ratios_linreg = np.linspace(0.01,  1, 11).tolist(), 
-		          verbose = 1,
+		          verbose = 0,
                       **kwargs):
     """
     Function that fits an elastic net model and searches for best parameters via CV. 
