@@ -2,6 +2,8 @@ import unittest
 from connectome.models.lgb import GB
 import numpy as np
 import pandas as pd
+import pickle
+import os
 from sklearn.datasets import make_classification, make_regression
 
 
@@ -58,6 +60,18 @@ class TestGB(unittest.TestCase):
 
         fi = gb_regr_dir.get_feature_importances()
         self.assertIsInstance(fi, pd.DataFrame)
+
+    def test_save_model(self):
+        gb_class_dir.save_model("lgb")
+
+        with open("lgb", "rb") as input_file:
+            gb_class_dir_2 = pickle.load(input_file)
+
+        y_pred = gb_class_dir_2.predict(X)
+        self.assertEqual(y_pred.shape[0], X.shape[0])
+        self.assertIsInstance(y_pred, np.ndarray)
+
+        os.remove("lgb")
 
 
 if __name__ == '__main__':

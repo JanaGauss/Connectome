@@ -4,6 +4,7 @@ wrapper for gradient boosting classification and regression models
 
 import pandas as pd
 import numpy as np
+import pickle
 from typing import Union
 from sklearn.datasets import make_classification, make_regression
 from lightgbm import LGBMClassifier, LGBMRegressor
@@ -14,29 +15,29 @@ class GB:
     wrapper/class for gradient boosting models
 
     Examples:
-    >>>from connectome.models.lgb import GB
-    >>>import pandas as pd
-    >>>import numpy as np
+    >>> from connectome.models.lgb import GB
+    >>> import pandas as pd
+    >>> import numpy as np
     >>>
-    >>># create synthetic data
-    >>>X, y = make_classification(n_informative=15)
-    >>>X = pd.DataFrame(
-    >>>    X,
-    >>>    columns=["feature_" + str(i)
-    >>>             for i in range(X.shape[1])])
-    >>>X_regr, y_regr = make_regression(n_features=20, n_informative=15)
-    >>>X_regr = pd.DataFrame(
-    >>>    X_regr,
-    >>>    columns=["feature_" + str(i)
-    >>>             for i in range(X_regr.shape[1])])
+    >>> # create synthetic data
+    >>> X, y = make_classification(n_informative=15)
+    >>> X = pd.DataFrame(
+    >>>     X,
+    >>>     columns=["feature_" + str(i)
+    >>>              for i in range(X.shape[1])])
+    >>> X_regr, y_regr = make_regression(n_features=20, n_informative=15)
+    >>> X_regr = pd.DataFrame(
+    >>>     X_regr,
+    >>>     columns=["feature_" + str(i)
+    >>>              for i in range(X_regr.shape[1])])
     >>>
-    >>># initialize some models
-    >>>gb_class = GB(X, y, classification=True)
-    >>>gb_regr = GB(X_regr, y_regr, classification=False)
+    >>> # initialize some models
+    >>> gb_class = GB(X, y, classification=True)
+    >>> gb_regr = GB(X_regr, y_regr, classification=False)
     >>>
-    >>># get_fis
-    >>>print(gb_class.get_feature_importances())
-    >>>print(gb_regr.get_feature_importances())
+    >>> # get_fis
+    >>> print(gb_class.get_feature_importances())
+    >>> print(gb_regr.get_feature_importances())
     """
     def __init__(self,
                  features: Union[np.ndarray, pd.DataFrame],
@@ -102,6 +103,10 @@ class GB:
                     }).sort_values(
                     by="importances", ascending=False
                     )
+
+    def save_model(self, name: str = "lgb"):
+        with open(name, "wb") as f:
+            pickle.dump(self, f)
 
 
 if __name__ == "__main__":
