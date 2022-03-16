@@ -1,11 +1,5 @@
 import unittest
-import numpy as np
-import shutil
-from random import choices
-import hdf5storage
-from connectome.preprocessing.graph_metrics import pd_to_arrays
 import os
-import pandas as pd
 from connectome.preprocessing.preprocessing_matlab_files import preprocess_mat_files
 from connectome.preprocessing.data_preparation import prepare_data
 from connectome.models.framework import model_framework
@@ -13,121 +7,26 @@ from connectome.models.evaluation import model_evaluation
 from connectome.visualization.viz_framework import visualization_framework
 
 
-def get_fake_data(n: int = 50,
-                  k: int = 50):
-    """
-    little helper function to create connectivity like artificial data
+DIMS = (10, 25, 50)
+OBS = 50
+path_dict = {}
 
-    Examples:
-    >>> arrs, excel = get_fake_data(k=5)
-    Args:
-        n: number of observations
-        k: number of brain regions
-
-    Returns:
-        a list of numpy arrays (connectivity data) as well as
-        a DataFrame (structural data)
-
-    """
-    m = int((k*k)/2 - k/2)
-    fake_conn_data = np.random.normal(loc=0, scale=2, size=m*n).reshape(n, m)
-    colnames = [str(i) + "_" + str(j) for i in range(k) for j in range(i+1, k)]
-    df = pd.DataFrame(fake_conn_data, columns=colnames)
-    arrays = pd_to_arrays(df, None)
-
-    excel_data = pd.DataFrame()
-    excel_data["age"] = choices(range(60, 88), k=n)
-    excel_data["sex"] = choices([0, 1], k=n)
-    excel_data["edyears"] = choices(range(9, 20), k=n)
-    excel_data["Apoe"] = choices([0, 1], k=n)
-    excel_data["target"] = choices([0, 1], k=n)
-    excel_data["subject_id"] = range(n)
-    excel_data["ConnID"] = range(n)
-
-    return arrays, excel_data
-
-
-def gen_files(dims: tuple = (10, 25, 50, 90, 246),
-              obs: int = 50) -> tuple:
-
-    base_path = os.getcwd()
-    res = {}
-    generated_files = []
-    for dim in dims:
-        curr_res = {}
-        # creating the parent directory for the current dim
-        path = os.path.join(base_path, str(dim))
-        if not os.path.exists(path):
-            os.mkdir(path, 0o777)
-        curr_res["main_dir"] = path
-        generated_files.append(path)
-        os.chdir(path)
-
-        # creating the artificial data
-        arrs, excel = get_fake_data(k=dim, n=obs)
-        file_name = "example_data_" + str(dim) + ".xlsx"
-        excel.to_excel(file_name)
-
-        curr_res["excel_file"] = os.path.join(path, file_name)
-
-        generated_files.append(os.path.join(path, file_name))
-
-        # creating the directory for the conn_data
-        path = os.path.join(path, "conn_data")
-        curr_res["conn_directory"] = path
-
-        if not os.path.exists(path):
-            os.mkdir(path, 0o777)
-        os.chdir(path)
-        generated_files.append(path)
-
-        curr_res["conn_files"] = []
-        for i, arr in enumerate(arrs):
-            dict_data = {'Z': arr}
-            n = 3 - len(str(i))
-            x = ["0" for i in range(n)] + [str(i)]
-            ident = "".join(x)
-            file_name = "Subject" + ident + "_Condition001.mat"
-            hdf5storage.write(dict_data, '.', file_name,
-                              matlab_compatible=True)
-            path_file = os.path.join(path, file_name)
-            generated_files.append(path_file)
-            curr_res["conn_files"].append(path_file)
-        res[dim] = curr_res
-        os.chdir(base_path)
-    return generated_files, res
-
-
-def clear_gen_files(files: list):
-    directories = []
-    for f in files:
-        if os.path.isdir(f):
-            directories.append(f)
-        else:
-            os.remove(f)
-
-    del files
-    directories = sorted(directories, key=lambda x: len(x), reverse=True)
-
-    failed = []
-    for dirct in directories:
-        try:
-            shutil.rmtree(dirct)
-        except PermissionError:
-            failed.append(dirct)
-            print("PermissionError for directory ", dirct)
+for dim in DIMS:
+    cr = {}
+    cr["matlab_dir"] = os.path.join(os.path.dirname(__file__),
+                                    'test_data', str(dim), 'conn_data')
+    cr["excel_path"] = os.path.join(os.path.dirname(__file__),
+                                    'test_data', str(dim), "example_data_" + str(dim) + ".xlsx")
+    path_dict[dim] = cr
 
 
 class TestPipeline(unittest.TestCase):
     def test_pipeline_elnet(self):
-        dims = (10, 25, 50)
-        obs = 15
-        files, res = gen_files(dims=dims, obs=obs)
 
-        for dim in res.values():
+        for value in path_dict.values():
             df = preprocess_mat_files(
-                matlab_dir=dim["conn_directory"],
-                excel_path=dim["excel_file"])
+                matlab_dir=value["matlab_dir"],
+                excel_path=value["excel_path"])
 
             classification = True
             columns_drop = ["ConnID", "Apoe", "subject_id"]
@@ -155,7 +54,6 @@ class TestPipeline(unittest.TestCase):
 
             viz = visualization_framework(model=model, X=X_test,
                                           y=y_test, viz_method="elastic_net")
-        clear_gen_files(files)
 
 
 if __name__ == '__main__':
