@@ -212,7 +212,7 @@ def preprocess_for_cnn(X, y, aggregation=False, reorder=False, augmentation=Fals
     # reshape data for the convolutional neural network
     X_img = stacked.reshape(stacked.shape[0], stacked.shape[1], stacked.shape[2], 1)
     if X_struc.shape[1] != 0:
-        X_struc = X_struc.to_numpy().reshape(stacked.shape[0], 3)
+        X_struc = X_struc.to_numpy().reshape(stacked.shape[0], X_struc.shape[1])
     else:
         X_struc = X_struc.to_numpy()
 
