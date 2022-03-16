@@ -88,7 +88,7 @@ connectome\Scripts\activate
 <!-- USAGE -->
 ## Usage
 
-This is the beginning to our Connectome Pipeline. To use our pipeline just open [Connectome Pipeline](Connectome Pipeline.ipynb)
+This is the beginning to our Connectome Pipeline. To use our pipeline just open [Connectome Pipeline](https://github.com/JanaGauss/Connectome/blob/e9fa13e33a58fb1470c92e59d77b69730b31bc67/Connectome%20Pipeline.ipynb)
 
 
 ![image](https://user-images.githubusercontent.com/60140124/158218222-08377392-b718-4c03-8f85-7e911f67f323.png)
