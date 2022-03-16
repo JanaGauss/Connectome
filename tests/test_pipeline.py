@@ -5,6 +5,7 @@ from connectome.preprocessing.data_preparation import prepare_data
 from connectome.models.framework import model_framework
 from connectome.models.evaluation import model_evaluation
 from connectome.visualization.viz_framework import visualization_framework
+from connectome.models.brainnet_cnn import preprocess_test_data_for_cnn
 
 
 DIMS = (10, 25, 50)
