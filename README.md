@@ -87,11 +87,19 @@ connectome\Scripts\activate
 <!-- USAGE -->
 ## Usage
 
-This is the beginning to our Connectome Pipeline. 
+This is the beginning to our Connectome Pipeline. To use our pipeline just open "Connectome Pipeline.ipynb"
 
 ![image](https://user-images.githubusercontent.com/60140124/158218222-08377392-b718-4c03-8f85-7e911f67f323.png)
 
-For further details check out the demo video or our full documentation here: https://likai97.github.io/Conncetome-Documentation/
+
+To start preprocessing the data for analysis, you need a folder with matlab files of connectivity matrices and an excel sheet with subject information. Afterwards, just specify the folder path and your good to go:
+
+```
+matlab_dir = r"./path/to/matlab/files" # Enter the directory for the matlab files
+excel_path = r"./path/to/excel/sheet.xlsx" # Enter the directory for the corresponding excel sheet with xlsx at the end
+```
+
+For further the further steps check out the demo video or read our full documentation here: https://likai97.github.io/Conncetome-Documentation/
 
 ### Demo Video
 
