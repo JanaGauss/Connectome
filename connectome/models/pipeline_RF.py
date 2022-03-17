@@ -21,7 +21,7 @@ def run_random_forest(X_train, y_train,
     Args:
         X_train: The training dataset
         y_train: The true labels
-        classification: classification task -> logistic regression or regression task -> linear model
+        classification: classification or regression task
         verbose: amount of verbosity, default = 0 
         
     Returns:
