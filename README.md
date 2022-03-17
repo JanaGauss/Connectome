@@ -4,6 +4,8 @@
 
 Created as part of an university project "Innovationlab Big Data Science" at LMU Munich.
 
+![image](https://user-images.githubusercontent.com/60140124/158772907-3a022db0-55a5-4ac4-80e3-26dae8c6f9b9.png)
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
