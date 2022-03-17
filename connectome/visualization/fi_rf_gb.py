@@ -103,7 +103,7 @@ def get_pfi(model: Union[lgb.LGBMClassifier,
     Args:
         model: lgb or RF model of which the PFIs should be obtained
         x_val: DataFrame or array containing features of held out data
-        y_val target variable for held out data
+        y_val: target variable for held out data
         feature_names: in case data is not in form of a pd.DataFrame
         n: the first n PFIs to be obtained - in a descending order
         repeats: how often the PFI calculation should be repeated
