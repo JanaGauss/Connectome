@@ -1,3 +1,6 @@
+"""
+Function for data preparation before modelling
+"""
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -8,7 +11,7 @@ def prepare_data(data: pd.DataFrame, classification: bool = True,
                  target: str = "prmdiag", y_0: list = [0], y_1: list = [2, 3],
                  train_size: float = 0.8, seed: int = 123, split = True):
     """
-    Function that prepares the data for modelling
+    Function that prepares the data for modelling (creates target variable, drops unnecessary columns, performs train test split)
 
 
     Examples:
