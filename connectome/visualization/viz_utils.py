@@ -1,5 +1,5 @@
 """
-Helper functions for visualization
+helper functions for the visualization of results
 """
 import matplotlib.pyplot as plt
 from matplotlib import colors

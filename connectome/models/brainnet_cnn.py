@@ -1,5 +1,5 @@
 """
-Prepares the data for the CNN and trains the CNN
+prepares the data for the CNN and trains the CNN
 """
 import numpy as np
 import pandas as pd

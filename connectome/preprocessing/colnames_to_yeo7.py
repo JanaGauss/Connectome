@@ -18,7 +18,7 @@ def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 		colnames: list of the brainnetome colnames
 		order: whether the resulting colnames should be ordered
 
-	Return: 
+	Returns:
 		list of yeo_7 converted colnames
 	"""
 

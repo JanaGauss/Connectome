@@ -37,13 +37,13 @@ def get_graph_metrics(conns: list,
     >>> k = 8  # dim of the conn matrix
     >>> obs = 10  # observations
     >>> conn = pd.DataFrame(
-    >>>    np.random.normal(
-    >>>       loc=0.1,
-    >>>        scale=1.2,
-    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
-    >>>        columns=[str(i) + "_" + str(j)
-    >>>                 for i in range(k)
-    >>>                 for j in range(i+1, k)])
+    >>>     np.random.normal(
+    >>>        loc=0.1,
+    >>>         scale=1.2,
+    >>>         size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>         columns=[str(i) + "_" + str(j)
+    >>>                  for i in range(k)
+    >>>                  for j in range(i+1, k)])
     >>> conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
     >>> print(get_graph_metrics(conn_data_list))
     Args:
@@ -284,13 +284,13 @@ def get_gms_from_pd(data: pd.DataFrame,
     >>> k = 8  # dim of the conn matrix
     >>> obs = 10  # observations
     >>> conn = pd.DataFrame(
-    >>>    np.random.normal(
-    >>>        loc=0.1,
-    >>>        scale=1.2,
-    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
-    >>>        columns=[str(i) + "_" + str(j)
-    >>>                 for i in range(k)
-    >>>                 for j in range(i+1, k)])
+    >>>     np.random.normal(
+    >>>         loc=0.1,
+    >>>         scale=1.2,
+    >>>         size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>         columns=[str(i) + "_" + str(j)
+    >>>                  for i in range(k)
+    >>>                  for j in range(i+1, k)])
     >>> conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
     >>> print(get_gms_from_pd(conn, list(conn.columns)))
     Args:

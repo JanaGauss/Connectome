@@ -1,5 +1,5 @@
 """
-Aggregates Connectivity Matrixes on the basis of the yeo7 network
+aggregates connectivity matrices on the basis of the yeo7 network
 """
 import numpy as np
 import pandas as pd

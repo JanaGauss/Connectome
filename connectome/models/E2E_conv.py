@@ -1,5 +1,5 @@
 """
-The custom Edge-to-Edge layer developed by Kawahara et al.
+the custom Edge-to-Edge layer developed by Kawahara et al.
 """
 # Construction of the Edge-2-Edge layer using Keras backend.
 # Source: https://notebook.community/AmineEch/BrainCNN/.ipynb_checkpoints/BrainNetCNN-checkpoint

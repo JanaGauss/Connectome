@@ -1,5 +1,5 @@
 """
-Visualization for convolutional neural networks
+visualization helpers and functions for convolutional neural networks
 """
 from tf_keras_vis.gradcam import Gradcam
 from tf_keras_vis.saliency import Saliency
@@ -9,8 +9,10 @@ import tensorflow as tf
 
 from connectome.visualization.viz_utils import plot_feature_map
 
+
 def model_modifier_function(cloned_model):
     cloned_model.layers[-1].activation = tf.keras.activations.linear
+
 
 def score_function(output):
     # The `output` variable refers to the output of the model,

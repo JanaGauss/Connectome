@@ -13,6 +13,7 @@ from interpret.glassbox import ExplainableBoostingRegressor, \
 from interpret import show
 import sys
 import pickle
+import os
 
 
 class EBMmi:
