@@ -93,6 +93,7 @@ This is the beginning to our Connectome Pipeline. To use our pipeline just open 
 
 ![image](https://user-images.githubusercontent.com/60140124/158218222-08377392-b718-4c03-8f85-7e911f67f323.png)
 
+<p>**Important**: The excel sheet must contain the column "ConnID" as an identifier for merging with the matlab files.</p>
 
 To start preprocessing the data for analysis, you need a folder with matlab files of connectivity matrices and an excel sheet with subject information. Afterwards, just specify the folder path and your good to go:
 
