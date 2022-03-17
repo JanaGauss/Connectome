@@ -9,11 +9,11 @@ import pandas as pd
 
 def model_evaluation(model, X_test, y_test):
     """
-    Evaluates the model based on a set of metrics
-    Classification: Accuracy, Precision, Recall, F1 and AUC
-    Regression: MSE, MAE and R2
-    checkout https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics for details
-    For CNN make sure that the test_dataset was also transformed
+    Evaluates the model based on a set of metrics.
+    Classification: Accuracy, Precision, Recall, F1 and AUC.
+    Regression: MSE, MAE and R2.
+    Checkout https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics for details.
+    For CNN make sure that the test_dataset was also transformed.
 
     Examples:
     >>> # Evaluate any model.
