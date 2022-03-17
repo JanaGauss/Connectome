@@ -117,7 +117,9 @@ https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### Examplary Results - Visualizations for a Gradient Boosting Model - Based on 246x246 Connectivity Matrices and Graph Metrics
+<!-- RESULTS -->
+## Examplary Results 
+### Visualizations for a Gradient Boosting Model - Based on 246x246 Connectivity Matrices and Graph Metrics
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73901213/158807020-197a14a3-7020-4833-82b8-1c722d850e2e.png" />
