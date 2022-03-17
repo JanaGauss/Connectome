@@ -117,6 +117,14 @@ https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Results
+#### Visualisations for a Gradient Boosting Model - based on the 246x246 matrices and 
+
+![summ_plot](https://user-images.githubusercontent.com/73901213/158804703-bed3d1b5-4820-4b1e-8a53-7fcee91a1786.png)
+![dep1](https://user-images.githubusercontent.com/73901213/158804715-8ea02288-8285-4e26-824a-dfd7495915fc.png)
+![dep2](https://user-images.githubusercontent.com/73901213/158804722-3309984f-5072-475c-b051-4d07df504e8f.png)
+![dep3](https://user-images.githubusercontent.com/73901213/158804730-a9ba4813-e91c-448e-b635-0ace38a5e9bf.png)
+
 
 <!-- LICENSE -->
 ## License
