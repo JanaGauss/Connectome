@@ -12,8 +12,8 @@ def colnames_to_yeo_7(colnames: list, order: bool = True) -> list:
 	takes a list of colnames in the brainnetome format/naming and converts them to yeo_7 regions
 
 	Examples:
-	>>>print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"]))
-	>>>print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"], order=False))
+	>>> print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"]))
+	>>> print(colnames_to_yeo_7(["108_110", "1_2", "200_218", "148_140"], order=False))
 	Args:
 		colnames: list of the brainnetome colnames
 		order: whether the resulting colnames should be ordered
@@ -66,8 +66,8 @@ def get_colnames_df(df: bool = True) -> Union[pd.DataFrame, dict]:
 	connectivity column names to the yeo_7 network column names
 
 	Examples:
-	>>>print(get_colnames_df())
-	>>>print(get_colnames_df(False))
+	>>> print(get_colnames_df())
+	>>> print(get_colnames_df(False))
 	Args:
 		df: whether to return the column name mappings as a DataFrame
 
