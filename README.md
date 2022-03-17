@@ -119,7 +119,7 @@ https://user-images.githubusercontent.com/51715552/158160781-d1e6c7bc-de14-49b9-
 
 <!-- RESULTS -->
 ## Examplary Results 
-Visualizations for a gradient boosting model - based on 246x246 connectivity matrices and graph metrics
+Visualizations for a gradient boosting model - based on 246x246 connectivity matrices and graph metrics. As an example, the variable 95_216 represents the connectivity between the intermediate lateral area 20 and the rostral hippocampus.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73901213/158807020-197a14a3-7020-4833-82b8-1c722d850e2e.png" />
