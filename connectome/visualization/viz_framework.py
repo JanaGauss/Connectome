@@ -37,7 +37,9 @@ def visualization_framework(model,
                                 X = X_test,
                                 y= y_test,
                                 viz_method = 'GFI',
-                                m = 20) # the higher m (number of permutations) the more accurate the result, but the longer the runtime
+                                m = 20) 
+    >>> # the higher m (number of permutations) the more accurate the result, but the longer the runtime
+    >>>
     >>> # Plot coefficients of an elastic net model
     >>> visualization_framework(model = model,
                                 X = X_test,
@@ -64,6 +66,7 @@ def visualization_framework(model,
 
     #
     if viz_method == "GFI":
+        assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV', 'RandomForestClassifier', 'RandomForestRegressor'], "invalid viz_method for supplied model"
         groups_df = get_colnames_df()
         groups_df = groups_df.loc[
             np.in1d(groups_df["conn_name"], X.columns)]  # remove entries of groups_df that are not in colnames of X
@@ -71,6 +74,7 @@ def visualization_framework(model,
         return plot_grouped_FI(df_importance)
 
     elif viz_method == "GFI_only":
+        assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV', 'RandomForestClassifier', 'RandomForestRegressor'], "invalid viz_method for supplied model"
         groups_df = get_colnames_df()
         groups_df = groups_df.loc[
             np.in1d(groups_df["conn_name"], X.columns)]  # remove entries of groups_df that are not in colnames of X
@@ -78,6 +82,7 @@ def visualization_framework(model,
         return plot_grouped_FI(df_importance, title="Group only Permutation Feature Importance")
 
     elif viz_method == "FI":  # normal permutation feature importance -> use function for grouped importance
+        assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV', 'RandomForestClassifier', 'RandomForestRegressor'], "invalid viz_method for supplied model"
         ind_conn_cols = []  # extract all connectivity variables
         for x in range(len(model.feature_names_in_)):
             if len(model.feature_names_in_[x].split("_")) > 1 and model.feature_names_in_[x].split("_")[0].isdigit() and \
@@ -91,6 +96,7 @@ def visualization_framework(model,
         return plot_grouped_FI(df_importance, title="Permutation Feature Importance")
 
     elif viz_method == "FI_only":  # normal permutation only feature importance -> use function for grouped importance
+        assert model.__class__.__name__ in ['LogisticRegressionCV', 'ElasticNetCV', 'RandomForestClassifier', 'RandomForestRegressor'], "invalid viz_method for supplied model"
         ind_conn_cols = []  # extract all connectivity variables
         for x in range(len(model.feature_names_in_)):
             if len(model.feature_names_in_[x].split("_")) > 1 and model.feature_names_in_[x].split("_")[0].isdigit() and \

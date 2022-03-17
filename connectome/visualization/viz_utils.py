@@ -147,6 +147,7 @@ def plot_coef_elastic_net(model, title="Elastic Net coefficients"):
 
     Args:
       model: fitted elastic net model
+      title: A title for the plot
 
     Returns:
       plot
@@ -196,7 +197,8 @@ def plot_grouped_FI(df_importance, title="Grouped Permutation Feature Importance
     plot results grouped feature importance (groups based on yeo7 network)
 
     Args:
-      df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values
+      df_importance: pd.DataFrame with results from calculation grouped FI. First column contains regions, second column contains importance values.
+      title: A title for the plot
 
     Returns:
       plot
