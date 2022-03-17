@@ -1,5 +1,5 @@
 """
-Evaluation of fitted model on test data
+function to evaluate the fitted model on test data
 """
 from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score, mean_squared_error, \
     mean_absolute_error, r2_score

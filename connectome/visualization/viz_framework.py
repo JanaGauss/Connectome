@@ -1,5 +1,5 @@
 """
-Framework function for vizualisation
+framework function for the vizualisation of predictions or important features
 """
 import numpy as np
 import pandas as pd

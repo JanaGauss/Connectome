@@ -1,5 +1,5 @@
 """
-contains functions to compute / obtain the basic feature importances and permutation
+functions to compute / obtain the basic feature importances and permutation
 feature importances from gradient boosting and random forest models
 """
 

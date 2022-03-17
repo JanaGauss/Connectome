@@ -1,6 +1,7 @@
 """
-This module is used as a framework to prepare raw connectivity matrices for analysis
-**Important**: In your excel sheet with subject information, name the id column: "ConnID". This column will be used to merge the matlab files.
+this module is used as a framework to prepare raw connectivity matrices for analysis
+**Important**: In your excel sheet with subject information, name the id column: "ConnID".
+This column will be used to merge the matlab files.
 """
 import os
 import numpy as np
@@ -357,7 +358,7 @@ def write_to_dir(dataset: pd.DataFrame,
     assert isinstance(dataset, pd.DataFrame), "no DataFrame provided"
     assert isinstance(file_format, str) & \
            ((file_format == "csv") | (file_format == "h5")), \
-        "invalid file format selected"
+           "invalid file format selected"
 
     if not os.path.exists(t_direct):
         raise FileNotFoundError("invalid path (write to dir)")
@@ -414,7 +415,8 @@ def grouped_conn_df(data: pd.DataFrame,
 
 
 def main():
-    preprocessing_type = input(r'Input preprocessing type: conn, aggregation or grouped: ')
+    preprocessing_type = input(r'Input preprocessing type: '
+                               r'conn, aggregation or grouped: ')
     if preprocessing_type == "aggregation":
         statistic = input(r'Input summary statistic: ')
         preprocess_mat_files(preprocessing_type=preprocessing_type, statistic=statistic)

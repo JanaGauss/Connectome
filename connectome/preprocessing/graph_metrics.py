@@ -29,23 +29,23 @@ def get_graph_metrics(conns: list,
       computing the adjacency matrices
 
         Examples:
-    >>>import numpy as np
-    >>>import pandas as pd
-    >>>from connectome.preprocessing.graph_metrics import get_graph_metrics
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> from connectome.preprocessing.graph_metrics import get_graph_metrics
     >>>
-    >>># checking the get_gms_from_pd function
-    >>>k = 8  # dim of the conn matrix
-    >>>obs = 10  # observations
-    >>>conn = pd.DataFrame(
-    >>>    np.random.normal(
-    >>>       loc=0.1,
-    >>>        scale=1.2,
-    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
-    >>>        columns=[str(i) + "_" + str(j)
-    >>>                 for i in range(k)
-    >>>                 for j in range(i+1, k)])
-    >>>conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
-    >>>print(get_graph_metrics(conn_data_list))
+    >>> # checking the get_gms_from_pd function
+    >>> k = 8  # dim of the conn matrix
+    >>> obs = 10  # observations
+    >>> conn = pd.DataFrame(
+    >>>     np.random.normal(
+    >>>        loc=0.1,
+    >>>         scale=1.2,
+    >>>         size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>         columns=[str(i) + "_" + str(j)
+    >>>                  for i in range(k)
+    >>>                  for j in range(i+1, k)])
+    >>> conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
+    >>> print(get_graph_metrics(conn_data_list))
     Args:
         conns: list of numpy arrays containing the connectivity data
         threshold: threshold of correlation to compute adjacency matrices
@@ -225,8 +225,8 @@ def is_conn_col(x: str) -> bool:
     between region 1 and region 245
 
     Examples:
-    >>>test_names = ["1_2", "asf", "as_asd"]
-    >>>print([is_conn_col(x) for x in test_names])
+    >>> test_names = ["1_2", "asf", "as_asd"]
+    >>> print([is_conn_col(x) for x in test_names])
     Args:
         x: the provided column name
 
@@ -276,23 +276,23 @@ def get_gms_from_pd(data: pd.DataFrame,
     of a DataFrame
 
     Examples:
-    >>>import numpy as np
-    >>>import pandas as pd
-    >>>from connectome.preprocessing.graph_metrics import get_gms_from_pd
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> from connectome.preprocessing.graph_metrics import get_gms_from_pd
     >>>
-    >>># checking the get_gms_from_pd function
-    >>>k = 8  # dim of the conn matrix
-    >>>obs = 10  # observations
-    >>>conn = pd.DataFrame(
-    >>>    np.random.normal(
-    >>>        loc=0.1,
-    >>>        scale=1.2,
-    >>>        size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
-    >>>        columns=[str(i) + "_" + str(j)
-    >>>                 for i in range(k)
-    >>>                 for j in range(i+1, k)])
-    >>>conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
-    >>>print(get_gms_from_pd(conn, list(conn.columns)))
+    >>> # checking the get_gms_from_pd function
+    >>> k = 8  # dim of the conn matrix
+    >>> obs = 10  # observations
+    >>> conn = pd.DataFrame(
+    >>>     np.random.normal(
+    >>>         loc=0.1,
+    >>>         scale=1.2,
+    >>>         size=int((k*(k-1)/2)*obs)).reshape(obs, int((k*(k-1)/2))),
+    >>>         columns=[str(i) + "_" + str(j)
+    >>>                  for i in range(k)
+    >>>                  for j in range(i+1, k)])
+    >>> conn_data_list = [flat_to_mat(conn.iloc[i, :]) for i in range(obs)]
+    >>> print(get_gms_from_pd(conn, list(conn.columns)))
     Args:
         data: dataFrame containing the conn data
         regions: list of names of the regions of the conn matrix

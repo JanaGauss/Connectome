@@ -1,5 +1,6 @@
 """
-Prepare data for elastic net (e.g. calculate squared or absolute values or interactions) and run elastic net model
+functions to prepare data for elastic net (e.g. calculate squared or absolute values or interactions)
+and run elastic net model
 
 """
 import pandas as pd

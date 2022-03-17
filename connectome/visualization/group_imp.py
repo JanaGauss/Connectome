@@ -1,5 +1,5 @@
 """
-Calculation of Group Feature Importance
+functions to calculate the group feature importance
 """
 import pandas as pd
 import numpy as np
