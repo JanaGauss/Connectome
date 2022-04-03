@@ -139,6 +139,7 @@ def load_matlab_files(directory: str,
         raise FileNotFoundError("invalid directory (matlab files)")
 
     mat_files_names = os.listdir(directory)
+    mat_files_names = [file for file in mat_files_names if file[-4:]==".mat"]
     mat_files_names = [os.path.join(directory, file) for file in mat_files_names]
     conn_matrices = []
     worked = []
