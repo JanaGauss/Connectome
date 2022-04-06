@@ -108,7 +108,7 @@ def model_framework(X_train, y_train,
 
         # loading pretrained models
     if pretrained:
-        if not os.path.exists("model_path"):
+        if not os.path.exists(model_path):
             raise FileNotFoundError("File not found, please specify exact name and make sure the location is correct")
         if model == "elnet":
             rmodel = pickle.load(open(model_path, 'rb'))
