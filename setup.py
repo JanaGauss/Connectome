@@ -9,7 +9,7 @@ setup(
     author_email='',
     license='',
     install_requires=['h5py==3.6.0', 'mat73', 'matplotlib==3.5.1', 
-                      'numpy==1.3.0', 'pandas==1.3.3', 'scikit_learn==1.0.1', 
+                      'numpy==1.4.1', 'pandas==1.3.3', 'scikit_learn==1.0.1', 
                       'seaborn==0.11.2', 'xgboost==1.5.1', 'lightgbm==3.3.1', 
                       'bctpy==0.5.0', 'keras==2.8.0', 'IPython==7.31.1', 
                       'interpret==0.2.7', 'tensorflow==2.8.1', 'tf_keras_vis==0.8.1',
